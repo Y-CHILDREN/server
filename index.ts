@@ -11,5 +11,5 @@ app.set('port', process.env.PORT);
 
 app.use(cors<Request>());
 app.listen(app.get('port'), async () => {
-  console.log('hi');
+  console.log('hello Taejeong!');
 });
