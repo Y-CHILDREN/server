@@ -12,8 +12,13 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
+    "express-session": "^1.18.0",
+    "googleapis": "^144.0.0",
     "morgan": "^1.10.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "prisma": "^5.20.0",
     "ts-node": "^10.9.2"
   },
@@ -25,6 +30,8 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.7.4",
+    "@types/passport": "^1.0.16",
+    "@types/passport-google-oauth20": "^2.0.16",
     "express": "^4.21.0",
     "nodemon": "^3.1.7",
     "typescript": "^5.6.2",
