@@ -3,6 +3,8 @@ interface User {
   email: string;
   user_image: string;
   profile: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 let users: User[] = [];
@@ -16,8 +18,20 @@ export const createUser = (userData: Omit<User, 'id'>): User => {
   return newUser;
 };
 
-export const findUserByNickName = (email: string): User | undefined => {
+export const findUserByEmail = (email: string): User | undefined => {
   return users.find((user) => user.email === email);
+};
+
+export const updateTokens = (
+  email: string,
+  accessToken: string,
+  refreshToken: string
+) => {
+  const user = findUserByEmail(email);
+  if (user) {
+    user.accessToken = accessToken;
+    user.refreshToken = refreshToken;
+  }
 };
 
 export const getAllUser = (): User[] => {
