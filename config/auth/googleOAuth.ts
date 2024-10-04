@@ -1,6 +1,10 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { createUser, findUserByNickName } from '../../domain/models/userModel';
+import {
+  createUser,
+  findUserByEmail,
+  updateTokens,
+} from '../../domain/models/userModel';
 
 passport.use(
   new GoogleStrategy(
@@ -14,16 +18,19 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => {
       try {
         const data = profile._json;
-        let user = findUserByNickName(data.email || '');
+        let user = findUserByEmail(data.email || '');
 
         if (!user) {
           const newUser = createUser({
             email: data.email || '',
             user_image: data.picture || '',
-            profile: data.profile || '',
+            profile: data.name || '',
+            accessToken: accessToken,
+            refreshToken: refreshToken,
           });
           return done(null, newUser);
         }
+        updateTokens(data.email || '', accessToken, refreshToken);
         return done(null, user);
       } catch (error) {
         return done(error, false);
