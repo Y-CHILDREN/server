@@ -1,39 +1,41 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import dotenv from 'dotenv';
-import { access } from 'fs/promises';
-
-dotenv.config();
+import { createUser, findUserByNickName } from '../../domain/models/userModel';
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: `${process.env.BASE_URL}/auth/google/callback`,
+      callbackURL: process.env.GOOGEL_REDIRECT_URL as string,
+      passReqToCallback: true,
+      scope: ['profile', 'email'],
     },
-    async (accessToken, refeshToken, profile, done) => {
-      console.log('google profile : ', profile);
+    async (req, accessToken, refreshToken, profile, done) => {
       try {
-        const exUser = await User.findOne({
-          where: { snsId: profile.id, provider: 'google' },
-        });
-        if (exUser) {
-          done(null, exUser);
-        } else {
-          const newUser = await User.create({
-            email: profile?.emails,
-            nickname: profile.displayName,
-            Id: profile.id,
-            Image: profile.photos,
-            provider: 'Google',
+        const data = profile._json;
+        let user = findUserByNickName(data.email || '');
+
+        if (!user) {
+          const newUser = createUser({
+            email: data.email || '',
+            user_image: data.picture || '',
+            profile: data.profile || '',
           });
-          done(null, newUser);
+          return done(null, newUser);
         }
+        return done(null, user);
       } catch (error) {
-        console.log(error);
-        done(error);
+        return done(error, false);
       }
     }
   )
 );
+
+passport.serializeUser((user: any, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user: any, done) => {
+  done(null, user);
+});
