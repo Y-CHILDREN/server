@@ -1,11 +1,19 @@
 import { Router } from 'express';
-import { getAllUser } from '../domain/models/userModel';
+import passport from 'passport';
 
-const userRouter = Router();
+const googleRouter = Router();
 
-userRouter.get('/users', (req, res) => {
-  const users = getAllUser();
-  res.json(users);
-});
+googleRouter.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
 
-export default userRouter;
+googleRouter.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    res.send('구글 인증 성공');
+  }
+);
+
+export default googleRouter;
