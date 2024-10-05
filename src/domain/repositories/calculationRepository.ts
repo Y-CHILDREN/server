@@ -1,4 +1,6 @@
+import { CalculationData } from '../entities/calculationData';
+
 export interface CalculationRepository {
-  getNumber(): Promise<number>;
-  setNumber(value: number): Promise<void>;
+  getNumber(): Promise<CalculationData>;
+  setNumber(value: CalculationData): Promise<void>;
 }
