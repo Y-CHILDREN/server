@@ -13,3 +13,25 @@ export async function getNumber(req: Request, res: Response) {
 
   res.send(resDto);
 }
+
+export async function plusOne(req: Request, res: Response) {
+  const calculationService = req.app.get(
+    'calculationService',
+  ) as CalculationService;
+
+  const number = await calculationService.plusOne();
+  const resDto = CalculationDataConverter.toResDto(number);
+
+  res.send(resDto);
+}
+
+export async function minusOne(req: Request, res: Response) {
+  const calculationService = req.app.get(
+    'calculationService',
+  ) as CalculationService;
+
+  const number = await calculationService.minusOne();
+  const resDto = CalculationDataConverter.toResDto(number);
+
+  res.send(resDto);
+}
