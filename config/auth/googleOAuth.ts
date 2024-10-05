@@ -6,43 +6,39 @@ import {
   updateTokens,
 } from '../../domain/models/userModel';
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: process.env.GOOGEL_REDIRECT_URL as string,
-      passReqToCallback: true,
-      scope: ['profile', 'email'],
-    },
-    async (req, accessToken, refreshToken, profile, done) => {
-      try {
-        const data = profile._json;
-        let user = findUserByEmail(data.email || '');
+const configurePassport = (passport: any) => {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        callbackURL: process.env.GOOGLE_REDIRECT_URI as string,
+        scope: ['profile', 'email'],
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        console.log(profile);
+        try {
+          const data = profile._json;
+          let user = findUserByEmail(data.email || '');
 
-        if (!user) {
-          const newUser = createUser({
-            email: data.email || '',
-            user_image: data.picture || '',
-            profile: data.name || '',
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-          });
-          return done(null, newUser);
+          if (!user) {
+            const newUser = createUser({
+              email: data.email || '',
+              user_image: data.picture || '',
+              profile: data.name || '',
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            });
+            return done(null, newUser);
+          }
+          updateTokens(data.email || '', accessToken, refreshToken);
+          return done(null, user);
+        } catch (error) {
+          return done(error, false);
         }
-        updateTokens(data.email || '', accessToken, refreshToken);
-        return done(null, user);
-      } catch (error) {
-        return done(error, false);
       }
-    }
-  )
-);
+    )
+  );
+};
 
-passport.serializeUser((user: any, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user: any, done) => {
-  done(null, user);
-});
+export default configurePassport;
