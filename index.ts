@@ -11,8 +11,7 @@ const app = express();
 
 dotenv.config();
 
-// app.set('port', process.env.PORT);
-const PORT = 3000;
+app.set('port', process.env.PORT);
 
 app.use(cors<Request>());
 
@@ -24,9 +23,6 @@ app.use('/', googleRouter);
 
 app.use('/', userRouter);
 
-// app.listen(app.get('port'), async () => {
-//   console.log(`Hello, world!`);
-// });
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(app.get('port'), async () => {
+  console.log(`Hello, world!`);
 });
