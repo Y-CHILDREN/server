@@ -1,10 +1,6 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import {
-  createUser,
-  findUserByEmail,
-  updateTokens,
-} from '../../domain/models/userModel';
+import { createUser, findUserByEmail, updateTokens } from '../userModel';
 
 const configurePassport = (passport: any) => {
   passport.use(

@@ -3,9 +3,9 @@ import dotenv from 'dotenv';
 import { Request } from 'express';
 import cors from 'cors';
 import passport from 'passport';
-import googleRouter from './routes/googleRouter';
-import userRouter from './routes/userRouter';
-import configurePassprot from './config/auth/googleOAuth';
+import googleRouter from './presentation/routes/googleRouter';
+import userRouter from './presentation/routes/userRouter';
+import configurePassprot from './domain/entities/auth/googleOAuth';
 
 const app = express();
 
