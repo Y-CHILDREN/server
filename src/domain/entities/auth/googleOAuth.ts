@@ -7,7 +7,7 @@ import {
   findUserById,
 } from '../userModel';
 
-const configurePassport = (passport: any) => {
+const configureGooglePassport = (passport: any) => {
   passport.use(
     new GoogleStrategy(
       {
@@ -54,4 +54,4 @@ const configurePassport = (passport: any) => {
   });
 };
 
-export default configurePassport;
+export default configureGooglePassport;
