@@ -1,6 +1,11 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { createUser, findUserByEmail, updateTokens } from '../userModel';
+import {
+  createUser,
+  findUserByEmail,
+  updateTokens,
+  findUserById,
+} from '../userModel';
 
 const configurePassport = (passport: any) => {
   passport.use(
@@ -39,8 +44,8 @@ const configurePassport = (passport: any) => {
     done(null, user.id);
   });
 
-  passport.deserializeUser((email: string, done: any) => {
-    const user = findUserByEmail(email);
+  passport.deserializeUser((id: string, done: any) => {
+    const user = findUserById(id);
     if (user) {
       done(null, user);
     } else {
