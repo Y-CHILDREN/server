@@ -35,6 +35,18 @@ const configurePassport = (passport: any) => {
       }
     )
   );
+  passport.serializeUser((user: any, done: any) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser((email: string, done: any) => {
+    const user = findUserByEmail(email);
+    if (user) {
+      done(null, user);
+    } else {
+      done(new Error('유저를 찾을수 없습니다'), null);
+    }
+  });
 };
 
 export default configurePassport;
