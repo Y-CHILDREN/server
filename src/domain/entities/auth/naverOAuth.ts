@@ -26,6 +26,8 @@ const configuresNaverPassport = (passport: any) => {
         done: any
       ) => {
         console.log(profile);
+        console.log(`accessToken : ${accessToken}`);
+        console.log(`refreshToken :  ${refreshToken}`);
         try {
           const data = profile._json;
           let user = findUserById(profile.id || '');
