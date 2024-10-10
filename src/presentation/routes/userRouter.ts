@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllUser } from '../../domain/entities/userModel';
+import { getAllUser } from '../../domain/repositories/userModel';
 
 const userRouter = Router();
 
