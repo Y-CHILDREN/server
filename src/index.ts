@@ -3,15 +3,10 @@ import dotenv from 'dotenv';
 import { Request } from 'express';
 import cors from 'cors';
 
-import passport from 'passport';
 import session from 'express-session';
 
-import googleRouter from './presentation/routes/googleRouter';
-import naverRouter from './presentation/routes/naverRouter';
-import userRouter from './presentation/routes/userRouter';
-
-import configureGooglePassport from './domain/entities/auth/googleOAuth';
-import configuresNaverPassport from './domain/entities/auth/naverOAuth';
+import initPassport from './data/integrations/passport/initPassport';
+import authRouter from './presentation/routes/authRouter';
 
 const app = express();
 
@@ -29,15 +24,9 @@ app.use(
   })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
+initPassport();
 
-configureGooglePassport(passport);
-configuresNaverPassport(passport);
-
-app.use('/', googleRouter);
-app.use('/', naverRouter);
-app.use('/', userRouter);
+app.use('/', authRouter);
 
 app.listen(app.get('port'), async () => {
   console.log(`Hello, world!`);
