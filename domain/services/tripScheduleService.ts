@@ -40,5 +40,5 @@ export class TripScheduleService {
         } else {
             throw new Error('User is already a member of the trip');
         }
-    }
+    };
 }
