@@ -1,12 +1,14 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import { Request } from 'express';
-import cors from 'cors';
-
 import session from 'express-session';
+import { Request } from 'express';
+
+import dotenv from 'dotenv';
+import cors from 'cors';
 
 import initPassport from './data/integrations/passport/initPassport';
 import authRouter from './presentation/routes/authRouter';
+
+import passport from 'passport';
 
 const app = express();
 
@@ -25,6 +27,9 @@ app.use(
 );
 
 initPassport();
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', authRouter);
 
