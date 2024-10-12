@@ -15,10 +15,15 @@ const configureGooglePassport = (passport: any) => {
       callbackURL: process.env.GOOGLE_REDIRECT_URI as string,
       scope: ['profile', 'email'],
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (
+      access_token: string,
+      refresh_token: string,
+      profile: any,
+      done: any
+    ) => {
       console.log('Profile:', profile);
-      console.log('Access Token:', accessToken);
-      console.log('Refresh Token:', refreshToken); // Refresh Token 확인
+      console.log('Access Token:', access_token);
+      console.log('Refresh Token:', refresh_token); // Refresh Token 확인
 
       try {
         const data = profile._json;
@@ -29,13 +34,13 @@ const configureGooglePassport = (passport: any) => {
             email: data.email || '',
             user_image: data.picture || '',
             profile: data.name || '',
-            accessToken: accessToken,
-            refreshToken: refreshToken,
+            access_token: access_token,
+            refresh_token: refresh_token,
           });
           return done(null, newUser);
         }
 
-        updateTokens(data.email || '', accessToken, refreshToken);
+        updateTokens(data.email || '', access_token, refresh_token);
         return done(null, user);
       } catch (error) {
         return done(error, false);

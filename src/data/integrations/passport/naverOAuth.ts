@@ -1,4 +1,3 @@
-import passport from 'passport';
 import {
   Strategy as NaverStrategy,
   Profile as NaverProfile,
@@ -20,14 +19,14 @@ const configuresNaverPassport = (passport: any) => {
         callbackURL: process.env.NAVER_REDIRECT_URI,
       },
       async (
-        accessToken: string,
-        refreshToken: string,
+        access_token: string,
+        refresh_token: string,
         profile: NaverProfile,
         done: any
       ) => {
         console.log(profile);
-        console.log(`accessToken : ${accessToken}`);
-        console.log(`refreshToken :  ${refreshToken}`);
+        console.log(`accessToken : ${access_token}`);
+        console.log(`refreshToken :  ${refresh_token}`);
         try {
           const data = profile._json;
           let user = findUserById(profile.id || '');
@@ -37,12 +36,12 @@ const configuresNaverPassport = (passport: any) => {
               email: profile.email || '',
               user_image: profile.profileImage || '',
               profile: profile.name || '',
-              accessToken: accessToken,
-              refreshToken: refreshToken,
+              access_token: access_token,
+              refresh_token: refresh_token,
             });
             return done(null, newUser);
           }
-          updateTokens(profile.email || '', accessToken, refreshToken);
+          updateTokens(profile.email || '', access_token, refresh_token);
           return done(null, user);
         } catch (error) {
           return done(error, false);
