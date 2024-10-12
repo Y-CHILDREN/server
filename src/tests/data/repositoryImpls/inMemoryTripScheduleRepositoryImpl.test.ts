@@ -1,17 +1,17 @@
 import { describe, expect, test } from 'vitest';
 import { InMemoryTripScheduleRepositoryImpl } from '../../../data/repositoryImpls/inMemoryTripScheduleRepositoryImpl';
-import { TripScheduleData } from '../../../domain/entities/tripScheduleData';
+import { TripSchedule } from '../../../domain/entities/tripSchedule';
 
 describe('ImMemoryTripScheduleRepositoryImpl', () => {
   const repository = new InMemoryTripScheduleRepositoryImpl();
 
   test('should create a new trip', async () => {
     // Given
-    const trip: TripScheduleData = {
+    const trip: TripSchedule = {
       id: 1,
       name: 'first trip',
-      startDate: new Date('2024-12-01'),
-      endDate: new Date('2024-12-10'),
+      start_date: new Date('2024-12-01'),
+      end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
     };
 
@@ -24,11 +24,11 @@ describe('ImMemoryTripScheduleRepositoryImpl', () => {
 
   test('should update an existing trip', async () => {
     // Given
-    const trip: TripScheduleData = {
+    const trip: TripSchedule = {
       id: 1,
       name: 'first trip',
-      startDate: new Date('2024-12-01'),
-      endDate: new Date('2024-12-10'),
+      start_date: new Date('2024-12-01'),
+      end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
     };
 

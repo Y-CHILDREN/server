@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { TripScheduleData } from '../../../domain/entities/tripScheduleData';
+import { TripSchedule } from '../../../domain/entities/tripSchedule';
 import { InMemoryTripScheduleRepositoryImpl } from '../../../data/repositoryImpls/inMemoryTripScheduleRepositoryImpl';
 import { TripScheduleService } from '../../../domain/services/tripScheduleService';
 import { InMemoryUserRepositoryImpl } from '../../../data/repositoryImpls/inMemoryUserRepositoryImpl';
@@ -11,33 +11,33 @@ describe('TripScheduleService', () => {
 
   test('should create a trip', async () => {
     // Given
-    const trip: TripScheduleData = {
+    const tripSchedule: TripSchedule = {
       id: 1,
       name: 'first trip',
-      startDate: new Date('2024-12-01'),
-      endDate: new Date('2024-12-10'),
+      start_date: new Date('2024-12-01'),
+      end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
     };
 
     // When
-    const createdTrip = await tripService.createTrip(trip);
+    const createdTrip = await tripService.createTripSchedule(tripSchedule);
 
     // Then
-    expect(createdTrip).toEqual(trip);
+    expect(createdTrip).toEqual(tripSchedule);
   });
 
   test('should add a member by email', async () => {
     // Given
-    const trip: TripScheduleData = {
+    const trip: TripSchedule = {
       id: 1,
       name: 'first trip',
-      startDate: new Date('2024-12-01'),
-      endDate: new Date('2024-12-10'),
+      start_date: new Date('2024-12-01'),
+      end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
     };
 
     // When
-    await tripService.createTrip(trip);
+    // await tripService.createTripSchedule(trip);
     await tripService.addMemberByEmail(1, 'Park@gmail.com');
     const updatedTrip = await tripRepository.findTripById(1);
 

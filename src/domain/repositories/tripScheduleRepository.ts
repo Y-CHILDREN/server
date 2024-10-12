@@ -1,9 +1,9 @@
-import { TripScheduleData } from '../entities/tripScheduleData';
+import { TripSchedule } from '../entities/tripSchedule';
 
 export interface TripScheduleRepository {
-  create(trip: TripScheduleData): Promise<TripScheduleData>;
-  update(trip: TripScheduleData): Promise<void>;
-  findTripById(id: number): Promise<TripScheduleData | null>;
+  create(tripSchedule: Omit<TripSchedule, 'id'>): Promise<TripSchedule>;
+  update(tripSchedule: TripSchedule): Promise<void>;
+  findTripById(id: number): Promise<TripSchedule | null>;
 
   // 멤버 검색.
 }

@@ -1,17 +1,17 @@
 import { describe, expect, test } from 'vitest';
 import {
-  TripScheduleData,
+  TripSchedule,
   validateTripDates,
-} from '../../../domain/entities/tripScheduleData';
+} from '../../../domain/entities/tripSchedule';
 
 describe('TripSchedule Entity', () => {
   test('should validate that startDate is before endDate', () => {
     // Given
-    const trip: TripScheduleData = {
+    const trip: TripSchedule = {
       id: 1,
       name: 'first trip',
-      startDate: new Date('2024-12-01'),
-      endDate: new Date('2024-12-10'),
+      start_date: new Date('2024-12-01'),
+      end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
     };
     // When
@@ -23,11 +23,11 @@ describe('TripSchedule Entity', () => {
 
   test('should invalidate that startDate is after endDate', () => {
     // Given
-    const trip: TripScheduleData = {
+    const trip: TripSchedule = {
       id: 1,
       name: 'first trip',
-      startDate: new Date('2024-12-10'),
-      endDate: new Date('2024-12-01'),
+      start_date: new Date('2024-12-10'),
+      end_date: new Date('2024-12-01'),
       members: ['Hwang@naver.com'],
     };
     // When
