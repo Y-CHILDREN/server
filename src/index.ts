@@ -26,8 +26,9 @@ app.use(
 
 initPassport();
 
-app.use('/', authRouter);
+
 
 app.listen(app.get('port'), async () => {
   console.log(`Hello, world!`);
+
 });
