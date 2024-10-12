@@ -11,11 +11,27 @@ authRouter.use('/', naverRouter);
 authRouter.use('/', kakaoRouter);
 authRouter.use('/', userRouter);
 
+authRouter.get('/auth/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.clearCookie('connect.sid');
+      res.redirect('/');
+    });
+  });
+});
+
 authRouter.get('/auth/profile', (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({ message: 'You are authenticated', user: req.user });
+    res.json({ message: '로그인된 유저가 있습니다.', user: req.user });
   } else {
-    res.status(401).json({ message: 'Not authenticated' });
+    res.status(401).json({ message: '로그인된 유저가 없습니다.' });
   }
 });
 

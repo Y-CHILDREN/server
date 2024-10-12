@@ -18,21 +18,4 @@ googleRouter.get(
   }
 );
 
-// 구글 로그아웃 
-googleRouter.get('/auth/google/logout', (req, res, next) => {
-  req.logOut((err) => {
-    if (err) {
-      return next(err);
-    }
-
-    req.session.destroy((err) => {
-      if (err) {
-        return next(err);
-      }
-      res.clearCookie('connect.sid');
-      res.redirect('/');
-    });
-  });
-});
-
 export default googleRouter;
