@@ -1,44 +1,47 @@
-import { TripScheduleRepository } from "../repositories/tripScheduleRepository";
-import {TripScheduleData, validateTripDates} from "../entities/tripScheduleData";
-import {UserRepository} from "../repositories/userRepository";
+import { TripScheduleRepository } from '../repositories/tripScheduleRepository';
+import {
+  TripScheduleData,
+  validateTripDates,
+} from '../entities/tripScheduleData';
+import { UserRepository } from '../repositories/userRepository';
 
 export class TripScheduleService {
-    constructor(
-        private tripRepository: TripScheduleRepository,
-        private userRepository: UserRepository    // 유저 검색 기능
-    ) {}
+  constructor(
+    private tripRepository: TripScheduleRepository,
+    private userRepository: UserRepository, // 유저 검색 기능
+  ) {}
 
-    // Create new Trip
-    async createTrip(trip: TripScheduleData): Promise<TripScheduleData> {
-        if (!validateTripDates(trip)) {
-            throw new Error("Invalid date range: startDate must be before endDate.")
-        }
-
-        return await this.tripRepository.create(trip);
+  // Create new Trip
+  async createTrip(trip: TripScheduleData): Promise<TripScheduleData> {
+    if (!validateTripDates(trip)) {
+      throw new Error('Invalid date range: startDate must be before endDate.');
     }
 
-    // Add member (email)
-    async addMemberByEmail(tripId: number, email: string): Promise<void> {
-        // search user by email
-        const user = await this.userRepository.findByEmail(email);
+    return await this.tripRepository.create(trip);
+  }
 
-        if (!user) {
-            throw new Error('User(email) not found');
-        }
+  // Add member (email)
+  async addMemberByEmail(tripId: number, email: string): Promise<void> {
+    // search user by email
+    const user = await this.userRepository.findByEmail(email);
 
-        // get the trip by ID
-        const trip = await this.tripRepository.findTripById(tripId);
+    if (!user) {
+      throw new Error('User(email) not found');
+    }
 
-        if (!trip) {
-            throw new Error('Trip(Id) not found');
-        }
+    // get the trip by ID
+    const trip = await this.tripRepository.findTripById(tripId);
 
-        // add the user
-        if (!trip.members.includes(user.email)) {
-            trip.members.push(user.email);
-            await this.tripRepository.update(trip);
-        } else {
-            throw new Error('User is already a member of the trip');
-        }
-    };
+    if (!trip) {
+      throw new Error('Trip(Id) not found');
+    }
+
+    // add the user
+    if (!trip.members.includes(user.email)) {
+      trip.members.push(user.email);
+      await this.tripRepository.update(trip);
+    } else {
+      throw new Error('User is already a member of the trip');
+    }
+  }
 }
