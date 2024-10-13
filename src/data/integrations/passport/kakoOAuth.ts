@@ -30,18 +30,23 @@ const configuresKakaoPassport = (passport: any) => {
         console.log(`refreshToken :  ${refresh_token}`);
         try {
           const data = profile._json;
-          let user = findUserById(profile.id || '');
+          let user = findUserByEmail(data.kakao_account.email || '');
           if (!user) {
             const newUser = createUser({
-              email: profile.email || '',
-              user_image: profile.profileImage || '',
-              profile: profile.name || '',
+              email: data.kakao_account.email || '',
+              user_image: data.properties.profile_image || '',
+              nickname: data.properties.nickname || '',
               access_token: access_token,
               refresh_token: refresh_token,
+              tripHistory: [],
             });
             return done(null, newUser);
           }
-          updateTokens(profile.email || '', access_token, refresh_token);
+          updateTokens(
+            data.kakao_account.email || '',
+            access_token,
+            refresh_token
+          );
           return done(null, user);
         } catch (error) {
           return done(error, false);
@@ -50,11 +55,11 @@ const configuresKakaoPassport = (passport: any) => {
     )
   );
   passport.serializeUser((user: any, done: any) => {
-    done(null, user.id);
+    done(null, user.email);
   });
 
-  passport.deserializeUser((id: string, done: any) => {
-    const user = findUserById(id);
+  passport.deserializeUser((email: string, done: any) => {
+    const user = findUserByEmail(email);
     if (user) {
       done(null, user);
     } else {
