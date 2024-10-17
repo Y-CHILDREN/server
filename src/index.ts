@@ -10,6 +10,7 @@ import authRouter from './presentation/routes/authRouter';
 
 import passport from 'passport';
 
+
 const app = express();
 
 dotenv.config();
@@ -34,5 +35,5 @@ app.use(passport.session());
 app.use('/', authRouter);
 
 app.listen(app.get('port'), async () => {
-  console.log(`Hello, world!`);
+  console.log(`Server is running on port ${app.get('port')}`);
 });
