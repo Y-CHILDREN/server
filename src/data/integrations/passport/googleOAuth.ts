@@ -1,13 +1,11 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import {
-  createUser,
-  findUserByEmail,
-  updateTokens,
-  findUserById,
-} from '../../../domain/repositories/userModel';
+import { UserRepository } from '../../../domain/models/userRepository';
 
-const configureGooglePassport = (passport: any) => {
+const configureGooglePassport = (
+  passport: any,
+  userRepository: UserRepository
+) => {
   const googleStrategy = new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID as string,
@@ -27,20 +25,37 @@ const configureGooglePassport = (passport: any) => {
 
       try {
         const data = profile._json;
-        let user = findUserByEmail(data.email || '');
+
+        const email = data.email || '';
+        const provider = profile.provider;
+
+        let user = await userRepository.findUserByEmailAndProvider(
+          email,
+          provider
+        );
 
         if (!user) {
-          const newUser = createUser({
-            email: data.email || '',
+          const existingUser = await userRepository.findUserByEmail(email);
+
+          if (existingUser) {
+            console.log(
+              `이미 다른 플랫폼으로 가입된 이메일입니다. 가입된 플랫폼: ${existingUser.provider}`
+            );
+            return done(null, false);
+          }
+          const newUser = await userRepository.createUser({
+            provider: provider,
+            email: email,
             user_image: data.picture || '',
-            profile: data.name || '',
+            nickname: data.name || '',
             access_token: access_token,
             refresh_token: refresh_token,
+            trip_history: [],
           });
           return done(null, newUser);
         }
 
-        updateTokens(data.email || '', access_token, refresh_token);
+        await userRepository.updateTokens(email, access_token, refresh_token);
         return done(null, user);
       } catch (error) {
         return done(error, false);
@@ -58,15 +73,19 @@ const configureGooglePassport = (passport: any) => {
   passport.use(googleStrategy);
 
   passport.serializeUser((user: any, done: any) => {
-    done(null, user.id);
+    done(null, user.email);
   });
 
-  passport.deserializeUser((id: string, done: any) => {
-    const user = findUserById(id);
-    if (user) {
-      done(null, user);
-    } else {
-      done(new Error('유저를 찾을수 없습니다'), null);
+  passport.deserializeUser((email: string, done: any) => {
+    try {
+      const user = userRepository.findUserByEmail(email);
+      if (user) {
+        done(null, user);
+      } else {
+        done(new Error('유저를 찾을수 없습니다'), null);
+      }
+    } catch (error) {
+      done(error, null);
     }
   });
 };

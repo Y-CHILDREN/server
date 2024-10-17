@@ -1,13 +1,15 @@
-import express from 'express';
 import passport from 'passport';
 import configureGooglePassport from './googleOAuth';
 import configuresNaverPassport from './naverOAuth';
-import configuresKakaoPassport from './kakoOAuth';
+import configuresKakaoPassport from './kakaoOAuth';
+import { userDataLocalRepository } from '../../repositorylmpls/localUserRepositoryImpl';
+
+const userRepository = userDataLocalRepository();
 
 function initPassport() {
-  configureGooglePassport(passport);
-  configuresNaverPassport(passport);
-  configuresKakaoPassport(passport);
+  configureGooglePassport(passport, userRepository);
+  configuresNaverPassport(passport, userRepository);
+  configuresKakaoPassport(passport, userRepository);
 }
 
 export default initPassport;

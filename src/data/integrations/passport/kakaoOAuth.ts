@@ -1,25 +1,25 @@
-import {
-  Strategy as NaverStrategy,
-  Profile as NaverProfile,
-} from 'passport-naver-v2';
-
+import express from 'express';
+import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { UserRepository } from '../../../domain/models/userRepository';
 
-const configuresNaverPassport = (
+const app = express();
+
+const configuresKakaoPassport = (
   passport: any,
   userRepository: UserRepository
 ) => {
+  app.use(passport.authenticate('kakao'));
   passport.use(
-    new NaverStrategy(
+    new KakaoStrategy(
       {
-        clientID: process.env.NAVER_CLIENT_ID,
-        clientSecret: process.env.NAVER_CLIENT_SECRET,
-        callbackURL: process.env.NAVER_REDIRECT_URI,
+        clientID: process.env.KAKAO_CLIENT_ID as string,
+        clientSecret: process.env.KAKAO_CLIENT_SECRET as string,
+        callbackURL: process.env.KAKAO_REDIRECT_URI as string,
       },
       async (
         access_token: string,
         refresh_token: string,
-        profile: NaverProfile,
+        profile: any,
         done: any
       ) => {
         console.log(profile);
@@ -28,13 +28,14 @@ const configuresNaverPassport = (
         try {
           const data = profile._json;
 
-          const email = profile.email || '';
-          const provider = profile.provider || '';
+          const email = data.kakao_account.email || '';
+          const provider = profile.provider;
 
           let user = await userRepository.findUserByEmailAndProvider(
             email,
             provider
           );
+
           if (!user) {
             const existingUser = await userRepository.findUserByEmail(email);
 
@@ -46,9 +47,9 @@ const configuresNaverPassport = (
             }
             const newUser = await userRepository.createUser({
               provider: profile.provider,
-              email: profile.email || '',
-              user_image: profile.profileImage || '',
-              nickname: profile.name || '',
+              email: email,
+              user_image: data.properties.profile_image || '',
+              nickname: data.properties.nickname || '',
               access_token: access_token,
               refresh_token: refresh_token,
               trip_history: [],
@@ -56,8 +57,8 @@ const configuresNaverPassport = (
             return done(null, newUser);
           }
 
-          userRepository.updateTokens(
-            profile.email || '',
+          await userRepository.updateTokens(
+            data.kakao_account.email || '',
             access_token,
             refresh_token
           );
@@ -86,4 +87,4 @@ const configuresNaverPassport = (
   });
 };
 
-export default configuresNaverPassport;
+export default configuresKakaoPassport;
