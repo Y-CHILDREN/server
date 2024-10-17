@@ -59,4 +59,8 @@ export class TripScheduleService {
       throw new Error('User is already a member of the trip');
     }
   }
+
+  async getTripById(id: number): Promise<TripSchedule | null> {
+    return await this.tripRepository.findTripById(id);
+  }
 }
