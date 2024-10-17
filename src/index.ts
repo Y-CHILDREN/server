@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 import initPassport from './data/integrations/passport/initPassport';
-import authRouter from './presentation/routes/authRouter';
+import authRouter from './presentation/routes/auth/authRouter';
 
 import passport from 'passport';
 
