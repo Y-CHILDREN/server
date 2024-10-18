@@ -1,16 +1,20 @@
 import { Router } from 'express';
-import { userDataLocalRepository } from '../../../data/repositorylmpls/localUserRepositoryImpl';
+import {
+  getUserById,
+  updateUserMemo,
+  updateUserNickname,
+} from '../../controllers/userController';
 
 const userRouter = Router();
-const userRepository = userDataLocalRepository();
 
-userRouter.get('/users', async (req, res) => {
-  try {
-    const users = await userRepository.getAllUsers();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: '유저 정보를 가져오는데 실패 했습니다.' });
-  }
+userRouter.get('/:id', getUserById);
+
+userRouter.patch('/:id/nickname', (req, res) => {
+  updateUserNickname(req, res);
+});
+
+userRouter.patch('/:id/usermemo', (req, res) => {
+  updateUserMemo(req, res);
 });
 
 export default userRouter;
