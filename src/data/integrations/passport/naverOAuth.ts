@@ -49,6 +49,7 @@ const configuresNaverPassport = (
               email: profile.email || '',
               user_image: profile.profileImage || '',
               nickname: profile.name || '',
+              user_memo: '',
               access_token: access_token,
               refresh_token: refresh_token,
               trip_history: [],

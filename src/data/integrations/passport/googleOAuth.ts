@@ -48,6 +48,7 @@ const configureGooglePassport = (
             email: email,
             user_image: data.picture || '',
             nickname: data.name || '',
+            user_memo: '',
             access_token: access_token,
             refresh_token: refresh_token,
             trip_history: [],
