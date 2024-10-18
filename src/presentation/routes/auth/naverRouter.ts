@@ -4,12 +4,12 @@ import passport from 'passport';
 const naverRouter = Router();
 
 naverRouter.get(
-  '/auth/naver',
+  '/auth',
   passport.authenticate('naver', { scope: ['profile', 'email'] })
 );
 
 naverRouter.get(
-  '/auth/naver/callback',
+  '/auth/callback',
   passport.authenticate('naver', { failureRedirect: '/' }),
   (req, res) => {
     res.send('네이버 인증 성공');
