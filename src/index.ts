@@ -12,6 +12,8 @@ import passport from 'passport';
 
 const app = express();
 
+app.use(express.json());
+
 dotenv.config();
 
 app.set('port', process.env.PORT);
