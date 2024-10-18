@@ -9,7 +9,7 @@ const authRouter = Router();
 authRouter.use('/google', googleRouter);
 authRouter.use('/naver', naverRouter);
 authRouter.use('/kakao', kakaoRouter);
-authRouter.use('/user', userRouter);
+authRouter.use('/users', userRouter);
 
 authRouter.get('/auth/logout', (req, res, next) => {
   req.logout((err) => {
