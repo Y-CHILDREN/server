@@ -67,6 +67,45 @@ export const userDataLocalRepository = (): UserRepository => {
     return users.find((user) => user.id === id);
   };
 
+  const updateUserImage = async (id: string, user_image: string) => {
+    const users = await readUsersData();
+    const user = users.find((user) => user.id === id);
+    if (user) {
+      user.user_image = user_image;
+      await writeUsersData(users);
+      console.log('유저 메모를 수정했습니다.');
+      return user;
+    } else {
+      console.log('유저 메모 업데이트에 실패했습니다.');
+      return undefined;
+    }
+  };
+  const updateUserNickname = async (id: string, nickname: string) => {
+    const users = await readUsersData();
+    const user = users.find((user) => user.id === id);
+    if (user) {
+      user.nickname = nickname;
+      await writeUsersData(users);
+      console.log('유저 닉네임이 업데이트 됐습니다.');
+      return user;
+    }
+    console.log('유저 닉네임 업데이트에 실패했습니다.');
+    return undefined;
+  };
+  const updateUserMemo = async (id: string, user_memo: string) => {
+    const users = await readUsersData();
+    const user = users.find((user) => user.id === id);
+    if (user) {
+      user.user_memo = user_memo;
+      await writeUsersData(users);
+      console.log('유저 메모를 수정했습니다.');
+      return user;
+    } else {
+      console.log('유저 메모 업데이트에 실패했습니다.');
+      return undefined;
+    }
+  };
+
   const updateTokens = async (
     email: string,
     access_token: string,
@@ -90,6 +129,9 @@ export const userDataLocalRepository = (): UserRepository => {
     findUserByEmail,
     findUserByEmailAndProvider,
     findUserById,
+    updateUserImage,
+    updateUserNickname,
+    updateUserMemo,
     updateTokens,
     getAllUsers,
   };

@@ -22,6 +22,16 @@ export const createUserService = (userRepository: UserRepository) => {
     await userRepository.updateTokens(email, access_token, refresh_token);
   };
 
+  const updateUserIamge = async (id: string, user_image: string) => {
+    return await userRepository.updateUserImage(id, user_image);
+  };
+  const updateUserNickname = async (id: string, nickname: string) => {
+    return await userRepository.updateUserNickname(id, nickname);
+  };
+  const updateUserMemo = async (id: string, user_memo: string) => {
+    return await userRepository.updateUserMemo(id, user_memo);
+  };
+
   const getAllUsers = async () => {
     return await userRepository.getAllUsers();
   };
@@ -30,6 +40,9 @@ export const createUserService = (userRepository: UserRepository) => {
     createUser,
     findUserByEmail,
     findUserById,
+    updateUserIamge,
+    updateUserNickname,
+    updateUserMemo,
     updateTokens,
     getAllUsers,
   };

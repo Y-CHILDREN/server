@@ -14,4 +14,13 @@ export interface UserRepository {
     refresh_token: string
   ) => Promise<void>;
   getAllUsers: () => Promise<User[]>;
+  updateUserImage: (
+    id: string,
+    user_image: string
+  ) => Promise<User | undefined>;
+  updateUserNickname: (
+    id: string,
+    nickname: string
+  ) => Promise<User | undefined>;
+  updateUserMemo: (id: string, user_memo: string) => Promise<User | undefined>;
 }
