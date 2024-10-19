@@ -1,10 +1,9 @@
-import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { UserRepository } from '../../../domain/models/userRepository';
 
 const configureGooglePassport = (
   passport: any,
-  userRepository: UserRepository
+  userRepository: UserRepository,
 ) => {
   const googleStrategy = new GoogleStrategy(
     {
@@ -17,7 +16,7 @@ const configureGooglePassport = (
       access_token: string,
       refresh_token: string,
       profile: any,
-      done: any
+      done: any,
     ) => {
       console.log('Profile:', profile);
       console.log('Access Token:', access_token);
@@ -31,7 +30,7 @@ const configureGooglePassport = (
 
         let user = await userRepository.findUserByEmailAndProvider(
           email,
-          provider
+          provider,
         );
 
         if (!user) {
@@ -39,7 +38,7 @@ const configureGooglePassport = (
 
           if (existingUser) {
             console.log(
-              `이미 다른 플랫폼으로 가입된 이메일입니다. 가입된 플랫폼: ${existingUser.provider}`
+              `이미 다른 플랫폼으로 가입된 이메일입니다. 가입된 플랫폼: ${existingUser.provider}`,
             );
             return done(null, false);
           }
@@ -61,7 +60,7 @@ const configureGooglePassport = (
       } catch (error) {
         return done(error, false);
       }
-    }
+    },
   );
 
   googleStrategy.authorizationParams = () => {

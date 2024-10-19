@@ -28,9 +28,9 @@ export class TripScheduleController {
       res.status(201).json(responseDto);
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({message: error.message})
+        res.status(400).json({ message: error.message });
       } else {
-        res.status(500).json({message: 'Internal Server Error'});
+        res.status(500).json({ message: 'Internal Server Error' });
       }
     }
   }
@@ -50,9 +50,9 @@ export class TripScheduleController {
       });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({message: error.message})
+        res.status(400).json({ message: error.message });
       } else {
-        res.status(500).json({message: 'Internal Server Error'});
+        res.status(500).json({ message: 'Internal Server Error' });
       }
     }
   }
@@ -70,7 +70,7 @@ export class TripScheduleController {
         res.status(404).json({
           message: 'Trip not found',
         });
-        return
+        return;
       }
 
       // Convert trip data -> response DTO

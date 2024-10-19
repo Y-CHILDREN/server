@@ -6,18 +6,14 @@ const router = express.Router();
 const tripScheduleController = new TripScheduleController();
 
 // Create Trip
-router.post('/trips', (req, res) =>
-  tripScheduleController.createTrip(req, res),
-);
+router.post('/', (req, res) => tripScheduleController.createTrip(req, res));
 
 // Add member to trip
-router.post('/trips/members', (req, res) =>
+router.post('/members', (req, res) =>
   tripScheduleController.addMemberByEmail(req, res),
 );
 
 // Get trip by id
-router.get('/trips/:id', (req, res) =>
-    tripScheduleController.getTripById(req, res)
-);
+router.get('/:id', (req, res) => tripScheduleController.getTripById(req, res));
 
 export default router;

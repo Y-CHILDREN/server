@@ -1,6 +1,6 @@
 import { describe, vi, it, beforeEach, expect } from 'vitest';
-import { Request, Response } from "express";
-import { TripScheduleController } from "../../../presentation/controllers/tripScheduleController";
+import { Request, Response } from 'express';
+import { TripScheduleController } from '../../../presentation/controllers/tripScheduleController';
 import { TripScheduleConverter } from '../../../data/converters/tripScheduleConverter';
 
 const mockTripScheduleService = {
@@ -9,13 +9,14 @@ const mockTripScheduleService = {
   getTripById: vi.fn(),
 };
 
-const mockRequest = (body = {}, params = {}) => ({
-  body,
-  params,
-  app: {
-    get: vi.fn().mockReturnValue(mockTripScheduleService),
-  }
-}) as unknown as Request;
+const mockRequest = (body = {}, params = {}) =>
+  ({
+    body,
+    params,
+    app: {
+      get: vi.fn().mockReturnValue(mockTripScheduleService),
+    },
+  }) as unknown as Request;
 
 const mockResponse = () => {
   const res: any = {};
@@ -36,10 +37,10 @@ describe('TripScheduleController', () => {
   it('should create a trip successfully', async () => {
     // Given
     const req = mockRequest({
-      name: "Trip to Paris",
-      start_date: "2023-01-01",
-      end_date: "2023-01-05",
-      members: ["user@example.com"]
+      name: 'Trip to Paris',
+      start_date: '2023-01-01',
+      end_date: '2023-01-05',
+      members: ['user@example.com'],
     });
     const res = mockResponse();
 
@@ -57,17 +58,18 @@ describe('TripScheduleController', () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({
       id: 1,
-      name: "Trip to Paris",
-      start_date: new Date("2023-01-01").toISOString(),
-      end_date: new Date("2023-01-05").toISOString(),
-      members: ["user@example.com"]
+      name: 'Trip to Paris',
+      start_date: new Date('2023-01-01').toISOString(),
+      end_date: new Date('2023-01-05').toISOString(),
+      members: ['user@example.com'],
     });
   });
 
   it('should  add member successfully', async () => {
     // Given
     const req = mockRequest({
-      trip_id: 1, email: 'example@example.com'
+      trip_id: 1,
+      email: 'example@example.com',
     });
     const res = mockResponse();
 
@@ -77,30 +79,30 @@ describe('TripScheduleController', () => {
     // Then
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Member added successfully'
+      message: 'Member added successfully',
     });
   });
 
   it('should retrieve a trip by ID', async () => {
     // Given
-    const req = mockRequest({}, {id: '1'});
+    const req = mockRequest({}, { id: '1' });
     const res = mockResponse();
     const trip = {
       id: 1,
-      name: "Trip to Paris",
-      members: ["user@example.com"],
-      start_date: new Date("2023-01-01"),
-      end_date: new Date("2023-01-05")
+      name: 'Trip to Paris',
+      members: ['user@example.com'],
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-05'),
     };
 
     mockTripScheduleService.getTripById.mockResolvedValue(trip);
     TripScheduleConverter.toResDto = vi.fn().mockReturnValue({
       id: 1,
-      name: "Trip to Paris",
-      members: ["user@example.com"],
-      startDate: "2023-01-01T00:00:00.000Z",
-      endDate: "2023-01-05T00:00:00.000Z"
-    })
+      name: 'Trip to Paris',
+      members: ['user@example.com'],
+      startDate: '2023-01-01T00:00:00.000Z',
+      endDate: '2023-01-05T00:00:00.000Z',
+    });
 
     // When
     await controller.getTripById(req, res);
@@ -109,10 +111,10 @@ describe('TripScheduleController', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       id: 1,
-      name: "Trip to Paris",
-      members: ["user@example.com"],
-      startDate: "2023-01-01T00:00:00.000Z",
-      endDate: "2023-01-05T00:00:00.000Z"
+      name: 'Trip to Paris',
+      members: ['user@example.com'],
+      startDate: '2023-01-01T00:00:00.000Z',
+      endDate: '2023-01-05T00:00:00.000Z',
     });
   });
 
@@ -129,8 +131,7 @@ describe('TripScheduleController', () => {
     // Then
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
-      message: 'Trip not found'
+      message: 'Trip not found',
     });
   });
 });
-
