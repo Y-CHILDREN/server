@@ -59,11 +59,11 @@ export const userDataLocalRepository = (): UserRepository => {
   // 유저 이메일과 provider(유저 가입 플랫품)로 유저를 체크하는 함수
   const findUserByEmailAndProvider = async (
     email: string,
-    provider: string
+    provider: string,
   ): Promise<User | undefined> => {
     const users = await readUsersData();
     return users.find(
-      (user) => user.email === email && user.provider === provider
+      (user) => user.email === email && user.provider === provider,
     );
   };
 
@@ -121,7 +121,7 @@ export const userDataLocalRepository = (): UserRepository => {
   const updateTokens = async (
     email: string,
     access_token: string,
-    refresh_token: string
+    refresh_token: string,
   ): Promise<void> => {
     const users = await readUsersData();
     const user = users.find((user) => user.email === email);

@@ -32,6 +32,7 @@ app.use(passport.session());
 
 app.use('/', rootRouter);
 
+app.use(cors<Request>());
 app.listen(app.get('port'), async () => {
   console.log(`Server is running on port ${app.get('port')}`);
 });

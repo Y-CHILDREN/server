@@ -17,7 +17,7 @@ export const createUserService = (userRepository: UserRepository) => {
   const updateTokens = async (
     email: string,
     access_token: string,
-    refresh_token: string
+    refresh_token: string,
   ) => {
     await userRepository.updateTokens(email, access_token, refresh_token);
   };

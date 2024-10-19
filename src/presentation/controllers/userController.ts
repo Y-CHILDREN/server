@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { userDataLocalRepository } from '../../data/repositorylmpls/localUserRepositoryImpl';
+import { userDataLocalRepository } from '../../data/repositoryImpls/localUserRepositoryImpl';
 
 const userRepository = userDataLocalRepository();
 
 export const getUserById = async (
   req: Request<{ id: string }>,
-  res: Response
+  res: Response,
 ) => {
   const { id } = req.params;
 
@@ -34,7 +34,7 @@ export const updateUserNickname = async (req: Request, res: Response) => {
   try {
     const updatedUserNickname = await userRepository.updateUserNickname(
       id,
-      nickname
+      nickname,
     );
 
     if (updatedUserNickname) {
@@ -68,8 +68,6 @@ export const updateUserMemo = async (req: Request, res: Response) => {
       res.status(404).json({ message: '유저를 찾을 수 없습니다.' });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: '메모 업데이트 중 오류가 발생했습니다.' });
+    res.status(500).json({ message: '메모 업데이트 중 오류가 발생했습니다.' });
   }
 };

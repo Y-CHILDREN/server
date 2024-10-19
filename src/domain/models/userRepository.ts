@@ -5,22 +5,22 @@ export interface UserRepository {
   findUserByEmail: (email: string) => Promise<User | undefined>;
   findUserByEmailAndProvider: (
     email: string,
-    provier: string
+    provier: string,
   ) => Promise<User | undefined>;
   findUserById: (id: string) => Promise<User | undefined>;
   updateTokens: (
     email: string,
     access_token: string,
-    refresh_token: string
+    refresh_token: string,
   ) => Promise<void>;
   getAllUsers: () => Promise<User[]>;
   updateUserImage: (
     id: string,
-    user_image: string
+    user_image: string,
   ) => Promise<User | undefined>;
   updateUserNickname: (
     id: string,
-    nickname: string
+    nickname: string,
   ) => Promise<User | undefined>;
   updateUserMemo: (id: string, user_memo: string) => Promise<User | undefined>;
 }

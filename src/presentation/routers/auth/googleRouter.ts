@@ -1,4 +1,3 @@
-import { rejects } from 'assert';
 import { Router } from 'express';
 import passport from 'passport';
 import { User } from '../../../domain/models/user';
@@ -8,7 +7,7 @@ const googleRouter = Router();
 // 로그인 라우터
 googleRouter.get(
   '/',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
+  passport.authenticate('google', { scope: ['profile', 'email'] }),
 );
 
 googleRouter.get(
