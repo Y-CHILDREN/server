@@ -32,7 +32,7 @@ vi.mock('../../../presentation/controllers/tripScheduleController', () => {
 
 const app = express();
 app.use(express.json());
-app.use('/api', router);
+app.use('/trips', router);
 
 describe('TripScheduleRouter', () => {
   beforeEach(() => {
