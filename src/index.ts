@@ -1,40 +1,37 @@
 import express from 'express';
 import session from 'express-session';
 import { Request } from 'express';
-
 import dotenv from 'dotenv';
 import cors from 'cors';
+import passport from 'passport';
 
 import initPassport from './data/integrations/passport/initPassport';
-import authRouter from './presentation/routes/auth/authRouter';
-
-import passport from 'passport';
+import { rootRouter } from './presentation/routers';
+import { di } from './di';
 
 const app = express();
 
-app.use(express.json());
-
+di(app);
 dotenv.config();
 
 app.set('port', process.env.PORT);
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors<Request>());
-
 app.use(
   session({
     secret: 'defaultSecret',
     resave: false,
     saveUninitialized: false,
-  })
+  }),
 );
 
 initPassport();
-
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', authRouter);
+app.use('/', rootRouter);
 
 app.listen(app.get('port'), async () => {
-  console.log(`Hello, world!`);
+  console.log(`Server is running on port ${app.get('port')}`);
 });
