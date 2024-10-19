@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import googleRouter from './googleRouter';
-import naverRouter from './naverRouter';
-import kakaoRouter from './kakaoRouter';
-import userRouter from './userRouter';
+import googleRouter from './auth/googleRouter';
+import naverRouter from './auth/naverRouter';
+import kakaoRouter from './auth/kakaoRouter';
+import userRouter from './auth/userRouter';
 
 const authRouter = Router();
 
@@ -11,7 +11,7 @@ authRouter.use('/naver', naverRouter);
 authRouter.use('/kakao', kakaoRouter);
 authRouter.use('/users', userRouter);
 
-authRouter.get('/auth/logout', (req, res, next) => {
+authRouter.get('/logout', (req, res, next) => {
   req.logout((err) => {
     if (err) {
       return next(err);
@@ -27,7 +27,7 @@ authRouter.get('/auth/logout', (req, res, next) => {
   });
 });
 
-authRouter.get('/auth/profile', (req, res) => {
+authRouter.get('/profile', (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ message: '로그인된 유저가 있습니다.', user: req.user });
   } else {

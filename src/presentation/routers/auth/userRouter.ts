@@ -3,8 +3,6 @@ import {
   getUserById,
   updateUserMemo,
   updateUserNickname,
-  uploadMiddleware,
-  updatedUserIamge,
 } from '../../controllers/userController';
 
 const userRouter = Router();
@@ -19,6 +17,6 @@ userRouter.patch('/:id/memo', (req, res) => {
   updateUserMemo(req, res);
 });
 
-userRouter.patch('/:id/image', uploadMiddleware, updatedUserIamge);
+userRouter.patch('/:id/image');
 
 export default userRouter;
