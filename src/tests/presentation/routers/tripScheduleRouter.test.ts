@@ -41,7 +41,7 @@ describe('TripScheduleRouter', () => {
   });
 
   // Create Trip
-  it('should handle POST requests to /api/trips', async () => {
+  it('should handle POST requests to /trips', async () => {
     // Given
     const trip = {
       name: 'Trip to Paris',
@@ -51,7 +51,7 @@ describe('TripScheduleRouter', () => {
     };
 
     // When
-    const response = await request(app).post('/api/trips').send(trip);
+    const response = await request(app).post('/trips').send(trip);
 
     // Then
     expect(response.status).toBe(201);
@@ -59,7 +59,7 @@ describe('TripScheduleRouter', () => {
   });
 
   // Add member to trip
-  it('should handle POST requests to /api/trips/members', async () => {
+  it('should handle POST requests to /trips/members', async () => {
     // Given
     const member = {
       trip_id: 1,
@@ -67,7 +67,7 @@ describe('TripScheduleRouter', () => {
     };
 
     // When
-    const response = await request(app).post('/api/trips/members').send(member);
+    const response = await request(app).post('/trips/members').send(member);
 
     // Then
     expect(response.status).toBe(200);
@@ -78,12 +78,12 @@ describe('TripScheduleRouter', () => {
   });
 
   // Get trip by id
-  it('should handle GET requests to /api/trips/:id', async () => {
+  it('should handle GET requests to /trips/:id', async () => {
     // Given
     const trip_id = 1;
 
     // When
-    const response = await request(app).get(`/api/trips/${trip_id}`);
+    const response = await request(app).get(`/trips/${trip_id}`);
 
     // Then
     expect(response.status).toBe(200);
@@ -91,12 +91,12 @@ describe('TripScheduleRouter', () => {
   });
 
   // Get trip by id when id is not found
-  it('should handle GET requests to /api/trips/:id with non-existing id', async () => {
+  it('should handle GET requests to /trips/:id with non-existing id', async () => {
     // Given
     const trip_id = 3;
 
     // When
-    const response = await request(app).get(`/api/trips/${trip_id}`);
+    const response = await request(app).get(`/trips/${trip_id}`);
 
     // Then
     expect(response.status).toBe(404);
