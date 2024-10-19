@@ -4,11 +4,13 @@ import { Request } from 'express';
 import cors from 'cors';
 
 import { rootRouter } from './presentation/routers';
+import { di } from './di';
 
 const app = express();
 
 dotenv.config();
 
+di(app);
 app.set('port', process.env.PORT);
 
 app.use(cors<Request>());
