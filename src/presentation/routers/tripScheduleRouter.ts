@@ -17,7 +17,7 @@ router.post('/trips/members', (req, res) =>
 
 // Get trip by id
 router.get('/trips/:id', (req, res) =>
-    void tripScheduleController.getTripById(req, res)
+    tripScheduleController.getTripById(req, res)
 );
 
 export default router;
