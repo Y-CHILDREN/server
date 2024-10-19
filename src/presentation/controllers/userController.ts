@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { userDataLocalRepository } from '../../data/repositorylmpls/localUserRepositoryImpl';
+import { userDataLocalRepository } from '../../data/repositoryImpls/localUserRepositoryImpl';
 
 const userRepository = userDataLocalRepository();
 
