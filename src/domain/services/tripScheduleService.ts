@@ -1,11 +1,11 @@
 import { TripScheduleRepository } from '../repositories/tripScheduleRepository';
 import { TripSchedule } from '../entities/tripSchedule';
-import { UserRepository } from '../repositories/userRepository';
+import { UserRepositoryDummy } from '../repositories/userRepositoryDummy';
 
 export class TripScheduleService {
   constructor(
     private tripRepository: TripScheduleRepository,
-    private userRepository: UserRepository, // 유저 검색 기능
+    private userRepository: UserRepositoryDummy, // 유저 검색 기능
   ) {}
 
   // Create new Trip
