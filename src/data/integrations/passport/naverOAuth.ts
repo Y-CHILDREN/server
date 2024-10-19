@@ -7,7 +7,7 @@ import { UserRepository } from '../../../domain/models/userRepository';
 
 const configuresNaverPassport = (
   passport: any,
-  userRepository: UserRepository
+  userRepository: UserRepository,
 ) => {
   passport.use(
     new NaverStrategy(
@@ -20,27 +20,27 @@ const configuresNaverPassport = (
         access_token: string,
         refresh_token: string,
         profile: NaverProfile,
-        done: any
+        done: any,
       ) => {
         console.log(profile);
         console.log(`accessToken : ${access_token}`);
         console.log(`refreshToken :  ${refresh_token}`);
         try {
-          const data = profile._json;
+          // const data = profile._json;
 
           const email = profile.email || '';
           const provider = profile.provider || '';
 
           let user = await userRepository.findUserByEmailAndProvider(
             email,
-            provider
+            provider,
           );
           if (!user) {
             const existingUser = await userRepository.findUserByEmail(email);
 
             if (existingUser) {
               console.log(
-                `이미 가입된 이메일입니다. 가입된 플랫폼: ${existingUser.provider}`
+                `이미 가입된 이메일입니다. 가입된 플랫폼: ${existingUser.provider}`,
               );
               return done(null, false);
             }
@@ -60,14 +60,14 @@ const configuresNaverPassport = (
           userRepository.updateTokens(
             profile.email || '',
             access_token,
-            refresh_token
+            refresh_token,
           );
           return done(null, user);
         } catch (error) {
           return done(error, false);
         }
-      }
-    )
+      },
+    ),
   );
   passport.serializeUser((user: any, done: any) => {
     done(null, user.email);

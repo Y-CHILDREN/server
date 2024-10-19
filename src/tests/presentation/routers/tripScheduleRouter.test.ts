@@ -6,23 +6,27 @@ import router from '../../../presentation/routers/tripScheduleRouter';
 vi.mock('../../../presentation/controllers/tripScheduleController', () => {
   return {
     TripScheduleController: vi.fn().mockReturnValue({
-      createTrip: vi.fn((req, res) => res.status(201).json({ id: 1, ...req.body })),
-      addMemberByEmail: vi.fn((req, res) => res.status(200).json({ message: 'Member added successfully' })),
+      createTrip: vi.fn((req, res) =>
+        res.status(201).json({ id: 1, ...req.body }),
+      ),
+      addMemberByEmail: vi.fn((req, res) =>
+        res.status(200).json({ message: 'Member added successfully' }),
+      ),
       getTripById: vi.fn((req, res) => {
         if (req.params.id === '1') {
           return res.status(200).json({
-            id: "1",
-            name: "Trip to Paris",
-            start_date: "2024-01-01",
-            end_date: "2024-01-05",
-            members: ["user@example.com"]
+            id: '1',
+            name: 'Trip to Paris',
+            start_date: '2024-01-01',
+            end_date: '2024-01-05',
+            members: ['user@example.com'],
           });
         } else {
           // id가 일치하지 않는 경우.
           return res.status(404).json({ message: 'Trip not found' });
         }
-      })
-    })
+      }),
+    }),
   };
 });
 
@@ -40,10 +44,10 @@ describe('TripScheduleRouter', () => {
   it('should handle POST requests to /api/trips', async () => {
     // Given
     const trip = {
-      name: "Trip to Paris",
-      start_date: "2024-01-01",
-      end_date: "2024-01-05",
-      members: ["user@example.com"]
+      name: 'Trip to Paris',
+      start_date: '2024-01-01',
+      end_date: '2024-01-05',
+      members: ['user@example.com'],
     };
 
     // When
@@ -59,7 +63,7 @@ describe('TripScheduleRouter', () => {
     // Given
     const member = {
       trip_id: 1,
-      email: 'user@example.com'
+      email: 'user@example.com',
     };
 
     // When
@@ -67,7 +71,10 @@ describe('TripScheduleRouter', () => {
 
     // Then
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('message', 'Member added successfully');
+    expect(response.body).toHaveProperty(
+      'message',
+      'Member added successfully',
+    );
   });
 
   // Get trip by id
@@ -94,6 +101,5 @@ describe('TripScheduleRouter', () => {
     // Then
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('message', 'Trip not found');
-  })
+  });
 });
-

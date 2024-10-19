@@ -6,7 +6,7 @@ const app = express();
 
 const configuresKakaoPassport = (
   passport: any,
-  userRepository: UserRepository
+  userRepository: UserRepository,
 ) => {
   app.use(passport.authenticate('kakao'));
   passport.use(
@@ -20,7 +20,7 @@ const configuresKakaoPassport = (
         access_token: string,
         refresh_token: string,
         profile: any,
-        done: any
+        done: any,
       ) => {
         console.log(profile);
         console.log(`accessToken : ${access_token}`);
@@ -33,7 +33,7 @@ const configuresKakaoPassport = (
 
           let user = await userRepository.findUserByEmailAndProvider(
             email,
-            provider
+            provider,
           );
 
           if (!user) {
@@ -41,7 +41,7 @@ const configuresKakaoPassport = (
 
             if (existingUser) {
               console.log(
-                `이미 가입된 이메일입니다. 가입된 플랫폼: ${existingUser.provider}`
+                `이미 가입된 이메일입니다. 가입된 플랫폼: ${existingUser.provider}`,
               );
               return done(null, false);
             }
@@ -61,14 +61,14 @@ const configuresKakaoPassport = (
           await userRepository.updateTokens(
             data.kakao_account.email || '',
             access_token,
-            refresh_token
+            refresh_token,
           );
           return done(null, user);
         } catch (error) {
           return done(error, false);
         }
-      }
-    )
+      },
+    ),
   );
   passport.serializeUser((user: any, done: any) => {
     done(null, user.email);

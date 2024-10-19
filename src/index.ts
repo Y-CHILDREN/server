@@ -8,7 +8,6 @@ import passport from 'passport';
 import initPassport from './data/integrations/passport/initPassport';
 import { rootRouter } from './presentation/routers';
 import { di } from './di';
-import tripScheduleRouter from './presentation/routers/tripScheduleRouter';
 
 const app = express();
 
@@ -32,7 +31,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', rootRouter);
-app.use('/api', tripScheduleRouter);
 
 app.use(cors<Request>());
 app.listen(app.get('port'), async () => {
