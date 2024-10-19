@@ -27,11 +27,7 @@ export class TripScheduleController {
       const responseDto = TripScheduleConverter.toResDto(createdTrip);
       res.status(201).json(responseDto);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: 'Internal Server Error' });
-      }
+      res.status(500).json({ message: 'Server error' });
     }
   }
 
@@ -49,11 +45,7 @@ export class TripScheduleController {
         message: 'Member added successfully',
       });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: 'Internal Server Error' });
-      }
+      res.status(500).json({ message: 'Server error' });
     }
   }
 
