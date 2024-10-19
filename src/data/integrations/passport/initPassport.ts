@@ -2,7 +2,7 @@ import passport from 'passport';
 import configureGooglePassport from './googleOAuth';
 import configuresNaverPassport from './naverOAuth';
 import configuresKakaoPassport from './kakaoOAuth';
-import { userDataLocalRepository } from '../../repositorylmpls/localUserRepositoryImpl';
+import { userDataLocalRepository } from '../../repositoryImpls/localUserRepositoryImpl';
 
 const userRepository = userDataLocalRepository();
 
