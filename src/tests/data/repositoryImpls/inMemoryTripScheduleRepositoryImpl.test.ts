@@ -13,6 +13,7 @@ describe('ImMemoryTripScheduleRepositoryImpl', () => {
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
+      created_by: 'user@example.com',
     };
 
     // When
@@ -30,6 +31,7 @@ describe('ImMemoryTripScheduleRepositoryImpl', () => {
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
+      created_by: 'user@example.com',
     };
 
     // When
