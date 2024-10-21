@@ -13,6 +13,7 @@ describe('TripSchedule Entity', () => {
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
+      created_by: 'Hwang@naver.com',
     };
     // When
     const actual = validateTripDates(trip);
@@ -29,6 +30,7 @@ describe('TripSchedule Entity', () => {
       start_date: new Date('2024-12-10'),
       end_date: new Date('2024-12-01'),
       members: ['Hwang@naver.com'],
+      created_by: 'Hwang@naver.com',
     };
     // When
     const actual = validateTripDates(trip);

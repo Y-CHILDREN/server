@@ -5,4 +5,5 @@ export interface TripScheduleResponseDto {
   start_date: string;
   end_date: string;
   members: string[];
+  created_by: string;
 }

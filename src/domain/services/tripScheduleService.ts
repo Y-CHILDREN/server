@@ -1,6 +1,7 @@
 import { TripScheduleRepository } from '../repositories/tripScheduleRepository';
 import { TripSchedule } from '../entities/tripSchedule';
 import { UserRepositoryDummy } from '../repositories/userRepositoryDummy';
+import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
 
 export class TripScheduleService {
   constructor(
@@ -14,25 +15,19 @@ export class TripScheduleService {
     start_date,
     end_date,
     members,
-  }: {
-    name: string;
-    start_date: Date;
-    end_date: Date;
-    members: string[];
-  }): Promise<TripSchedule> {
+    created_by,
+  }: CreateTripDto): Promise<TripSchedule> {
     if (start_date >= end_date) {
       throw new Error('Invalid date range: startDate must be before endDate.');
     }
 
-    const tripSchedule: Omit<TripSchedule, 'id'> = {
+    return this.tripRepository.create({
       name,
-      start_date,
-      end_date,
+      start_date: new Date(start_date),
+      end_date: new Date(end_date),
       members,
-    };
-
-    const createdTrip = await this.tripRepository.create(tripSchedule);
-    return createdTrip;
+      created_by,
+    });
   }
 
   // Add member (email)
