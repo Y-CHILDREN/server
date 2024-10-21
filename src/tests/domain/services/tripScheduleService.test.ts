@@ -17,6 +17,7 @@ describe('TripScheduleService', () => {
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
+      created_by: 'Hwang@naver.com',
     };
 
     // When
@@ -34,6 +35,7 @@ describe('TripScheduleService', () => {
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
+      created_by: 'Hwang@naver.com',
     };
 
     // When
