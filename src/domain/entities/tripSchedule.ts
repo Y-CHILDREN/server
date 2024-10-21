@@ -13,5 +13,9 @@ export function validateTripDates(trip: {
   end_date: Date;
   members: string[];
 }): boolean {
-  return trip.start_date < trip.end_date;
+  if (trip.start_date > trip.end_date) {
+    console.log('The start date must be earlier than the end date.');
+    return false;
+  }
+  return true;
 }
