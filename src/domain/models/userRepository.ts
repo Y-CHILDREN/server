@@ -5,7 +5,7 @@ export interface UserRepository {
   findUserByEmail: (email: string) => Promise<User | undefined>;
   findUserByEmailAndProvider: (
     email: string,
-    provier: string,
+    provider: string,
   ) => Promise<User | undefined>;
   findUserById: (id: string) => Promise<User | undefined>;
   updateTokens: (

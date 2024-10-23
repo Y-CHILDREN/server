@@ -15,8 +15,8 @@ di(app);
 dotenv.config();
 
 app.use(cors({
-  origin: ['http://y-children.s3-website.ap-northeast-2.amazonaws.com'],
-  credentials: true,
+  origin: 'http://y-children.s3-website.ap-northeast-2.amazonaws.com',
+  credentials: true
 }));
 
 app.set('port', process.env.PORT);

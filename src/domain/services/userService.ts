@@ -1,7 +1,7 @@
 import { User } from '../models/user';
 import { UserRepository } from '../models/userRepository';
 
-export const createUserService = (userRepository: UserRepository) => {
+export const UserService = (userRepository: UserRepository) => {
   const createUser = async (userData: Omit<User, 'id'>) => {
     return await userRepository.createUser(userData);
   };
@@ -22,7 +22,7 @@ export const createUserService = (userRepository: UserRepository) => {
     await userRepository.updateTokens(email, access_token, refresh_token);
   };
 
-  const updateUserIamge = async (id: string, user_image: string) => {
+  const updateUserImage = async (id: string, user_image: string) => {
     return await userRepository.updateUserImage(id, user_image);
   };
   const updateUserNickname = async (id: string, nickname: string) => {
@@ -40,7 +40,7 @@ export const createUserService = (userRepository: UserRepository) => {
     createUser,
     findUserByEmail,
     findUserById,
-    updateUserIamge,
+    updateUserImage,
     updateUserNickname,
     updateUserMemo,
     updateTokens,
