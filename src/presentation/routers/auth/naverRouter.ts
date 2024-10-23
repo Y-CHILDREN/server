@@ -17,9 +17,9 @@ naverRouter.get(
     const user = req.user as User;
     if (user) {
       res.redirect(
-        `http://y-children.s3-website.ap-northeast-2.amazonaws.com/auth/naver?token=${user.access_token}&user=${encodeURIComponent(
-            JSON.stringify(user)
-          )}`
+        `http://y-children.s3-website.ap-northeast-2.amazonaws.com?token=${user.access_token}&user=${encodeURIComponent(
+          JSON.stringify(user)
+        )}`
         );
     } else {
       res.redirect('/');
