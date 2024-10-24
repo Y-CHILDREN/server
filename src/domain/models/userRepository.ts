@@ -23,4 +23,5 @@ export interface UserRepository {
     nickname: string,
   ) => Promise<User | undefined>;
   updateUserMemo: (id: string, user_memo: string) => Promise<User | undefined>;
+  deleteUser: (id: string) => Promise<boolean>;
 }

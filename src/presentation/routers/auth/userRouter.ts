@@ -3,6 +3,7 @@ import {
   getUserById,
   updateUserMemo,
   updateUserNickname,
+  deleteUser,
 } from '../../controllers/userController';
 
 const userRouter = Router();
@@ -18,5 +19,9 @@ userRouter.patch('/:id/memo', (req, res) => {
 });
 
 userRouter.patch('/:id/image');
+
+userRouter.delete('/:id', (req, res) => {
+  deleteUser(req, res);
+});
 
 export default userRouter;

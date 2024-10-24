@@ -36,6 +36,10 @@ export const UserService = (userRepository: UserRepository) => {
     return await userRepository.getAllUsers();
   };
 
+  const deleteUser = async (id: string) => {
+    return await userRepository.deleteUser(id);
+  };
+
   return {
     createUser,
     findUserByEmail,
@@ -45,5 +49,6 @@ export const UserService = (userRepository: UserRepository) => {
     updateUserMemo,
     updateTokens,
     getAllUsers,
+    deleteUser,
   };
 };
