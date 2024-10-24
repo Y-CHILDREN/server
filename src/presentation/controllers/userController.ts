@@ -2,18 +2,14 @@ import { Request, Response } from 'express';
 import { UserService } from '../../domain/services/userService';
 
 import multer from 'multer';
-import sharp from 'sharp';
-import fs from 'fs';
+import multerS3 from 'multer-s3';
+import { S3Client } from '@aws-sdk/client-s3';
 
-import AWS from 'aws-sdk';
+import path from 'path';
 
-AWS.config.update({
-  region: 'ap-northeast-2a',
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-});
+import dotenv from 'dotenv';
 
-const s3 = new AWS.S3();
+dotenv.config();
 
 export const getUserById = async (
   req: Request<{ id: string }>,
@@ -93,41 +89,60 @@ export const updateUserMemo = async (req: Request, res: Response) => {
   }
 };
 
+// 유저 이미지 업데이트
+
 export const updateUserImage = async (req: Request, res: Response) => {
   const userService = req.app.get('userService') as ReturnType<
     typeof UserService
   >;
   const { id } = req.params;
-  const imageFilepath =
-    '/Users/jeontaejeong/Documents/Coding/Project/TripApp/server/src/public/assets';
 
-  const storage = multer.memoryStorage();
-  const upload = multer({ storage: storage });
+  const s3 = new S3Client({
+    region: process.env.AWS_REGION as string,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+    },
+  });
 
-  upload.single('user_image')(req, res, async (err) => {
+  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp'];
+
+  const uploadImage = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: process.env.AWS_S3_BUCKET_NAME as string,
+      acl: 'public-read',
+      key: function (req, file, cb) {
+        const fileExtension = path.extname(file.originalname).toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+          return cb(new Error('가능한 파일 확장자가 아닙니다.'), '');
+        }
+        const fileName = `${id}_userImage_${Date.now()}.webp`;
+        cb(null, `userImage/${fileName}`);
+      },
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+    }),
+  });
+
+  uploadImage.single('user_image')(req, res, async (err) => {
     if (err) {
-      return res.status(500).json({ message: '이미지 업로드 오류 발생' });
+      console.log(err.message);
+      return res
+        .status(500)
+        .json({ message: '이미지 업로드 오류 발생했습니다.' });
     }
 
     if (!req.file) {
-      return res.status(400).json({ message: '이미지 파일이 필요합니다.' });
-    }
-
-    if (!fs.existsSync(imageFilepath)) {
-      fs.mkdirSync(imageFilepath, { recursive: true });
+      return res.status(400).json({ message: '이미지 파일을 첨부해주세요' });
     }
 
     try {
       const user = await userService.findUserById(id);
       if (!user) {
-        return res.status(404).json({ message: '유저를 찾을 수 없습니다.' });
+        return res.status(400).json({ message: '유저를 찾을 수 없습니다.' });
       }
 
-      const fileName = `${id}_${Date.now()}.webp`;
-      const filePath = `${imageFilepath}/${fileName}`;
-      const imageUrl = `http://localhost:3000/assets/${fileName}`;
-
-      await sharp(req.file.buffer).webp({ quality: 70 }).toFile(filePath);
+      const imageUrl = (req.file as any).location;
 
       const updatedUser = await userService.updateUserImage(id, imageUrl);
 
@@ -136,12 +151,12 @@ export const updateUserImage = async (req: Request, res: Response) => {
       }
 
       res.json({
-        message: '유저 이미지가 업데이트 됐습니다.',
-        user: updateUserImage,
+        message: '유저 이미지가 업데이트 되었습니다.',
+        user: updatedUser,
       });
     } catch (error) {
-      console.error('이미지 저장 오류:', error);
-      res.status(500).json({ message: '이미지 변화 및 저장에 실패 했습니다.' });
+      console.error('이미지 저장 오류', error);
+      res.status(500).json({ message: '이미지 업로드에 실패 했습니다.' });
     }
   });
 };
