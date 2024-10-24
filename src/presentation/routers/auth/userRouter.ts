@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  deleteUser,
   getUserById,
   updateUserImage,
   updateUserMemo,
@@ -20,6 +21,10 @@ userRouter.patch('/:id/memo', (req, res) => {
 
 userRouter.patch('/:id/image', (req, res) => {
   updateUserImage(req, res);
+});
+
+userRouter.delete('/:id', (req, res) => {
+  deleteUser(req, res);
 });
 
 export default userRouter;

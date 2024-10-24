@@ -137,6 +137,20 @@ export const userDataLocalRepository = (): UserRepository => {
     return await readUsersData();
   };
 
+  // 유저를 삭제하는 함수
+  const deleteUser = async (id: string): Promise<boolean> => {
+    const users = await readUsersData();
+    const userIndex = users.findIndex((user) => user.id === id);
+    if (userIndex === -1) {
+      return false; // 유저가 존재하지 않으면 false 반환
+    }
+
+    users.splice(userIndex, 1);
+    await writeUsersData(users);
+    console.log('유저가 삭제되었습니다:', id);
+    return true;
+  };
+
   return {
     createUser,
     findUserByEmail,
@@ -147,5 +161,6 @@ export const userDataLocalRepository = (): UserRepository => {
     updateUserMemo,
     updateTokens,
     getAllUsers,
+    deleteUser,
   };
 };
