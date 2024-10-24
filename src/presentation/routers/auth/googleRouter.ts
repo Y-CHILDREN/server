@@ -24,7 +24,6 @@ googleRouter.get(
     } else {
       res.redirect('/');
     }
-    res.redirect('/')
   }
 );
 
