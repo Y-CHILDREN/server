@@ -157,10 +157,10 @@ export const updateUserImage = async (req: Request, res: Response) => {
     } catch (error) {
       console.error('이미지 저장 오류', error);
       res.status(500).json({ message: '이미지 업로드에 실패 했습니다.' });
+
     }
   });
 };
-
 // 유저 삭제 함수
 export const deleteUser = async (req: Request, res: Response) => {
   const userService = req.app.get('userService') as ReturnType<
@@ -184,4 +184,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     console.error('유저 삭제 오류:', error);
     res.status(500).json({ message: '유저 삭제 중 오류가 발생했습니다.' });
   }
+
+    }
+  });
 };
