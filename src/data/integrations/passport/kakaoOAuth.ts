@@ -1,6 +1,6 @@
 import express from 'express';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
-import { UserRepository } from '../../../domain/models/userRepository';
+import { UserRepository } from '../../../domain/repositories/userRepository';
 
 const app = express();
 

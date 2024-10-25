@@ -1,4 +1,4 @@
-import { User } from './user';
+import { User } from '../models/user';
 
 export interface UserRepository {
   createUser: (userData: Omit<User, 'id'>) => Promise<User>;

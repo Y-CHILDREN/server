@@ -1,5 +1,5 @@
 import { User } from '../models/user';
-import { UserRepository } from '../models/userRepository';
+import { UserRepository } from '../repositories/userRepository';
 
 export const UserService = (userRepository: UserRepository) => {
   const createUser = async (userData: Omit<User, 'id'>) => {
