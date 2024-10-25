@@ -160,3 +160,27 @@ export const updateUserImage = async (req: Request, res: Response) => {
     }
   });
 };
+
+export const deleteUser = async (req: Request, res: Response) => {
+  const userService = req.app.get('userService') as ReturnType<
+    typeof UserService
+  >;
+  const { id } = req.params;
+
+  try {
+    const user = await userService.findUserById(id);
+    if (!user) {
+      return res.status(404).json({ message: '유저를 찾을 수 없습니다.' });
+    }
+
+    const isDeleted = await userService.deleteUser(id);
+    if (!isDeleted) {
+      return res.status(500).json({ message: '유저 삭제에 실패했습니다.' });
+    }
+
+    res.json({ message: '유저가 성공적으로 삭제되었습니다.' });
+  } catch (error) {
+    console.error('유저 삭제 오류:', error);
+    res.status(500).json({ message: '유저 삭제 중 오류가 발생했습니다.' });
+  }
+};
