@@ -72,4 +72,29 @@ describe('Test UserService', () => {
       expect(result).toEqual(mockUser);
     });
   });
+  describe('Test UserService.findUserEmail', () => {
+    test('가입되어 있는 유저의 emial을 찾을 수 있다.', async () => {
+      const mockUser: User = {
+        id: '777',
+        email: 'test@gmail.com',
+        provider: 'google',
+        user_image: 'test.webp',
+        nickname: 'tester',
+        user_memo: 'hello world!',
+        access_token: 'access_token_value',
+        refresh_token: 'refresh_token_value',
+        trip_history: [],
+      };
+      (userRepositoryMock.findUserByEmail as any).mockResolvedValue(mockUser);
+
+      //when
+      const result = await userService.findUserByEmail('test@gmail.com');
+
+      //Then
+      expect(userRepositoryMock.findUserByEmail).toHaveBeenCalledWith(
+        'test@gmail.com',
+      );
+      expect(result).toEqual(mockUser);
+    });
+  });
 });
