@@ -48,4 +48,28 @@ describe('Test UserService', () => {
       expect(result).toEqual(mockUser);
     });
   });
+
+  describe('Test UserService.findUserId', () => {
+    test('가입되어 있는 유저의 id를 찾을 수 있다.', async () => {
+      const mockUser: User = {
+        id: '777',
+        email: 'test@gmail.com',
+        provider: 'google',
+        user_image: 'test.webp',
+        nickname: 'tester',
+        user_memo: 'hello world!',
+        access_token: 'access_token_value',
+        refresh_token: 'refresh_token_value',
+        trip_history: [],
+      };
+      (userRepositoryMock.findUserById as any).mockResolvedValue(mockUser);
+
+      //when
+      const result = await userService.findUserById('777');
+
+      //Then
+      expect(userRepositoryMock.findUserById).toHaveBeenCalledWith('777');
+      expect(result).toEqual(mockUser);
+    });
+  });
 });
