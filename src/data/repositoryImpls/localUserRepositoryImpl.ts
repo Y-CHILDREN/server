@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { User } from '../../domain/models/user';
-import { UserRepository } from '../../domain/models/userRepository';
+import { UserRepository } from '../../domain/repositories/userRepository';
 
 export const userDataLocalRepository = (): UserRepository => {
   const filePath = path.join(__dirname, './userData.json');

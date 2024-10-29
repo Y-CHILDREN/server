@@ -1,17 +1,24 @@
 import { User } from '../models/user';
-import { UserRepository } from '../models/userRepository';
+import { UserRepository } from '../repositories/userRepository';
 
 export const UserService = (userRepository: UserRepository) => {
   const createUser = async (userData: Omit<User, 'id'>) => {
     return await userRepository.createUser(userData);
   };
 
+  const findUserById = async (id: string) => {
+    return await userRepository.findUserById(id);
+  };
+
   const findUserByEmail = async (email: string) => {
     return await userRepository.findUserByEmail(email);
   };
 
-  const findUserById = async (id: string) => {
-    return await userRepository.findUserById(id);
+  const findUserByEmailAndProvider = async (
+    email: string,
+    provider: string,
+  ) => {
+    return await userRepository.findUserByEmailAndProvider(email, provider);
   };
 
   const updateTokens = async (
@@ -42,8 +49,9 @@ export const UserService = (userRepository: UserRepository) => {
 
   return {
     createUser,
-    findUserByEmail,
     findUserById,
+    findUserByEmail,
+    findUserByEmailAndProvider,
     updateUserImage,
     updateUserNickname,
     updateUserMemo,
