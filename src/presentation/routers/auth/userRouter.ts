@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import {
+  deleteUser,
   getUserById,
+  updateUserImage,
   updateUserMemo,
   updateUserNickname,
 } from '../../controllers/userController';
@@ -17,6 +19,12 @@ userRouter.patch('/:id/memo', (req, res) => {
   updateUserMemo(req, res);
 });
 
-userRouter.patch('/:id/image');
+userRouter.patch('/:id/image', (req, res) => {
+  updateUserImage(req, res);
+});
+
+userRouter.delete('/:id', (req, res) => {
+  deleteUser(req, res);
+});
 
 export default userRouter;
