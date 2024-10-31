@@ -34,11 +34,14 @@ export const getUserById = async (
   }
 };
 
-export const findUserByEmail = async (req: Request, res: Response) => {
+export const findUserByEmail = async (
+  req: Request<{ email: string }>,
+  res: Response,
+) => {
   const userService = req.app.get('userService') as ReturnType<
     typeof UserService
   >;
-  const { email } = req.body;
+  const { email } = req.params;
   try {
     const user = await userService.findUserByEmail(email);
     if (user) {
@@ -73,11 +76,9 @@ export const findUserByEmailAndProvider = async (
         .json({ message: '해당 이메일과 provider로 유저를 찾을 수 없습니다.' });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: '이메일과 provider로 유저를 찾는 중 오류가 발생했습니다.',
-      });
+    res.status(500).json({
+      message: '이메일과 provider로 유저를 찾는 중 오류가 발생했습니다.',
+    });
   }
 };
 
