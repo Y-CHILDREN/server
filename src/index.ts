@@ -13,11 +13,17 @@ import { di } from './di';
 const app = express();
 
 di(app);
-dotenv.config();
+
+//적용 env 체크
+const env = process.env.NODE_ENV || 'local';
+dotenv.config({
+  path: `.env.${env}`, 
+});
+const redirectUrlBase = process.env.REDIRECT_URL_BASE;
 
 app.use(
   cors({
-    origin: 'http://y-children.s3-website.ap-northeast-2.amazonaws.com',
+    origin: 'http://y-children.s3-.ap-northeast-2.amazonaws.com',
     credentials: true,
   }),
 );
@@ -44,4 +50,6 @@ app.use('/', rootRouter);
 app.use(cors<Request>());
 app.listen(app.get('port'), async () => {
   console.log(`Server is running on port ${app.get('port')}`);
+  console.log(`Current Environment: ${env}`);
+  console.log(`Redirect URL Base: ${redirectUrlBase}`);
 });
