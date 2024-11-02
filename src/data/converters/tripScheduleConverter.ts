@@ -3,13 +3,13 @@ import { CreateTripDto } from '../dtos/trip/createTripDto';
 import { TripScheduleResponseDto } from '../dtos/trip/tripScheduleResponseDto';
 
 export class TripScheduleConverter {
-  static fromCreateTripDto(dto: CreateTripDto): TripSchedule {
+  static fromCreateTripDto(dto: CreateTripDto): Omit<TripSchedule, 'id'> {
     return {
-      id: dto.id,
       name: dto.name,
       start_date: new Date(dto.start_date), // string -> Date
       end_date: new Date(dto.start_date),
       members: dto.members,
+      created_by: dto.created_by,
     };
   }
 
@@ -20,6 +20,7 @@ export class TripScheduleConverter {
       start_date: tripSchedule.start_date.toISOString(), // Date -> string
       end_date: tripSchedule.end_date.toISOString(),
       members: tripSchedule.members,
+      created_by: tripSchedule.created_by,
     };
   }
 }

@@ -4,34 +4,28 @@ import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
 import { TripScheduleConverter } from '../../data/converters/tripScheduleConverter';
 
 export class TripScheduleController {
-  // constructor(private tripScheduleService: TripScheduleService) {}
-
   async createTrip(req: Request, res: Response) {
     try {
       const tripScheduleService = req.app.get(
         'tripScheduleService',
       ) as TripScheduleService;
 
-      // req.body에서 createTripDto 데이터로 추출.
-      const createTripDto = req.body as CreateTripDto;
+      // req.body createTripDto 데이터로 추출.
+      const createTripDto = {
+        ...(req.body as CreateTripDto),
+        created_by: 'user@example.com', // 임시로 선언.
+        // created_by: req.user?.email,
+      };
 
-      // service를 호출하여 여행 일정 생성.
-      const createdTrip = await tripScheduleService.createTripSchedule({
-        name: createTripDto.name,
-        start_date: new Date(createTripDto.start_date),
-        end_date: new Date(createTripDto.end_date),
-        members: createTripDto.members,
-      });
+      // service 호출하여 여행 일정 생성.
+      const createdTrip =
+        await tripScheduleService.createTripSchedule(createTripDto);
 
-      // createdTrip 결과를 response DTO로 convert
+      // createdTrip 결과를 response DTO convert
       const responseDto = TripScheduleConverter.toResDto(createdTrip);
       res.status(201).json(responseDto);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: 'Internal Server Error' });
-      }
+      res.status(500).json({ message: 'Server error' });
     }
   }
 
@@ -49,11 +43,7 @@ export class TripScheduleController {
         message: 'Member added successfully',
       });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: 'Internal Server Error' });
-      }
+      res.status(500).json({ message: 'Server error' });
     }
   }
 

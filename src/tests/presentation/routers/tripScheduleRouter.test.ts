@@ -20,6 +20,7 @@ vi.mock('../../../presentation/controllers/tripScheduleController', () => {
             start_date: '2024-01-01',
             end_date: '2024-01-05',
             members: ['user@example.com'],
+            created_by: 'user@example.com',
           });
         } else {
           // id가 일치하지 않는 경우.
@@ -48,6 +49,7 @@ describe('TripScheduleRouter', () => {
       start_date: '2024-01-01',
       end_date: '2024-01-05',
       members: ['user@example.com'],
+      created_by: 'user@example.com',
     };
 
     // When
