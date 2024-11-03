@@ -1,7 +1,6 @@
 import { TripScheduleRepository } from '../repositories/tripScheduleRepository';
 import { TripSchedule } from '../entities/tripSchedule';
 import { UserRepositoryDummy } from '../repositories/userRepositoryDummy';
-import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
 
 export class TripScheduleService {
   constructor(

@@ -5,7 +5,6 @@ import { TripScheduleController } from '../../../presentation/controllers/tripSc
 import { TripScheduleConverter } from '../../../data/converters/tripScheduleConverter';
 import { TripSchedule } from '../../../domain/entities/tripSchedule';
 import { CreateTripDto } from '../../../data/dtos/trip/createTripDto';
-import { TripScheduleService } from '../../../domain/services/tripScheduleService';
 
 vi.mock('../../../data/converters/tripScheduleConverter');
 
