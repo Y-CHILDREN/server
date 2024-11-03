@@ -1,14 +1,15 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
-import router from '../../../presentation/routers/tripScheduleRouter';
+import tripScheduleRouter from '../../../presentation/routers/tripScheduleRouter';
 
 vi.mock('../../../presentation/controllers/tripScheduleController', () => {
   return {
     TripScheduleController: vi.fn().mockReturnValue({
-      createTrip: vi.fn((req, res) =>
-        res.status(201).json({ id: 1, ...req.body }),
-      ),
+      createTrip: vi.fn((req, res) => {
+        console.log('req.body: ', req.body);
+        res.status(201).json({ id: 1, ...req.body });
+      }),
       addMemberByEmail: vi.fn((req, res) =>
         res.status(200).json({ message: 'Member added successfully' }),
       ),
@@ -33,7 +34,7 @@ vi.mock('../../../presentation/controllers/tripScheduleController', () => {
 
 const app = express();
 app.use(express.json());
-app.use('/trips', router);
+app.use('/trips', tripScheduleRouter);
 
 describe('TripScheduleRouter', () => {
   beforeEach(() => {
@@ -45,7 +46,8 @@ describe('TripScheduleRouter', () => {
   it('should handle POST requests to /trips', async () => {
     // Given
     const trip = {
-      name: 'Trip to Paris',
+      title: 'Trip to Paris',
+      destination: 'domestic seoul',
       start_date: '2024-01-01',
       end_date: '2024-01-05',
       members: ['user@example.com'],
@@ -54,10 +56,9 @@ describe('TripScheduleRouter', () => {
 
     // When
     const response = await request(app).post('/trips').send(trip);
-
     // Then
     expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('id'); // Check response includes an id
+    expect(response.body).toHaveProperty('id');
   });
 
   // Add member to trip

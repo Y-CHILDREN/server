@@ -1,6 +1,7 @@
 export interface TripSchedule {
   id: number; // auto_increase
   name: string;
+  destination: string;
   start_date: Date;
   end_date: Date;
   members: string[];
