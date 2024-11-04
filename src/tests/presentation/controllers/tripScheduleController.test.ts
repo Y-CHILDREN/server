@@ -5,11 +5,13 @@ import { TripScheduleController } from '../../../presentation/controllers/tripSc
 import { TripScheduleConverter } from '../../../data/converters/tripScheduleConverter';
 import { TripSchedule } from '../../../domain/entities/tripSchedule';
 import { CreateTripDto } from '../../../data/dtos/trip/createTripDto';
+import { TripScheduleResponseDto } from '../../../data/dtos/trip/tripScheduleResponseDto';
 
 vi.mock('../../../data/converters/tripScheduleConverter');
 
 const mockTripScheduleService = {
   createTripSchedule: vi.fn(),
+  deleteTripById: vi.fn(),
 };
 
 const mockRequest = (body = {}, params = {}) =>
@@ -67,13 +69,13 @@ describe('TripScheduleController', () => {
 
     const res = mockResponse();
 
-    // 모킹을 명확하게 설정
+    // `fromCreateTripDto` 모킹
     vi.spyOn(TripScheduleConverter, 'fromCreateTripDto').mockReturnValue(
       convertedTripData,
     );
 
-    // 예상 응답 DTO 정의
-    const responseDto = {
+    // `toResDto` 예상 응답 DTO 정의
+    const responseDto: TripScheduleResponseDto = {
       id: createdTrip.id,
       title: createdTrip.name,
       destination: createdTrip.destination,
@@ -107,7 +109,7 @@ describe('TripScheduleController', () => {
     expect(mockTripScheduleService.createTripSchedule).toHaveBeenCalledWith(
       convertedTripData,
     );
-    // expect(TripScheduleConverter.toResDto).toHaveBeenCalledWith(responseDto);
+    // expect(TripScheduleConverter.toResDto).toHaveBeenCalledWith(createdTrip);
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(createdTrip);
   });
@@ -121,7 +123,7 @@ describe('TripScheduleController', () => {
       end_date: new Date('2023-01-01'),
       members: ['user@example.com'],
     });
-    console.log(req);
+    console.log('request: ', req);
     const res = mockResponse();
     const error = new Error(
       'Invalid date range: startDate must be before endDate.',
@@ -135,6 +137,44 @@ describe('TripScheduleController', () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       message: 'Server error: Failed to create trip',
+    });
+  });
+
+  // Delete, 요청이 성공적으로 처리되는지 확인.
+  it('should delete the trip successfully and return a 200 status', async () => {
+    // Given
+    const req = mockRequest({}, { id: '1' });
+    const res = mockResponse();
+
+    // When
+    await controller.deleteTripById(req, res);
+
+    // Then
+    //mockTripScheduleService.deleteTripById가 1을 인수로 호출되었는지 확인
+    expect(mockTripScheduleService.deleteTripById).toHaveBeenCalledWith(1);
+
+    // 요청이 성공적으로 처리된 후 요청이 성공적으로 호출되었는지 확인.
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Trip deleted successfully',
+    });
+  });
+
+  // Delete, 삭제가 실패했을 때, 에러메세지가 호출 되는지 확인.
+  it('should handle errors and return a 500 status on deletion failure', async () => {
+    // Given
+    const req = mockRequest({}, { id: '1' });
+    const res = mockResponse();
+    const error = new Error('Deletion failed');
+    mockTripScheduleService.deleteTripById.mockRejectedValue(error);
+
+    // When
+    await controller.deleteTripById(req, res);
+
+    // Then
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      message: 'Server error: Failed to delete trip',
     });
   });
 });
