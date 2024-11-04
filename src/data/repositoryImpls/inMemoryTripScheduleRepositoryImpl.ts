@@ -25,4 +25,15 @@ export class InMemoryTripScheduleRepositoryImpl
   async findTripById(id: number): Promise<TripSchedule | null> {
     return this.trips.find((trip) => trip.id === id) || null;
   }
+
+  async deleteById(id: number): Promise<boolean> {
+    // 삭제 전 배열 길이 확인.
+    const initialLength = this.trips.length;
+
+    // Id에 해당하는 trip을 trips에서 찾아 삭제.
+    this.trips = this.trips.filter((trip) => trip.id !== id);
+
+    return this.trips.length > initialLength; // 삭제가 여부 반환.
+    // 모든 데이터를 검사해야해서 효율이 좋지 않을 것 같음.
+  }
 }

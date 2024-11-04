@@ -177,4 +177,15 @@ describe('TripScheduleService', () => {
     console.log('updatedTrip', updatedTrip);
     expect(updatedTrip?.members).toContain(email);
   });
+
+  test('should delete a trip by id successfully', async () => {
+    // Given
+    const tripId = 1;
+
+    // When
+    await tripService.deleteTripById(tripId);
+
+    // Then
+    expect(tripRepository.deleteById).toHaveBeenCalledWith(tripId);
+  });
 });
