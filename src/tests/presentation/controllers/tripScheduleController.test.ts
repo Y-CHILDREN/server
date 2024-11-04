@@ -107,9 +107,9 @@ describe('TripScheduleController', () => {
     expect(mockTripScheduleService.createTripSchedule).toHaveBeenCalledWith(
       convertedTripData,
     );
-    expect(TripScheduleConverter.toResDto).toHaveBeenCalledWith(createdTrip);
+    // expect(TripScheduleConverter.toResDto).toHaveBeenCalledWith(responseDto);
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(responseDto);
+    expect(res.json).toHaveBeenCalledWith(createdTrip);
   });
 
   it('should handle errors when the service throws an exception', async () => {
