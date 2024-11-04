@@ -19,10 +19,11 @@ describe('TripScheduleService', () => {
 
   test('should create a trip', async () => {
     // Given
-    const tripSchedule: CreateTripDto = {
+    const tripSchedule: Omit<TripSchedule, 'id'> = {
       name: 'first trip',
-      start_date: '2024-12-01',
-      end_date: '2024-12-10',
+      destination: 'domestic seoul',
+      start_date: new Date('2024-12-01'),
+      end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
       created_by: 'Hwang@naver.com',
     };
@@ -30,8 +31,6 @@ describe('TripScheduleService', () => {
     vi.spyOn(tripRepository, 'create').mockResolvedValue({
       id: 1,
       ...tripSchedule,
-      start_date: new Date(tripSchedule.start_date),
-      end_date: new Date(tripSchedule.end_date),
     });
 
     // When
@@ -64,6 +63,7 @@ describe('TripScheduleService', () => {
 
     await tripRepository.create({
       name: 'first trip',
+      destination: 'domestic seoul',
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
@@ -118,6 +118,7 @@ describe('TripScheduleService', () => {
     const trip = {
       id: tripId,
       name: 'Family Trip',
+      destination: 'domestic seoul',
       start_date: new Date(),
       end_date: new Date(),
       members: [email],
@@ -150,6 +151,7 @@ describe('TripScheduleService', () => {
     const trip = {
       id: tripId,
       name: 'Family Trip',
+      destination: 'domestic seoul',
       start_date: new Date(),
       end_date: new Date(),
       members: ['Hwang@example.com'],

@@ -10,6 +10,7 @@ describe('ImMemoryTripScheduleRepositoryImpl', () => {
     const trip: TripSchedule = {
       id: 1,
       name: 'first trip',
+      destination: 'domestic seoul',
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],
@@ -28,6 +29,7 @@ describe('ImMemoryTripScheduleRepositoryImpl', () => {
     const trip: TripSchedule = {
       id: 1,
       name: 'first trip',
+      destination: 'domestic seoul',
       start_date: new Date('2024-12-01'),
       end_date: new Date('2024-12-10'),
       members: ['Hwang@naver.com'],

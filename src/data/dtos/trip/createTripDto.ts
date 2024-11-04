@@ -1,7 +1,8 @@
 // Client -> Server
 // Create Trip input data
 export interface CreateTripDto {
-  name: string;
+  title: string;
+  destination: string;
   start_date: string;
   end_date: string;
   members: string[];
