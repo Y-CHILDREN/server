@@ -69,13 +69,24 @@ export class TripScheduleService {
   }
 
   // delete Trip by id
-  async deleteTripById(id: number): Promise<void> {
-    const deletedTrip = await this.tripRepository.deleteById(id);
+  async deleteTripById(tripId: number): Promise<void> {
+    const deletedTrip = await this.tripRepository.deleteById(tripId);
     if (!deletedTrip) {
       throw new Error('Trip(Id) not found');
     }
 
     // User.trip_history 배열에서 tripId를 제거 해야함.
+    const users = await this.userRepository.getAllUsers();
+    for (const user of users) {
+      const removed = await this.userRepository.removeTripFromHistory(
+        user.id,
+        tripId,
+      );
+
+      if (removed) {
+        console.log(`Removed trip Id ${tripId} from user ${user.id}'s history`);
+      }
+    }
   }
 
   // 여행 일정에 멤버를 추가.
