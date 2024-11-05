@@ -36,7 +36,7 @@ export class TripScheduleController {
 
       const { tripId, email } = req.body;
 
-      await tripScheduleService.addMemberByEmail(tripId, email);
+      await tripScheduleService.addTripMemberByEmail(tripId, email);
 
       res.status(200).json({
         message: 'Member added successfully',
