@@ -1,8 +1,10 @@
 // Server -> Client
 export interface TripScheduleResponseDto {
   id: number;
-  name: string;
+  title: string;
+  destination: string;
   start_date: string;
   end_date: string;
   members: string[];
+  created_by: string;
 }

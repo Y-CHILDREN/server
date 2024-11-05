@@ -4,7 +4,7 @@ import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
 import { TripScheduleConverter } from '../../data/converters/tripScheduleConverter';
 
 export class TripScheduleController {
-  // constructor(private tripScheduleService: TripScheduleService) {}
+  // constructor(private readonly tripScheduleService: TripScheduleService) {}
 
   async createTrip(req: Request, res: Response) {
     try {
@@ -12,26 +12,19 @@ export class TripScheduleController {
         'tripScheduleService',
       ) as TripScheduleService;
 
-      // req.body에서 createTripDto 데이터로 추출.
-      const createTripDto = req.body as CreateTripDto;
+      // req.body에서 CreateTripDto 타입의 데이터를 추출
+      const createTripDto: CreateTripDto = req.body;
+      const tripData = TripScheduleConverter.fromCreateTripDto(createTripDto);
 
-      // service를 호출하여 여행 일정 생성.
-      const createdTrip = await tripScheduleService.createTripSchedule({
-        name: createTripDto.name,
-        start_date: new Date(createTripDto.start_date),
-        end_date: new Date(createTripDto.end_date),
-        members: createTripDto.members,
-      });
+      // service 호출하여 여행 일정 생성.
+      const createdTrip =
+        await tripScheduleService.createTripSchedule(tripData);
 
-      // createdTrip 결과를 response DTO로 convert
-      const responseDto = TripScheduleConverter.toResDto(createdTrip);
-      res.status(201).json(responseDto);
+      // createdTrip 결과를 response DTO convert
+      // const responseDto = TripScheduleConverter.toResDto(createdTrip);
+      res.status(201).json(createdTrip);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: 'Internal Server Error' });
-      }
+      res.status(500).json({ message: 'Server error: Failed to create trip' });
     }
   }
 
@@ -49,11 +42,7 @@ export class TripScheduleController {
         message: 'Member added successfully',
       });
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: 'Internal Server Error' });
-      }
+      res.status(500).json({ message: 'Server error' });
     }
   }
 
