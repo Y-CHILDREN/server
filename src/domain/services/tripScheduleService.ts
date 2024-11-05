@@ -39,9 +39,9 @@ export class TripScheduleService {
   }
 
   // Add member (email)
-  async addMemberByEmail(tripId: number, email: string): Promise<void> {
+  async addTripMemberByEmail(tripId: number, email: string): Promise<void> {
     // search user by email
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findUserByEmail(email);
 
     if (!user) {
       throw new Error('User(email) not found');
