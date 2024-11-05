@@ -26,5 +26,6 @@ export interface UserRepository {
 
   deleteUser: (id: string) => Promise<boolean>;
   updateUserTripHistory: (userId: string, tripId: number) => Promise<boolean>; // 함수 표현식 방식
-  // updateUserTripHistory2(userId: string, tripId: number[]): Promise<void>; // 메서드 방식
+  // updateUserTripHistory2(userId: string, tripId: number): Promise<void>; // 메서드 방식
+  removeTripFromHistory: (userId: string, tripId: number) => Promise<boolean>;
 }

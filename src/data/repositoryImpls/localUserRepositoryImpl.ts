@@ -177,6 +177,30 @@ export const userDataLocalRepository = (): UserRepository => {
     }
   };
 
+  // 유저 여행 기록을 제거하는 함수.
+  const removeTripFromHistory = async (
+    userId: string,
+    tripId: number,
+  ): Promise<boolean> => {
+    const users = await readUsersData();
+    const user = users.find((user) => user.id === userId);
+
+    if (user) {
+      const initialLength = user.trip_history.length;
+      user.trip_history = user.trip_history.filter((id) => id !== tripId); // trip_history에서 여행 일정 제거.
+
+      // tripId가 제거되었다면 true 반환.
+      if (user.trip_history.length < initialLength) {
+        await writeUsersData(users);
+        return true;
+      }
+      // ripId가 존재하지 않아서 제거되지 않은 경우
+      return false;
+    }
+    // 유저를 찾을 수 없는 경우
+    return false;
+  };
+
   return {
     createUser,
     findUserByEmail,
@@ -189,5 +213,6 @@ export const userDataLocalRepository = (): UserRepository => {
     getAllUsers,
     deleteUser,
     updateUserTripHistory,
+    removeTripFromHistory,
   };
 };
