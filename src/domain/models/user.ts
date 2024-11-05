@@ -7,5 +7,5 @@ export interface User {
   user_memo: string;
   access_token: string;
   refresh_token: string;
-  trip_history: [];
+  trip_history: number[];
 }

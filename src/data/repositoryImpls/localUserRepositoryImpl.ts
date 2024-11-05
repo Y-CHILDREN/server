@@ -102,7 +102,7 @@ export const userDataLocalRepository = (): UserRepository => {
     return undefined;
   };
 
-  //유저 메모를 수정한느 함수
+  //유저 메모를 수정하는 함수
   const updateUserMemo = async (id: string, user_memo: string) => {
     const users = await readUsersData();
     const user = users.find((user) => user.id === id);
@@ -151,6 +151,32 @@ export const userDataLocalRepository = (): UserRepository => {
     return true;
   };
 
+  // 유저 여행 기록을 수정하는 함수
+  const updateUserTripHistory = async (
+    id: string,
+    tripId: number,
+  ): Promise<boolean> => {
+    const users = await readUsersData();
+    const user = users.find((user) => user.id === id); // 일치하는 유저 찾기.
+
+    if (user) {
+      // 중복된 tripId가 있는지 확인
+      if (!user.trip_history.includes(tripId)) {
+        user.trip_history.push(tripId); // tripId 추가
+        await writeUsersData(users); // 데이터 저장
+        console.log('유저 여행 기록을 수정했습니다.');
+        return true;
+      } else {
+        // 중복 추가된 tripId일때 false 반환.
+        console.log('유저의 여행 기록에 이미 존재하는 tripId입니다.');
+        return false;
+      }
+    } else {
+      console.log('유저를 찾을 수 없습니다.');
+      return false;
+    }
+  };
+
   return {
     createUser,
     findUserByEmail,
@@ -162,5 +188,6 @@ export const userDataLocalRepository = (): UserRepository => {
     updateTokens,
     getAllUsers,
     deleteUser,
+    updateUserTripHistory,
   };
 };
