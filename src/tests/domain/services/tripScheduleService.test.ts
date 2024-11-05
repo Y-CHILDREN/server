@@ -67,302 +67,310 @@ describe('TripScheduleService', () => {
     vi.restoreAllMocks();
   });
 
-  it('should throw an error if start_date is after end_date', async () => {
-    const invalidData: Omit<TripSchedule, 'id'> = {
-      name: 'Test Trip',
-      destination: 'Test Destination',
-      start_date: new Date('2024-12-10'),
-      end_date: new Date('2024-12-01'),
-      members: [],
-      created_by: 'user@example.com',
-    };
+  describe('createTripSchedule', () => {
+    it('should throw an error if start_date is after end_date', async () => {
+      const invalidData: Omit<TripSchedule, 'id'> = {
+        name: 'Test Trip',
+        destination: 'Test Destination',
+        start_date: new Date('2024-12-10'),
+        end_date: new Date('2024-12-01'),
+        members: [],
+        created_by: 'user@example.com',
+      };
 
-    await expect(tripService.createTripSchedule(invalidData)).rejects.toThrow(
-      'Invalid date range: startDate must be before endDate.',
-    );
-  });
-
-  it('should throw an error if user is not found', async () => {
-    const validData: Omit<TripSchedule, 'id'> = {
-      name: 'Test Trip',
-      destination: 'Test Destination',
-      start_date: new Date('2024-12-01'),
-      end_date: new Date('2024-12-10'),
-      members: [],
-      created_by: 'user@example.com',
-    };
-
-    vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(undefined);
-
-    await expect(tripService.createTripSchedule(validData)).rejects.toThrow(
-      'User not found',
-    );
-  });
-
-  it('should throw an error if updating user trip history fails', async () => {
-    const validData: Omit<TripSchedule, 'id'> = {
-      name: 'Test Trip',
-      destination: 'Test Destination',
-      start_date: new Date('2024-12-01'),
-      end_date: new Date('2024-12-10'),
-      members: [],
-      created_by: 'user@example.com',
-    };
-
-    const mockTrip = {
-      id: 1,
-      ...validData,
-    };
-
-    vi.spyOn(tripRepository, 'create').mockResolvedValue(mockTrip);
-    vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
-      id: 'user123',
-      provider: 'local',
-      email: 'user@example.com',
-      user_image: 'image.png',
-      nickname: 'user',
-      user_memo: 'Test user',
-      access_token: 'access_token',
-      refresh_token: 'refresh_token',
-      trip_history: [],
+      await expect(tripService.createTripSchedule(invalidData)).rejects.toThrow(
+        'Invalid date range: startDate must be before endDate.',
+      );
     });
 
-    vi.spyOn(userRepository, 'updateUserTripHistory').mockResolvedValue(false);
+    it('should throw an error if user is not found', async () => {
+      const validData: Omit<TripSchedule, 'id'> = {
+        name: 'Test Trip',
+        destination: 'Test Destination',
+        start_date: new Date('2024-12-01'),
+        end_date: new Date('2024-12-10'),
+        members: [],
+        created_by: 'user@example.com',
+      };
 
-    await expect(tripService.createTripSchedule(validData)).rejects.toThrow(
-      'Failed to update user trip history',
-    );
-  });
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(undefined);
 
-  it('should create a trip successfully when all validations pass', async () => {
-    const validData: Omit<TripSchedule, 'id'> = {
-      name: 'Test Trip',
-      destination: 'Test Destination',
-      start_date: new Date('2024-12-01'),
-      end_date: new Date('2024-12-10'),
-      members: [],
-      created_by: 'user@example.com',
-    };
-
-    const mockUser = {
-      id: 'user123',
-      provider: 'local',
-      email: 'user@example.com',
-      user_image: 'image.png',
-      nickname: 'user',
-      user_memo: 'Test user',
-      access_token: 'access_token',
-      refresh_token: 'refresh_token',
-      trip_history: [],
-    };
-
-    const mockTrip = {
-      id: 1,
-      ...validData,
-    };
-
-    vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(mockUser);
-    vi.spyOn(userRepository, 'updateUserTripHistory').mockResolvedValue(true);
-    vi.spyOn(tripRepository, 'create').mockResolvedValue(mockTrip);
-
-    const result = await tripService.createTripSchedule(validData);
-
-    expect(result).toEqual(mockTrip);
-    expect(userRepository.updateUserTripHistory).toHaveBeenCalledWith(
-      mockUser.id,
-      mockTrip.id,
-    );
-  });
-
-  test('주석처리, should add a member by email', async () => {
-    // // Given
-    // const email = 'Park@gmail.com';
-    // vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
-    //   id: '1',
-    //   provider: 'google',
-    //   email,
-    //   user_image: 'test.webp',
-    //   nickname: 'JiHwan',
-    //   user_memo: 'hello world!',
-    //   access_token: 'access_token_value',
-    //   refresh_token: 'refresh_token_value',
-    //   trip_history: [1, 2, 3],
-    // });
-    //
-    // await tripRepository.create({
-    //   name: 'first trip',
-    //   destination: 'domestic seoul',
-    //   start_date: new Date('2024-12-01'),
-    //   end_date: new Date('2024-12-10'),
-    //   members: ['Hwang@naver.com'],
-    //   created_by: 'Hwang@naver.com',
-    // });
-    //
-    // // When
-    // await tripService.addTripMemberByEmail(1, email);
-    // const updatedTrip = await tripService.getTripById(1);
-    //
-    // // Then
-    // console.log('Updated Trip add a member:', updatedTrip);
-    // expect(updatedTrip?.members).toContain(email);
-  });
-
-  test('should throw an error if user email is not found when adding for member', async () => {
-    // Given
-    const email = 'nonexist@example.com';
-    vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(undefined); // no exist user by email return null.
-
-    // When
-    const actual = tripService.addTripMemberByEmail(1, email);
-
-    // Then
-    await expect(actual).rejects.toThrowError('User(email) not found');
-  });
-
-  test('should throw an error if trip id is not found when adding a member', async () => {
-    // Given
-    const email = 'user@example.com';
-    vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
-      id: '3',
-      provider: 'google',
-      email,
-      user_image: 'test.webp',
-      nickname: 'TeaJung',
-      user_memo: 'hello world!',
-      access_token: 'access_token_value',
-      refresh_token: 'refresh_token_value',
-      trip_history: [1, 3],
+      await expect(tripService.createTripSchedule(validData)).rejects.toThrow(
+        'User not found',
+      );
     });
-    vi.spyOn(tripRepository, 'findTripById').mockResolvedValue(null);
 
-    // When
-    const actual = tripService.addTripMemberByEmail(1, email);
+    it('should throw an error if updating user trip history fails', async () => {
+      const validData: Omit<TripSchedule, 'id'> = {
+        name: 'Test Trip',
+        destination: 'Test Destination',
+        start_date: new Date('2024-12-01'),
+        end_date: new Date('2024-12-10'),
+        members: [],
+        created_by: 'user@example.com',
+      };
 
-    //Then
-    await expect(actual).rejects.toThrow('Trip(Id) not found');
-  });
+      const mockTrip = {
+        id: 1,
+        ...validData,
+      };
 
-  test('should throw an error if user is already a member of the trip', async () => {
-    // Given
-    const email = 'user@example.com';
-    const tripId = 1;
-    const trip = {
-      id: tripId,
-      name: 'Family Trip',
-      destination: 'domestic seoul',
-      start_date: new Date(),
-      end_date: new Date(),
-      members: [email],
-      created_by: email,
-    };
+      vi.spyOn(tripRepository, 'create').mockResolvedValue(mockTrip);
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
+        id: 'user123',
+        provider: 'local',
+        email: 'user@example.com',
+        user_image: 'image.png',
+        nickname: 'user',
+        user_memo: 'Test user',
+        access_token: 'access_token',
+        refresh_token: 'refresh_token',
+        trip_history: [],
+      });
 
-    vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
-      id: '2',
-      provider: 'google',
-      email,
-      user_image: 'test.webp',
-      nickname: 'silverStone',
-      user_memo: 'hello world!',
-      access_token: 'access_token_value',
-      refresh_token: 'refresh_token_value',
-      trip_history: [2, 3],
+      vi.spyOn(userRepository, 'updateUserTripHistory').mockResolvedValue(
+        false,
+      );
+
+      await expect(tripService.createTripSchedule(validData)).rejects.toThrow(
+        'Failed to update user trip history',
+      );
     });
-    vi.spyOn(tripRepository, 'findTripById').mockResolvedValue(trip);
 
-    // When
-    const actual = tripService.addTripMemberByEmail(tripId, email);
+    it('should create a trip successfully when all validations pass', async () => {
+      const validData: Omit<TripSchedule, 'id'> = {
+        name: 'Test Trip',
+        destination: 'Test Destination',
+        start_date: new Date('2024-12-01'),
+        end_date: new Date('2024-12-10'),
+        members: [],
+        created_by: 'user@example.com',
+      };
 
-    // Then
-    await expect(actual).rejects.toThrow(
-      'User is already a member of the trip',
-    );
-  });
+      const mockUser = {
+        id: 'user123',
+        provider: 'local',
+        email: 'user@example.com',
+        user_image: 'image.png',
+        nickname: 'user',
+        user_memo: 'Test user',
+        access_token: 'access_token',
+        refresh_token: 'refresh_token',
+        trip_history: [],
+      };
 
-  test('should add a new member to the trip', async () => {
-    // Given
-    const email = 'Park@example.com';
-    const tripId = 1;
-    const trip = {
-      id: tripId,
-      name: 'Family Trip',
-      destination: 'domestic seoul',
-      start_date: new Date(),
-      end_date: new Date(),
-      members: ['Hwang@example.com'],
-      created_by: 'Hwang@example.com',
-    };
+      const mockTrip = {
+        id: 1,
+        ...validData,
+      };
 
-    vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
-      id: '2',
-      provider: 'google',
-      email,
-      user_image: 'test.webp',
-      nickname: 'JiHwan',
-      user_memo: 'hello world!',
-      access_token: 'access_token_value',
-      refresh_token: 'refresh_token_value',
-      trip_history: [1, 2, 3],
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(mockUser);
+      vi.spyOn(userRepository, 'updateUserTripHistory').mockResolvedValue(true);
+      vi.spyOn(tripRepository, 'create').mockResolvedValue(mockTrip);
+
+      const result = await tripService.createTripSchedule(validData);
+
+      expect(result).toEqual(mockTrip);
+      expect(userRepository.updateUserTripHistory).toHaveBeenCalledWith(
+        mockUser.id,
+        mockTrip.id,
+      );
     });
-    vi.spyOn(tripRepository, 'findTripById').mockResolvedValue(trip);
-    vi.spyOn(tripRepository, 'update').mockResolvedValue();
-
-    // When
-    await tripService.addTripMemberByEmail(tripId, email);
-    const updatedTrip = await tripRepository.findTripById(tripId);
-
-    // Then
-    console.log('updatedTrip', updatedTrip);
-    expect(updatedTrip?.members).toContain(email);
   });
 
-  it('should throw an error if trip does not exist', async () => {
-    // Given: 여행 일정 삭제가 실패한 경우
-    vi.spyOn(tripRepository, 'deleteById').mockResolvedValue(false);
+  describe('addTripMemberByEmail', () => {
+    test('주석처리, should add a member by email', async () => {
+      // // Given
+      // const email = 'Park@gmail.com';
+      // vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
+      //   id: '1',
+      //   provider: 'google',
+      //   email,
+      //   user_image: 'test.webp',
+      //   nickname: 'JiHwan',
+      //   user_memo: 'hello world!',
+      //   access_token: 'access_token_value',
+      //   refresh_token: 'refresh_token_value',
+      //   trip_history: [1, 2, 3],
+      // });
+      //
+      // await tripRepository.create({
+      //   name: 'first trip',
+      //   destination: 'domestic seoul',
+      //   start_date: new Date('2024-12-01'),
+      //   end_date: new Date('2024-12-10'),
+      //   members: ['Hwang@naver.com'],
+      //   created_by: 'Hwang@naver.com',
+      // });
+      //
+      // // When
+      // await tripService.addTripMemberByEmail(1, email);
+      // const updatedTrip = await tripService.getTripById(1);
+      //
+      // // Then
+      // console.log('Updated Trip add a member:', updatedTrip);
+      // expect(updatedTrip?.members).toContain(email);
+    });
 
-    // Then: 존재하지 않는 일정 ID로 호출 시 예외가 발생해야 함
-    await expect(tripService.deleteTripById(1)).rejects.toThrow(
-      'Trip(Id) not found',
-    );
+    test('should throw an error if user email is not found when adding for member', async () => {
+      // Given
+      const email = 'nonexist@example.com';
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(undefined); // no exist user by email return null.
+
+      // When
+      const actual = tripService.addTripMemberByEmail(1, email);
+
+      // Then
+      await expect(actual).rejects.toThrowError('User(email) not found');
+    });
+
+    test('should throw an error if trip id is not found when adding a member', async () => {
+      // Given
+      const email = 'user@example.com';
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
+        id: '3',
+        provider: 'google',
+        email,
+        user_image: 'test.webp',
+        nickname: 'TeaJung',
+        user_memo: 'hello world!',
+        access_token: 'access_token_value',
+        refresh_token: 'refresh_token_value',
+        trip_history: [1, 3],
+      });
+      vi.spyOn(tripRepository, 'findTripById').mockResolvedValue(null);
+
+      // When
+      const actual = tripService.addTripMemberByEmail(1, email);
+
+      //Then
+      await expect(actual).rejects.toThrow('Trip(Id) not found');
+    });
+
+    test('should throw an error if user is already a member of the trip', async () => {
+      // Given
+      const email = 'user@example.com';
+      const tripId = 1;
+      const trip = {
+        id: tripId,
+        name: 'Family Trip',
+        destination: 'domestic seoul',
+        start_date: new Date(),
+        end_date: new Date(),
+        members: [email],
+        created_by: email,
+      };
+
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
+        id: '2',
+        provider: 'google',
+        email,
+        user_image: 'test.webp',
+        nickname: 'silverStone',
+        user_memo: 'hello world!',
+        access_token: 'access_token_value',
+        refresh_token: 'refresh_token_value',
+        trip_history: [2, 3],
+      });
+      vi.spyOn(tripRepository, 'findTripById').mockResolvedValue(trip);
+
+      // When
+      const actual = tripService.addTripMemberByEmail(tripId, email);
+
+      // Then
+      await expect(actual).rejects.toThrow(
+        'User is already a member of the trip',
+      );
+    });
+
+    test('should add a new member to the trip', async () => {
+      // Given
+      const email = 'Park@example.com';
+      const tripId = 1;
+      const trip = {
+        id: tripId,
+        name: 'Family Trip',
+        destination: 'domestic seoul',
+        start_date: new Date(),
+        end_date: new Date(),
+        members: ['Hwang@example.com'],
+        created_by: 'Hwang@example.com',
+      };
+
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
+        id: '2',
+        provider: 'google',
+        email,
+        user_image: 'test.webp',
+        nickname: 'JiHwan',
+        user_memo: 'hello world!',
+        access_token: 'access_token_value',
+        refresh_token: 'refresh_token_value',
+        trip_history: [1, 2, 3],
+      });
+      vi.spyOn(tripRepository, 'findTripById').mockResolvedValue(trip);
+      vi.spyOn(tripRepository, 'update').mockResolvedValue();
+
+      // When
+      await tripService.addTripMemberByEmail(tripId, email);
+      const updatedTrip = await tripRepository.findTripById(tripId);
+
+      // Then
+      console.log('updatedTrip', updatedTrip);
+      expect(updatedTrip?.members).toContain(email);
+    });
   });
 
-  it("should remove trip ID from all users' history successfully", async () => {
-    // Given
-    vi.spyOn(tripRepository, 'deleteById').mockResolvedValue(true); // 여행 일정 삭제 성공
+  describe('deleteTripById', () => {
+    it('should throw an error if trip does not exist', async () => {
+      // Given: 여행 일정 삭제가 실패한 경우
+      vi.spyOn(tripRepository, 'deleteById').mockResolvedValue(false);
 
-    // 공통 모킹 함수 사용
-    mockGetAllUsers();
-    const removeSpy = mockRemoveTripFromHistory(true);
+      // Then: 존재하지 않는 일정 ID로 호출 시 예외가 발생해야 함
+      await expect(tripService.deleteTripById(1)).rejects.toThrow(
+        'Trip(Id) not found',
+      );
+    });
 
-    // When
-    await tripService.deleteTripById(3);
+    it("should remove trip ID from all users' history successfully", async () => {
+      // Given
+      vi.spyOn(tripRepository, 'deleteById').mockResolvedValue(true); // 여행 일정 삭제 성공
 
-    // Then: 모든 유저의 trip_history에서 해당 일정이 제거되었는지 확인
-    expect(userRepository.getAllUsers).toHaveBeenCalled();
-    expect(removeSpy).toHaveBeenCalledWith('user1', 3);
-    expect(removeSpy).toHaveBeenCalledWith('user2', 3);
-    expect(removeSpy).toHaveBeenCalledTimes(2);
-  });
+      // 공통 모킹 함수 사용
+      mockGetAllUsers();
+      const removeSpy = mockRemoveTripFromHistory(true);
 
-  it("should log when trip ID is not found in user's history", async () => {
-    // Given: 여행 일정 삭제 성공
-    vi.spyOn(tripRepository, 'deleteById').mockResolvedValue(true);
+      // When
+      await tripService.deleteTripById(3);
 
-    // 공통 모킹 함수 사용
-    mockGetAllUsers();
-    const removeSpy = mockRemoveTripFromHistory(false);
+      // Then: 모든 유저의 trip_history에서 해당 일정이 제거되었는지 확인
+      expect(userRepository.getAllUsers).toHaveBeenCalled();
+      expect(removeSpy).toHaveBeenCalledWith('user1', 3);
+      expect(removeSpy).toHaveBeenCalledWith('user2', 3);
+      expect(removeSpy).toHaveBeenCalledTimes(2);
+    });
 
-    // 콘솔 로그 모킹
-    const consoleSpy = vi.spyOn(console, 'log');
+    it("should log when trip ID is not found in user's history", async () => {
+      // Given: 여행 일정 삭제 성공
+      vi.spyOn(tripRepository, 'deleteById').mockResolvedValue(true);
 
-    // When
-    await tripService.deleteTripById(3);
+      // 공통 모킹 함수 사용
+      mockGetAllUsers();
+      const removeSpy = mockRemoveTripFromHistory(false);
 
-    // Then: 삭제가 실패한 경우 로그가 출력되는지 확인
-    expect(userRepository.getAllUsers).toHaveBeenCalled();
-    expect(removeSpy).toHaveBeenCalledWith('user1', 3);
-    expect(removeSpy).toHaveBeenCalledWith('user2', 3);
-    expect(consoleSpy).not.toHaveBeenCalledWith(
-      expect.stringContaining('Removed trip Id 3'),
-    );
+      // 콘솔 로그 모킹
+      const consoleSpy = vi.spyOn(console, 'log');
+
+      // When
+      await tripService.deleteTripById(3);
+
+      // Then: 삭제가 실패한 경우 로그가 출력되는지 확인
+      expect(userRepository.getAllUsers).toHaveBeenCalled();
+      expect(removeSpy).toHaveBeenCalledWith('user1', 3);
+      expect(removeSpy).toHaveBeenCalledWith('user2', 3);
+      expect(consoleSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Removed trip Id 3'),
+      );
+    });
   });
 });
