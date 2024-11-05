@@ -30,7 +30,7 @@ kakaoRouter.get(
 
     if (user) {
       res.redirect(
-        `${redirectUrlBase}?token=${user.access_token}&user=${encodeURIComponent(
+        `${redirectUrlBase}/login?token=${user.access_token}&user=${encodeURIComponent(
           JSON.stringify(user),
         )}`,
       );

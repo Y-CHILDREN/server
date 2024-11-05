@@ -11,7 +11,6 @@ dotenv.config({
 
 const googleRouter = Router();
 
-// 로그인 라우터
 googleRouter.get(
   '/',
   passport.authenticate('google', { scope: ['profile', 'email'] }),
@@ -25,13 +24,20 @@ googleRouter.get(
     const redirectUrlBase =
       process.env.REDIRECT_URL_BASE || 'http://localhost:5173';
 
+    console.log('Callback - 유저 정보:', user);
+    console.log('Callback - REDIRECT_URL_BASE:', redirectUrlBase);
+
     if (user) {
-      res.redirect(
-        `${redirectUrlBase}?token=${user.access_token}&user=${encodeURIComponent(
-          JSON.stringify(user),
-        )}`,
-      );
+      const redirectUrl = `${redirectUrlBase}/login?token=${user.access_token}&user=${encodeURIComponent(
+        JSON.stringify(user),
+      )}`;
+
+      // 최종 리다이렉트 URL 확인
+      console.log('마지막 redirect URL:', redirectUrl);
+
+      res.redirect(redirectUrl);
     } else {
+      console.log('User object is null or undefined');
       res.redirect('/');
     }
   },
