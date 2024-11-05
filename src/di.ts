@@ -19,10 +19,9 @@ export function di(app: ReturnType<typeof express>) {
 
   // tripSchedule
   const tripScheduleRepository = new InMemoryTripScheduleRepositoryImpl();
-  const userRepositoryDummy = new InMemoryUserRepositoryImpl();
   const tripScheduleService = new TripScheduleService(
     tripScheduleRepository,
-    userRepositoryDummy,
+    userRepository,
   );
   app.set('tripScheduleService', tripScheduleService);
 }
