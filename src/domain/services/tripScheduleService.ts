@@ -12,11 +12,29 @@ export class TripScheduleService {
   async createTripSchedule(
     data: Omit<TripSchedule, 'id'>,
   ): Promise<TripSchedule> {
+    // 날짜 유효성 검사
     if (data.start_date >= data.end_date) {
       throw new Error('Invalid date range: startDate must be before endDate.');
     }
 
+    // 이메일에 해당하는 유저 찾기.
+    const user = await this.userRepository.findUserByEmail(data.created_by);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // 여행 일정 생성
     const savedTrip = await this.tripRepository.create(data);
+
+    // 유저의 trip_history 업데이트
+    const update = await this.userRepository.updateUserTripHistory(
+      user.id,
+      savedTrip.id,
+    );
+    if (!update) {
+      throw new Error('Failed to update user trip history');
+    }
+
     return savedTrip;
   }
 
