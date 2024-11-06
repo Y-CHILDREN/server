@@ -116,22 +116,43 @@ export class TripScheduleService {
       throw new Error('Trip not found');
     }
 
+    // 기존 멤버와 업데이트된 새로운 멤버 배열을 비교하여 추가/제거 할 멤버 구분.
+    const membersToAdd = newMemberEmails.filter(
+      (email) => !trip.members.includes(email),
+    ); // 추가된 멤버 배열.
+    const membersToRemove = trip.members.filter(
+      (email) => !newMemberEmails.includes(email),
+    ); // 제거된 멤버 배열.
+
     // 업데이트할 필드 수정.
     Object.assign(trip, updateData);
 
-    // 유저 trip_history 업데이트 로직.
-    for (const email of newMemberEmails) {
-      if (!trip.members.includes(email)) {
-        const user = await this.userRepository.findUserByEmail(email);
-        if (!user) {
-          throw new Error(`User with email ${email} not found`);
-        }
+    // 추가된 유저 trip_history에 반영.
+    for (const email of membersToAdd) {
+      const user = await this.userRepository.findUserByEmail(email);
 
-        // 멤버 추가
+      if (!user) {
+        throw new Error(`User with email ${email} not found`);
+      }
+
+      // 중복 없이 멤버 추가
+      if (!trip.members.includes(email)) {
         trip.members.push(email);
 
-        // 해당 유저의 trip_history에 여행 ID 추가.
+        // 해당 유저의 trip_history에 여행 ID 추가
         await this.userRepository.updateUserTripHistory(user.id, tripId);
+      }
+    }
+
+    // 제거된 유저 trip_history에 반영.
+    for (const email of membersToRemove) {
+      // 멤버 제거
+      trip.members = trip.members.filter((member) => member !== email);
+
+      // 해당 유저의 trip_history에서 여행 ID 제거.
+      const user = await this.userRepository.findUserByEmail(email);
+      if (user) {
+        await this.userRepository.removeTripFromHistory(user.id, tripId);
       }
     }
 

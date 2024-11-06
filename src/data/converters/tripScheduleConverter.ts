@@ -25,4 +25,16 @@ export class TripScheduleConverter {
       created_by: tripSchedule.created_by,
     };
   }
+
+  static fromUpdateTripDto(
+    source: any,
+  ): Omit<TripSchedule, 'id' | 'created_by'> {
+    return {
+      name: source.title, // title을 name으로 매핑
+      destination: source.destination,
+      start_date: new Date(source.start_date), // Date 객체로 변환
+      end_date: new Date(source.end_date),
+      members: source.members,
+    };
+  }
 }

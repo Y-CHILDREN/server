@@ -92,10 +92,12 @@ export class TripScheduleController {
         return;
       }
 
+      console.log('trip :', trip);
       // Convert trip data -> response DTO
       const responseDto = TripScheduleConverter.toResDto(trip);
       res.status(200).json(responseDto);
     } catch (error) {
+      console.error(error);
       res.status(500).json({
         message: 'Server error',
       });
@@ -131,21 +133,20 @@ export class TripScheduleController {
       const tripScheduleService = req.app.get(
         'tripScheduleService',
       ) as TripScheduleService;
-      console.log('req.body', req.body);
 
       const { id } = req.params;
       const tripId = parseInt(id, 10);
 
-      const updateData = req.body || {};
-      const convertedUpdateData = { ...updateData, name: updateData.title };
-      delete convertedUpdateData.title; // title -> name으로 전환 후 title 필드 제거
+      // TripScheduleConverter를 통해 updateData 변환
+      const updateData = TripScheduleConverter.fromUpdateTripDto(req.body);
 
-      const newMemberEmails: string[] = req.body.members || [];
+      const newMembers: string[] = req.body.members || [];
 
+      // 업데이트
       const updatedTrip = await tripScheduleService.updateTripSchedule(
         tripId,
-        convertedUpdateData,
-        newMemberEmails,
+        updateData,
+        newMembers,
       );
 
       res.status(200).json(updatedTrip);
