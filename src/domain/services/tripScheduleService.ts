@@ -63,11 +63,6 @@ export class TripScheduleService {
     }
   }
 
-  // get Trip by id
-  async getTripById(id: number): Promise<TripSchedule | null> {
-    return await this.tripRepository.findTripById(id);
-  }
-
   // delete Trip by id
   async deleteTripById(tripId: number): Promise<void> {
     const deletedTrip = await this.tripRepository.deleteById(tripId);
@@ -89,5 +84,16 @@ export class TripScheduleService {
     }
   }
 
-  // 여행 일정에 멤버를 추가.
+  // get Trip by id
+  async getTripById(id: number): Promise<TripSchedule | null> {
+    return await this.tripRepository.findTripById(id);
+  }
+
+  // get Trips by userId
+  async getUserTrips(userId: string): Promise<TripSchedule[]> {
+    const user = await this.userRepository.findUserById(userId);
+    if (!user) throw new Error('User not found');
+
+    return this.tripRepository.findTripByIds(user.trip_history);
+  }
 }

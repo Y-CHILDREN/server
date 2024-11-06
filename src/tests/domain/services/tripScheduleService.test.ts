@@ -36,6 +36,17 @@ describe('TripScheduleService', () => {
     },
   ];
 
+  // mock trip 데이터.
+  const mockTrip: TripSchedule = {
+    id: 1,
+    name: 'Test Trip',
+    destination: 'Test Destination',
+    start_date: new Date('2024-12-01'),
+    end_date: new Date('2024-12-10'),
+    members: [],
+    created_by: 'user@example.com',
+  };
+
   // 유저 조회 모킹
   const mockGetAllUsers = () => {
     vi.spyOn(userRepository, 'getAllUsers').mockResolvedValue([...mockUsers]);
@@ -69,13 +80,10 @@ describe('TripScheduleService', () => {
 
   describe('createTripSchedule', () => {
     it('should throw an error if start_date is after end_date', async () => {
-      const invalidData: Omit<TripSchedule, 'id'> = {
-        name: 'Test Trip',
-        destination: 'Test Destination',
+      const invalidData = {
+        ...mockTrip,
         start_date: new Date('2024-12-10'),
         end_date: new Date('2024-12-01'),
-        members: [],
-        created_by: 'user@example.com',
       };
 
       await expect(tripService.createTripSchedule(invalidData)).rejects.toThrow(
@@ -84,95 +92,39 @@ describe('TripScheduleService', () => {
     });
 
     it('should throw an error if user is not found', async () => {
-      const validData: Omit<TripSchedule, 'id'> = {
-        name: 'Test Trip',
-        destination: 'Test Destination',
-        start_date: new Date('2024-12-01'),
-        end_date: new Date('2024-12-10'),
-        members: [],
-        created_by: 'user@example.com',
-      };
-
       vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(undefined);
 
-      await expect(tripService.createTripSchedule(validData)).rejects.toThrow(
+      await expect(tripService.createTripSchedule(mockTrip)).rejects.toThrow(
         'User not found',
       );
     });
 
     it('should throw an error if updating user trip history fails', async () => {
-      const validData: Omit<TripSchedule, 'id'> = {
-        name: 'Test Trip',
-        destination: 'Test Destination',
-        start_date: new Date('2024-12-01'),
-        end_date: new Date('2024-12-10'),
-        members: [],
-        created_by: 'user@example.com',
-      };
-
-      const mockTrip = {
-        id: 1,
-        ...validData,
-      };
-
       vi.spyOn(tripRepository, 'create').mockResolvedValue(mockTrip);
-      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue({
-        id: 'user123',
-        provider: 'local',
-        email: 'user@example.com',
-        user_image: 'image.png',
-        nickname: 'user',
-        user_memo: 'Test user',
-        access_token: 'access_token',
-        refresh_token: 'refresh_token',
-        trip_history: [],
-      });
-
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(
+        mockUsers[0],
+      );
       vi.spyOn(userRepository, 'updateUserTripHistory').mockResolvedValue(
         false,
       );
 
-      await expect(tripService.createTripSchedule(validData)).rejects.toThrow(
+      await expect(tripService.createTripSchedule(mockTrip)).rejects.toThrow(
         'Failed to update user trip history',
       );
     });
 
     it('should create a trip successfully when all validations pass', async () => {
-      const validData: Omit<TripSchedule, 'id'> = {
-        name: 'Test Trip',
-        destination: 'Test Destination',
-        start_date: new Date('2024-12-01'),
-        end_date: new Date('2024-12-10'),
-        members: [],
-        created_by: 'user@example.com',
-      };
-
-      const mockUser = {
-        id: 'user123',
-        provider: 'local',
-        email: 'user@example.com',
-        user_image: 'image.png',
-        nickname: 'user',
-        user_memo: 'Test user',
-        access_token: 'access_token',
-        refresh_token: 'refresh_token',
-        trip_history: [],
-      };
-
-      const mockTrip = {
-        id: 1,
-        ...validData,
-      };
-
-      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(mockUser);
-      vi.spyOn(userRepository, 'updateUserTripHistory').mockResolvedValue(true);
       vi.spyOn(tripRepository, 'create').mockResolvedValue(mockTrip);
+      vi.spyOn(userRepository, 'findUserByEmail').mockResolvedValue(
+        mockUsers[0],
+      );
+      vi.spyOn(userRepository, 'updateUserTripHistory').mockResolvedValue(true);
 
-      const result = await tripService.createTripSchedule(validData);
+      const result = await tripService.createTripSchedule(mockTrip);
 
       expect(result).toEqual(mockTrip);
       expect(userRepository.updateUserTripHistory).toHaveBeenCalledWith(
-        mockUser.id,
+        mockUsers[0].id,
         mockTrip.id,
       );
     });
