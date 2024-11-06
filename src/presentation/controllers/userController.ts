@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../../domain/services/userService';
 
 import multer from 'multer';
@@ -207,6 +207,31 @@ export const updateUserImage = async (req: Request, res: Response) => {
       res.status(500).json({ message: '이미지 업로드에 실패 했습니다.' });
     }
   });
+};
+
+export const logout = (req: Request, res: Response) => {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('세션 삭제 오류:', err);
+        return res.status(500).json({
+          success: false,
+          message: '로그아웃 처리 중 오류가 발생했습니다.',
+        });
+      }
+
+      res.clearCookie('connect.sid');
+      res.status(200).json({
+        success: true,
+        message: '로그아웃이 성공적으로 완료되었습니다.',
+      });
+    });
+  } else {
+    res.status(200).json({
+      success: true,
+      message: '로그아웃이 성공적으로 완료되었습니다.',
+    });
+  }
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
