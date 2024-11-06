@@ -14,7 +14,14 @@ export class TripScheduleController {
       ) as TripScheduleService;
 
       // req.body에서 CreateTripDto 타입의 데이터를 추출
-      const createTripDto: CreateTripDto = req.body;
+      const createTripDto: CreateTripDto = {
+        ...req.body,
+        members: req.body.members.includes(req.body.created_by)
+          ? req.body.members // 생성자 이메일이 이미 포함된 경우 그대로 사용
+          : [req.body.created_by, ...req.body.members], // 포함되지 않은 경우 추가
+      };
+
+      // TripSchedule 타입으로 변환.
       const tripData = TripScheduleConverter.fromCreateTripDto(createTripDto);
 
       // service 호출하여 여행 일정 생성.

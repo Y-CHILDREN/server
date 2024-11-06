@@ -17,22 +17,30 @@ export class TripScheduleService {
       throw new Error('Invalid date range: startDate must be before endDate.');
     }
 
-    // 이메일에 해당하는 유저 찾기.
-    const user = await this.userRepository.findUserByEmail(data.created_by);
-    if (!user) {
-      throw new Error('User not found');
-    }
+    // 멤버 중복 확인 및 중복 제거
+    const uniqueMembers = Array.from(new Set(data.members));
 
     // 여행 일정 생성
-    const savedTrip = await this.tripRepository.create(data);
+    const savedTrip = await this.tripRepository.create({
+      ...data,
+      members: uniqueMembers, // 중복 제거한 members 배열 저장
+    });
 
-    // 유저의 trip_history 업데이트
-    const update = await this.userRepository.updateUserTripHistory(
-      user.id,
-      savedTrip.id,
-    );
-    if (!update) {
-      throw new Error('Failed to update user trip history');
+    // 각 멤버의 유효성을 확인하고 trip_history 갱신
+    for (const email of data.members) {
+      const user = await this.userRepository.findUserByEmail(email);
+      if (!user) {
+        throw new Error(`User with email ${email} not found`);
+      }
+
+      // 해당 유저의 trip_history 업데이트 시도
+      const updated = await this.userRepository.updateUserTripHistory(
+        user.id,
+        savedTrip.id,
+      );
+      if (!updated) {
+        throw new Error(`Failed to update trip history for user ${email}`);
+      }
     }
 
     return savedTrip;
