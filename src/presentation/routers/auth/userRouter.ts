@@ -3,6 +3,7 @@ import {
   deleteUser,
   findUserByEmail,
   getUserById,
+  logout,
   updateUserImage,
   updateUserMemo,
   updateUserNickname,
@@ -12,7 +13,7 @@ const userRouter = Router();
 
 userRouter.get('/:id', getUserById);
 
-userRouter.get('/email/:email', findUserByEmail);
+userRouter.get('/:id/:email', findUserByEmail);
 
 userRouter.patch('/:id/nickname', (req, res) => {
   updateUserNickname(req, res);
@@ -25,6 +26,8 @@ userRouter.patch('/:id/memo', (req, res) => {
 userRouter.patch('/:id/image', (req, res) => {
   updateUserImage(req, res);
 });
+
+userRouter.post('/logout', logout);
 
 userRouter.delete('/:id', (req, res) => {
   deleteUser(req, res);
