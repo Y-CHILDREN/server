@@ -16,4 +16,13 @@ router.post('/members', (req, res) =>
 // Get trip by id
 router.get('/:id', (req, res) => tripScheduleController.getTripById(req, res));
 
+// delete trip
+router.delete('/:id', (req, res) =>
+  tripScheduleController.deleteTripById(req, res),
+);
+
+// Add user's trip_history
+
+// Update trip
+
 export default router;

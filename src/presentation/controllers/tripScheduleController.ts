@@ -36,7 +36,7 @@ export class TripScheduleController {
 
       const { tripId, email } = req.body;
 
-      await tripScheduleService.addMemberByEmail(tripId, email);
+      await tripScheduleService.addTripMemberByEmail(tripId, email);
 
       res.status(200).json({
         message: 'Member added successfully',
@@ -69,6 +69,24 @@ export class TripScheduleController {
       res.status(500).json({
         message: 'Server error',
       });
+    }
+  }
+
+  async deleteTripById(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+
+      const { id } = req.params;
+      const tripId = parseInt(id);
+
+      await tripScheduleService.deleteTripById(tripId);
+
+      res.status(200).json({ message: 'Trip deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting trip', error);
+      res.status(500).json({ message: 'Server error: Failed to delete trip' });
     }
   }
 }
