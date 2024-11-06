@@ -29,7 +29,7 @@ export class InMemoryTripScheduleRepositoryImpl
     // Id에 해당하는 trip을 trips에서 찾아 삭제.
     this.trips = this.trips.filter((trip) => trip.id !== id);
 
-    return this.trips.length > initialLength; // 삭제가 여부 반환.
+    return this.trips.length < initialLength; // 삭제가 여부 반환.
     // 모든 데이터를 검사해야해서 효율이 좋지 않을 것 같음.
   }
 
