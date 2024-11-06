@@ -23,7 +23,7 @@ const redirectUrlBase = process.env.REDIRECT_URL_BASE;
 
 app.use(
   cors({
-    origin: 'http://y-children.s3-website.ap-northeast-2.amazonaws.com',
+    origin: 'http://localhost:5173',
     credentials: true,
   }),
 );
@@ -32,7 +32,6 @@ app.set('port', process.env.PORT);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-app.use(cors<Request>());
 app.use(
   session({
     secret: 'defaultSecret',
@@ -47,7 +46,6 @@ app.use(passport.session());
 
 app.use('/', rootRouter);
 
-app.use(cors<Request>());
 app.listen(app.get('port'), async () => {
   console.log(`Server is running on port ${app.get('port')}`);
   console.log(`Current Environment: ${env}`);
