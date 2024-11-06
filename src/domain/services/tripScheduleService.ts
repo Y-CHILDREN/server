@@ -96,4 +96,39 @@ export class TripScheduleService {
 
     return this.tripRepository.findTripByIds(user.trip_history);
   }
+
+  // update Trip
+  async updateTripSchedule(
+    tripId: number,
+    updateData: Omit<TripSchedule, 'id' | 'created_by'>,
+    newMemberEmails: string[] = [],
+  ): Promise<TripSchedule> {
+    const trip = await this.tripRepository.findTripById(tripId);
+    if (!trip) {
+      throw new Error('Trip not found');
+    }
+
+    // 업데이트할 필드 수정.
+    Object.assign(trip, updateData);
+
+    // 유저 trip_history 업데이트 로직.
+    for (const email of newMemberEmails) {
+      if (!trip.members.includes(email)) {
+        const user = await this.userRepository.findUserByEmail(email);
+        if (!user) {
+          throw new Error(`User with email ${email} not found`);
+        }
+
+        // 멤버 추가
+        trip.members.push(email);
+
+        // 해당 유저의 trip_history에 여행 ID 추가.
+        await this.userRepository.updateUserTripHistory(user.id, tripId);
+      }
+    }
+
+    // 여행 일정 업데이트
+    await this.tripRepository.update(trip);
+    return trip;
+  }
 }

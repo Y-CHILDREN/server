@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { TripScheduleService } from '../../domain/services/tripScheduleService';
 import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
 import { TripScheduleConverter } from '../../data/converters/tripScheduleConverter';
-import { TripSchedule } from '../../domain/entities/tripSchedule';
 
 export class TripScheduleController {
   // constructor(private readonly tripScheduleService: TripScheduleService) {}
@@ -116,6 +115,36 @@ export class TripScheduleController {
       res
         .status(500)
         .json({ message: 'Server error: Failed to get user trips' });
+    }
+  }
+
+  // update trip
+  async updateTripSchedule(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+      console.log('req.body', req.body);
+
+      const { id } = req.params;
+      const tripId = parseInt(id, 10);
+
+      const updateData = req.body || {};
+      const convertedUpdateData = { ...updateData, name: updateData.title };
+      delete convertedUpdateData.title; // title -> name으로 전환 후 title 필드 제거
+
+      const newMemberEmails: string[] = req.body.members || [];
+
+      const updatedTrip = await tripScheduleService.updateTripSchedule(
+        tripId,
+        convertedUpdateData,
+        newMemberEmails,
+      );
+
+      res.status(200).json(updatedTrip);
+    } catch (error) {
+      console.error('Failed to update trip', error);
+      res.status(500).json({ message: 'Server error: Failed to update trip' });
     }
   }
 }
