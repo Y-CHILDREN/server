@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { TripScheduleService } from '../../domain/services/tripScheduleService';
 import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
 import { TripScheduleConverter } from '../../data/converters/tripScheduleConverter';
-import { TripSchedule } from '../../domain/entities/tripSchedule';
 
 export class TripScheduleController {
   // constructor(private readonly tripScheduleService: TripScheduleService) {}
@@ -15,7 +14,14 @@ export class TripScheduleController {
       ) as TripScheduleService;
 
       // req.body에서 CreateTripDto 타입의 데이터를 추출
-      const createTripDto: CreateTripDto = req.body;
+      const createTripDto: CreateTripDto = {
+        ...req.body,
+        members: req.body.members.includes(req.body.created_by)
+          ? req.body.members // 생성자 이메일이 이미 포함된 경우 그대로 사용
+          : [req.body.created_by, ...req.body.members], // 포함되지 않은 경우 추가
+      };
+
+      // TripSchedule 타입으로 변환.
       const tripData = TripScheduleConverter.fromCreateTripDto(createTripDto);
 
       // service 호출하여 여행 일정 생성.
@@ -86,10 +92,12 @@ export class TripScheduleController {
         return;
       }
 
+      console.log('trip :', trip);
       // Convert trip data -> response DTO
       const responseDto = TripScheduleConverter.toResDto(trip);
       res.status(200).json(responseDto);
     } catch (error) {
+      console.error(error);
       res.status(500).json({
         message: 'Server error',
       });
@@ -116,6 +124,35 @@ export class TripScheduleController {
       res
         .status(500)
         .json({ message: 'Server error: Failed to get user trips' });
+    }
+  }
+
+  // update trip
+  async updateTripSchedule(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+
+      const { id } = req.params;
+      const tripId = parseInt(id, 10);
+
+      // TripScheduleConverter를 통해 updateData 변환
+      const updateData = TripScheduleConverter.fromUpdateTripDto(req.body);
+
+      const newMembers: string[] = req.body.members || [];
+
+      // 업데이트
+      const updatedTrip = await tripScheduleService.updateTripSchedule(
+        tripId,
+        updateData,
+        newMembers,
+      );
+
+      res.status(200).json(updatedTrip);
+    } catch (error) {
+      console.error('Failed to update trip', error);
+      res.status(500).json({ message: 'Server error: Failed to update trip' });
     }
   }
 }

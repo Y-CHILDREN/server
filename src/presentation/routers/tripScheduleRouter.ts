@@ -27,5 +27,8 @@ router.get('/user/:userId', (req, res) =>
 );
 
 // Update trip
+router.put('/:id', (req, res) =>
+  tripScheduleController.updateTripSchedule(req, res),
+);
 
 export default router;
