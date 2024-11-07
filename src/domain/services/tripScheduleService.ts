@@ -27,7 +27,7 @@ export class TripScheduleService {
     });
 
     // 각 멤버의 유효성을 확인하고 trip_history 갱신
-    for (const email of data.members) {
+    for (const email of uniqueMembers) {
       const user = await this.userRepository.findUserByEmail(email);
       if (!user) {
         throw new Error(`User with email ${email} not found`);
