@@ -54,8 +54,8 @@ export const UserService = (userRepository: UserRepository) => {
   return {
     createUser,
     findUserById,
-    findUsersByEmail,
     findUserByEmail,
+    findUsersByEmail,
     findUserByEmailAndProvider,
     updateUserImage,
     updateUserNickname,

@@ -14,7 +14,7 @@ const userRouter = Router();
 
 userRouter.get('/:id', getUserById);
 
-userRouter.get('/:id/:email', findUserByEmail);
+userRouter.get('/email/:email', findUserByEmail);
 
 userRouter.get('/emails/:email', findUsersByEmail);
 
