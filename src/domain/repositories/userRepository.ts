@@ -4,6 +4,7 @@ export interface UserRepository {
   createUser: (userData: Omit<User, 'id'>) => Promise<User>;
   findUserById: (id: string) => Promise<User | undefined>;
   findUserByEmail: (email: string) => Promise<User | undefined>;
+  findUsersByEmail: (email: string) => Promise<User[] | undefined>;
   findUserByEmailAndProvider: (
     email: string,
     provider: string,
