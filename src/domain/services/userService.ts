@@ -14,6 +14,10 @@ export const UserService = (userRepository: UserRepository) => {
     return await userRepository.findUserByEmail(email);
   };
 
+  const findUsersByEmail = async (email: string) => {
+    return await userRepository.findUsersByEmail(email);
+  };
+
   const findUserByEmailAndProvider = async (
     email: string,
     provider: string,
@@ -50,6 +54,7 @@ export const UserService = (userRepository: UserRepository) => {
   return {
     createUser,
     findUserById,
+    findUsersByEmail,
     findUserByEmail,
     findUserByEmailAndProvider,
     updateUserImage,

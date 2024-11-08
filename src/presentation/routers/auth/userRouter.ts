@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   deleteUser,
   findUserByEmail,
+  findUsersByEmail,
   getUserById,
   updateUserImage,
   updateUserMemo,
@@ -13,6 +14,8 @@ const userRouter = Router();
 userRouter.get('/:id', getUserById);
 
 userRouter.get('/email/:email', findUserByEmail);
+
+userRouter.get('/emails/:email', findUsersByEmail);
 
 userRouter.patch('/:id/nickname', (req, res) => {
   updateUserNickname(req, res);

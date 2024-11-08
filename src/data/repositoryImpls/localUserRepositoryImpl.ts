@@ -56,6 +56,14 @@ export const userDataLocalRepository = (): UserRepository => {
     return users.find((user) => user.email === email);
   };
 
+  // 유저 이메일로 여러 유저를 반환하는 함수
+  const findUsersByEmail = async (
+    email: string,
+  ): Promise<User[] | undefined> => {
+    const users = await readUsersData();
+    return users.filter((user) => user.email.includes(email));
+  };
+
   // 유저 이메일과 provider(유저 가입 플랫품)로 유저를 체크하는 함수
   const findUserByEmailAndProvider = async (
     email: string,
@@ -206,6 +214,7 @@ export const userDataLocalRepository = (): UserRepository => {
     findUserByEmail,
     findUserByEmailAndProvider,
     findUserById,
+    findUsersByEmail,
     updateUserImage,
     updateUserNickname,
     updateUserMemo,

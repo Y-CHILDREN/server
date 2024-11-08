@@ -58,6 +58,30 @@ export const findUserByEmail = async (
   }
 };
 
+export const findUsersByEmail = async (
+  req: Request<{ email: string }>,
+  res: Response,
+) => {
+  const userService = req.app.get('userService') as ReturnType<
+    typeof UserService
+  >;
+  const { email } = req.params;
+  try {
+    const users = await userService.findUsersByEmail(email);
+    if (users) {
+      res.status(200).json(users);
+    } else {
+      res
+        .status(404)
+        .json({ message: '해당 이메일로 유저를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: '이메일로 유저를 찾는 중 오류가 발생했습니다.' });
+  }
+};
+
 export const findUserByEmailAndProvider = async (
   req: Request,
   res: Response,
