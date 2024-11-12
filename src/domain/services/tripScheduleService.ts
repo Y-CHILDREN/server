@@ -13,7 +13,7 @@ export class TripScheduleService {
     data: Omit<TripSchedule, 'id'>,
   ): Promise<TripSchedule> {
     // 날짜 유효성 검사
-    if (data.start_date >= data.end_date) {
+    if (data.start_date > data.end_date) {
       throw new Error('Invalid date range: startDate must be before endDate.');
     }
 

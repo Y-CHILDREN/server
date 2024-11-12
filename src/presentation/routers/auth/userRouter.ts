@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   deleteUser,
   findUserByEmail,
+  findUsersByEmail,
   getUserById,
   logout,
   updateUserImage,

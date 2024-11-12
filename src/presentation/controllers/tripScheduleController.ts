@@ -118,7 +118,12 @@ export class TripScheduleController {
         res.status(404).json({ message: 'No trips for this user' });
         return;
       }
-      res.status(200).json(trips);
+
+      // Convert trip data -> response DTO
+      const responseDtos = trips.map((trip) =>
+        TripScheduleConverter.toResDto(trip),
+      );
+      res.status(200).json(responseDtos);
     } catch (error) {
       console.error('get', error);
       res
