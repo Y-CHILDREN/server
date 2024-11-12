@@ -29,11 +29,13 @@ kakaoRouter.get(
       process.env.REDIRECT_URL_BASE || 'http://localhost:5173';
 
     if (user) {
-      res.redirect(
-        `${redirectUrlBase}/login?token=${user.access_token}&user=${encodeURIComponent(
-          JSON.stringify(user),
-        )}`,
-      );
+      const redirectUrl = `${redirectUrlBase}/login?token=${user.access_token}&user=${encodeURIComponent(
+        JSON.stringify(user),
+      )}`;
+
+      console.log('마지막 redirect URL:', redirectUrl);
+
+      res.redirect(redirectUrl);
     } else {
       res.redirect('/');
     }
