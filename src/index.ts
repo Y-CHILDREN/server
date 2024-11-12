@@ -23,7 +23,10 @@ const redirectUrlBase = process.env.REDIRECT_URL_BASE;
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: [
+      'http://y-children.s3-website.ap-northeast-2.amazonaws.com',
+      'http://localhost:5173',
+    ],
     credentials: true,
   }),
 );

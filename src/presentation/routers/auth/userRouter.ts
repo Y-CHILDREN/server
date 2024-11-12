@@ -14,9 +14,7 @@ const userRouter = Router();
 
 userRouter.get('/:id', getUserById);
 
-userRouter.get('/email/:email', findUserByEmail);
-
-userRouter.get('/emails/:email', findUsersByEmail);
+userRouter.get('/:emails/:email', findUserByEmail);
 
 userRouter.patch('/:id/nickname', (req, res) => {
   updateUserNickname(req, res);
