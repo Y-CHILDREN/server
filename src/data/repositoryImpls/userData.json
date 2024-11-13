@@ -6,12 +6,13 @@
     "user_image": "https://lh3.googleusercontent.com/a/ACg8ocKji1Y0dBDA_LJG3YzZfstynUfR2qtPS8_qJmtZ_9FkXA79NSNw=s96-c",
     "nickname": "TJ",
     "user_memo": "",
-    "access_token": "ya29.a0AcM612wBL-gtSO5PMhPl_LoP6IQJ4OdzylLRmjTP76xOr3xVpVrbJ6yQH1Q1ti2YKnLAH7e0vl3SRJslSj-b_o38aU3xij-1UQ3nJAQnMBAcvp0GlwvSapLjdbKqdp4aYgCBctmu_6JtHteZR_Ha3VGJTfIGnel2sO_mBrN_aCgYKARgSARASFQHGX2MiTmev-n8gPEZQ3Z4DbT2F0g0175",
-    "refresh_token": "1//0eQqQoREMmFDECgYIARAAGA4SNwF-L9IrwrGe1Tsdl-t_WShiOaukjX4gYj2zyfpy5sXaQfUujnjnSECa6yF6DBXWOr97wJhl1uY",
+    "access_token": "ya29.a0AeDClZBV83wRMY4O6yTI3zYIRv7sbizNiKa1mlnvZV_63cEDodIJMKC1zuFO_GvdSOyf8FhUKVAlInAIYj14qt0OrEqHPI-1wj8Lwt8FCzixBbYfM2ZZZVUCo3NEJquucuxlNRwFoLWZN8AV3SEMjJijM8FYHvrgcWX-NQLDaCgYKAZ4SARASFQHGX2MilzdIx3rihe7zrhu44Wg2Hg0175",
+    "refresh_token": "1//0etJf3qWAw5uwCgYIARAAGA4SNwF-L9IrFFwuWbJg_ZpEjDTHx57D8R3plALSo1cUWBx5stjKQBehBCt_JR1Plk3lP5XXgwnZhRA",
     "trip_history": [
-      1,
-      2,
-      3
+      4,
+      5,
+      6,
+      7
     ]
   },
   {
@@ -34,10 +35,6 @@
     "user_memo": "",
     "access_token": "ya29.a0AcM612wBL-gtSO5PMhPl_LoP6IQJ4OdzylLRmjTP76xOr3xVpVrbJ6yQH1Q1ti2YKnLAH7e0vl3SRJslSj-b_o38aU3xij-1UQ3nJAQnMBAcvp0GlwvSapLjdbKqdp4aYgCBctmu_6JtHteZR_Ha3VGJTfIGnel2sO_mBrN_aCgYKARgSARASFQHGX2MiTmev-n8gPEZQ3Z4DbT2F0g0175",
     "refresh_token": "1//0eQqQoREMmFDECgYIARAAGA4SNwF-L9IrwrGe1Tsdl-t_WShiOaukjX4gYj2zyfpy5sXaQfUujnjnSECa6yF6DBXWOr97wJhl1uY",
-    "trip_history": [
-      1,
-      2,
-      3
-    ]
+    "trip_history": []
   }
 ]
