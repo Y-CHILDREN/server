@@ -16,6 +16,7 @@ userRouter.get('/:id', getUserById);
 
 userRouter.get('/email/:email', findUserByEmail);
 
+// 조건 검색 라우트
 userRouter.get('/emails/:email', findUsersByEmail);
 
 userRouter.patch('/:id/nickname', (req, res) => {
