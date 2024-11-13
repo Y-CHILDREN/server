@@ -14,7 +14,10 @@ const userRouter = Router();
 
 userRouter.get('/:id', getUserById);
 
-userRouter.get('/:emails/:email', findUserByEmail);
+userRouter.get('/email/:email', findUserByEmail);
+
+// 조건 검색 라우트
+userRouter.get('/emails/:email', findUsersByEmail);
 
 userRouter.patch('/:id/nickname', (req, res) => {
   updateUserNickname(req, res);
