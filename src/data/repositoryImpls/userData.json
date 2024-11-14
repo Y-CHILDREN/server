@@ -36,5 +36,16 @@
     "access_token": "ya29.a0AcM612wBL-gtSO5PMhPl_LoP6IQJ4OdzylLRmjTP76xOr3xVpVrbJ6yQH1Q1ti2YKnLAH7e0vl3SRJslSj-b_o38aU3xij-1UQ3nJAQnMBAcvp0GlwvSapLjdbKqdp4aYgCBctmu_6JtHteZR_Ha3VGJTfIGnel2sO_mBrN_aCgYKARgSARASFQHGX2MiTmev-n8gPEZQ3Z4DbT2F0g0175",
     "refresh_token": "1//0eQqQoREMmFDECgYIARAAGA4SNwF-L9IrwrGe1Tsdl-t_WShiOaukjX4gYj2zyfpy5sXaQfUujnjnSECa6yF6DBXWOr97wJhl1uY",
     "trip_history": []
+  },
+  {
+    "id": "4",
+    "provider": "google",
+    "email": "jihwan8807@gmail.com",
+    "user_image": "https://lh3.googleusercontent.com/a/ACg8ocIjuQtaQfvOrEj_kurJ2UmcF8GcUTstY9s-YplpibdVsFOXAE2h=s96-c",
+    "nickname": "박지환",
+    "user_memo": "",
+    "access_token": "ya29.a0AeDClZBmJqgJHEAxH05HknY3tl01i8qs5Lmaoj-QR6ij2elCqtIORxtWMyv9JZ-nd0AdJ59dRyh8sUyFt9aJ8MxATG8GicHb0au42SGJfsrJafvDHpO-FJQqQ7J4OVSs2Vk_yUMdgFjvU6aOKMg648Z4MrsA7x9jIBQW9gEDaCgYKAV8SARESFQHGX2MinuvCAZ-FqLumU3hip4craA0175",
+    "refresh_token": "1//0eJZPvueQSXcXCgYIARAAGA4SNwF-L9IrxR0DHXPZS-4HcTn_jxnCDazPeVtGDLOSsAa5tJ7o5R9FIcvPLVMWMGax_1nkmxKCMnQ",
+    "trip_history": []
   }
 ]
