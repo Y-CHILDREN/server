@@ -6,8 +6,8 @@ class TripEventService {
     // 의존성 주입
     private readonly tripEventRepository: TripEventRepository,
   ) {}
-  // 스케줄 생성
-  createTripSchedule = async (
+  // 이벤트 생성
+  createTripEvent = async (
     tripEventData: Omit<TripEvent, 'event_id'>,
   ): Promise<TripEvent> => {
     // 날짜 유효성 검사 로직
@@ -26,7 +26,7 @@ class TripEventService {
     return tripEvent;
   };
   // 스케쥴 업데이트
-  updateTripSchedule = async (tripEventData: TripEvent): Promise<TripEvent> => {
+  updateTripEvent = async (tripEventData: TripEvent): Promise<TripEvent> => {
     const { trip_id, event_name, location, start_date, end_date } =
       tripEventData;
 
@@ -45,7 +45,7 @@ class TripEventService {
   };
 
   // event_id로 event 단일 조회
-  getTripEventById = async (event_id: number): Promise<TripEvent | null> => {
+  getTripEventById = async (event_id: number): Promise<TripEvent> => {
     if (!event_id) {
       throw new Error('event_id 값을 입력해주세요');
     }
