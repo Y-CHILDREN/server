@@ -31,16 +31,12 @@ describe('tripEventService', () => {
       end_date: new Date('2024-01-05'),
       cost: [
         {
-          cost: {
-            category: '식사',
-            value: 30000,
-          },
+          category: '식사',
+          value: 30000,
         },
         {
-          cost: {
-            category: '교통',
-            value: 15000,
-          },
+          category: '교통',
+          value: 15000,
         },
       ],
     };
