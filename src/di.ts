@@ -5,8 +5,8 @@ import { userDataLocalRepository } from './data/repositoryImpls/localUserReposit
 import { UserService } from './domain/services/userService';
 import { TripScheduleService } from './domain/services/tripScheduleService';
 import { InMemoryTripScheduleRepositoryImpl } from './data/repositoryImpls/inMemoryTripScheduleRepositoryImpl';
-import { TripEventService } from './domain/services/tripEventService.js';
-import { InMemoryTripEventRepositoryImpl } from './data/repositoryImpls/inMemoryTripEventRepositoryImpl.js';
+import { TripEventService } from './domain/services/tripEventService';
+import { InMemoryTripEventRepositoryImpl } from './data/repositoryImpls/inMemoryTripEventRepositoryImpl';
 
 export function di(app: ReturnType<typeof express>) {
   const calculationRepository = new InMemoryCalculationRepositoryImpl();

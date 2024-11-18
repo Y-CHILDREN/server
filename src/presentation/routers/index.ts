@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { pingRouter } from './pingRouter';
 import { calculationRouter } from './calculationRouter';
-import { eventRouter } from './tripEventRouter.js';
+import { eventRouter } from './tripEventRouter';
 
 import authRouter from './authRouter';
 import tripScheduleRouter from './tripScheduleRouter';

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { TripEventService } from '../../domain/services/tripEventService.js';
+import { TripEventService } from '../../domain/services/tripEventService';
 
-import { TripEventDto } from '../../data/dtos/event/tripEventDto.js';
-import { TripEventConverter } from '../../data/converters/tripEventConverter.js';
+import { TripEventDto } from '../../data/dtos/event/tripEventDto';
+import { TripEventConverter } from '../../data/converters/tripEventConverter';
 
 export class TripEventController {
   constructor(private readonly tripEventService: TripEventService) {}

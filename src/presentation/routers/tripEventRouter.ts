@@ -1,6 +1,6 @@
 // src/presentation/routes/tripEventRoutes.ts
 import { Router } from 'express';
-import { TripEventController } from '../controllers/tripEventController.js';
+import { TripEventController } from '../controllers/tripEventController';
 import express from 'express';
 const app = express();
 
