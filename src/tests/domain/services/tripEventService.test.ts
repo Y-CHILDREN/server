@@ -53,7 +53,7 @@ describe('tripEventService', () => {
       event_id: 1,
     });
 
-    const result = await tripEventService.createTripSchedule(mockData);
+    const result = await tripEventService.createTripEvent(mockData);
     expect(result).toEqual({ ...mockData, event_id: 1 });
     expect(tripEventRepository.createTripEvent).toHaveBeenCalledWith(mockData);
   });
@@ -64,7 +64,7 @@ describe('tripEventService', () => {
       updatedData,
     );
 
-    const result = await tripEventService.updateTripSchedule(updatedData);
+    const result = await tripEventService.updateTripEvent(updatedData);
     expect(result).toEqual(updatedData);
     expect(tripEventRepository.updateTripEvent).toHaveBeenCalledWith(
       updatedData,
@@ -116,16 +116,16 @@ describe('tripEventService', () => {
       end_date: new Date('2024-01-05'),
     };
 
-    await expect(
-      tripEventService.createTripSchedule(invalidData),
-    ).rejects.toThrow('잘못된 날짜 범위: 시작일은 마감일보다 앞서야 합니다.');
+    await expect(tripEventService.createTripEvent(invalidData)).rejects.toThrow(
+      '잘못된 날짜 범위: 시작일은 마감일보다 앞서야 합니다.',
+    );
   });
 
   it('createTripSchedule should throw error for missing input', async () => {
     const invalidData = { ...mockData, event_name: '' };
 
-    await expect(
-      tripEventService.createTripSchedule(invalidData),
-    ).rejects.toThrow('모든 입력값에 올바른 값을 입력해주세요');
+    await expect(tripEventService.createTripEvent(invalidData)).rejects.toThrow(
+      '모든 입력값에 올바른 값을 입력해주세요',
+    );
   });
 });
