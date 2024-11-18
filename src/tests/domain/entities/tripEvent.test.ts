@@ -15,16 +15,12 @@ describe('tripEvent Entity', () => {
       end_date: new Date('2024-11-16'),
       cost: [
         {
-          cost: {
-            category: '식비',
-            value: 350,
-          },
+          category: '식비',
+          value: 350,
         },
         {
-          cost: {
-            category: '입장료',
-            value: 1200,
-          },
+          category: '입장료',
+          value: 1200,
         },
       ],
     };

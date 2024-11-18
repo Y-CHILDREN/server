@@ -1,4 +1,3 @@
-// src/domain/converters/tripEventConverter.ts
 import { TripEvent } from '../../domain/entities/tripEvent.js';
 import { TripEventDto } from '../dtos/event/tripEventDto.js';
 
@@ -13,8 +12,8 @@ export class TripEventConverter {
       start_date: tripEvent.start_date.toISOString(), // Date 객체를 ISO 문자열로 변환
       end_date: tripEvent.end_date.toISOString(), // Date 객체를 ISO 문자열로 변환
       cost: tripEvent.cost.map((costItem) => ({
-        category: costItem.cost.category,
-        value: costItem.cost.value,
+        category: costItem.category,
+        value: costItem.value,
       })),
     };
   }
@@ -28,10 +27,8 @@ export class TripEventConverter {
       start_date: new Date(dto.start_date), // ISO 문자열을 Date 객체로 변환
       end_date: new Date(dto.end_date), // ISO 문자열을 Date 객체로 변환
       cost: dto.cost.map((costItem) => ({
-        cost: {
-          category: costItem.category,
-          value: costItem.value,
-        },
+        category: costItem.category,
+        value: costItem.value,
       })),
     };
   }

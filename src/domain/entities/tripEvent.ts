@@ -1,8 +1,6 @@
 interface Cost {
-  cost: {
-    category: string;
-    value: number;
-  };
+  category: string;
+  value: number;
 }
 
 interface TripEvent {
@@ -22,4 +20,4 @@ const validateTripEvent = (event: TripEvent): boolean => {
   return true;
 };
 
-export { TripEvent, validateTripEvent };
+export { TripEvent, validateTripEvent, Cost };
