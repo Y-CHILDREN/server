@@ -1,0 +1,420 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Request, Response } from 'express';
+
+import { TripEventController } from '../../../presentation/controllers/tripEventController.js';
+import { TripEventService } from '../../../domain/services/tripEventService.js';
+import { TripEventDto } from '../../../data/dtos/event/tripEventDto.js';
+import { TripEventConverter } from '../../../data/converters/tripEventConverter.js';
+import { TripEvent } from '../../../domain/entities/tripEvent.js';
+
+describe('TripEventController', () => {
+  let tripEventService: TripEventService;
+  let tripEventController: TripEventController;
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let responseJson: any;
+  let responseStatus: any;
+  let responseSend: any;
+
+  beforeEach(() => {
+    tripEventService = {
+      createTripEvent: vi.fn(),
+      updateTripEvent: vi.fn(),
+      getTripEventById: vi.fn(),
+      deleteTripEventById: vi.fn(),
+      getTripEventsByTripId: vi.fn(),
+    } as any;
+
+    tripEventController = new TripEventController(tripEventService);
+
+    responseJson = vi.fn().mockReturnThis();
+    responseStatus = vi.fn().mockReturnThis();
+    responseSend = vi.fn().mockReturnThis();
+
+    mockResponse = {
+      json: responseJson,
+      status: responseStatus,
+      send: responseSend,
+    };
+  });
+
+  describe('createTripEvent', () => {
+    const mockTripEventDto: TripEventDto = {
+      trip_id: 1,
+      event_id: 1,
+      event_name: '테스트 이벤트1',
+      location: '서울',
+      start_date: '2024-03-20T09:00:00Z',
+      end_date: '2024-03-20T18:00:00Z',
+      cost: [
+        {
+          category: '교통',
+          value: 60000,
+        },
+        {
+          category: '식비',
+          value: 40000,
+        },
+      ],
+    };
+
+    it('should create a trip event successfully', async () => {
+      // Arrange
+      mockRequest = {
+        body: mockTripEventDto,
+      };
+
+      const mockCreatedEvent = {
+        ...mockTripEventDto,
+        start_date: new Date(mockTripEventDto.start_date),
+        end_date: new Date(mockTripEventDto.end_date),
+      };
+      vi.spyOn(tripEventService, 'createTripEvent').mockResolvedValue(
+        mockCreatedEvent,
+      );
+      vi.spyOn(TripEventConverter, 'fromDto').mockReturnValue(mockCreatedEvent);
+      vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
+
+      // Act
+      await tripEventController.createTripEvent(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(201);
+      expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
+      expect(tripEventService.createTripEvent).toHaveBeenCalled();
+    });
+
+    it('should handle errors during trip event creation', async () => {
+      // Arrange
+      mockRequest = {
+        body: mockTripEventDto,
+      };
+
+      const error = new Error('Creation failed');
+      vi.spyOn(tripEventService, 'createTripEvent').mockRejectedValue(error);
+
+      // Act
+      await tripEventController.createTripEvent(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(400);
+      expect(responseJson).toHaveBeenCalledWith({ message: error.message });
+    });
+  });
+
+  describe('updateTripEvent', () => {
+    const mockTripEventDto: TripEventDto = {
+      trip_id: 1,
+      event_id: 1,
+      event_name: '테스트 이벤트2',
+      location: '부산',
+      start_date: '2024-03-20T09:00:00Z',
+      end_date: '2024-03-20T18:00:00Z',
+      cost: [
+        {
+          category: '교통',
+          value: 50000,
+        },
+        {
+          category: '식비',
+          value: 30000,
+        },
+      ],
+    };
+
+    it('should update a trip event successfully', async () => {
+      mockRequest = {
+        body: mockTripEventDto,
+      };
+
+      const mockUpdatedEvent = {
+        ...mockTripEventDto,
+        start_date: new Date(mockTripEventDto.start_date),
+        end_date: new Date(mockTripEventDto.end_date),
+      };
+      vi.spyOn(tripEventService, 'updateTripEvent').mockResolvedValue(
+        mockUpdatedEvent,
+      );
+      vi.spyOn(TripEventConverter, 'fromDto').mockReturnValue(mockUpdatedEvent);
+      vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
+
+      // Act
+      await tripEventController.updateTripEvent(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(200);
+      expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
+    });
+
+    it('should handle errors during trip event update', async () => {
+      // Arrange
+      mockRequest = {
+        body: mockTripEventDto,
+      };
+
+      const error = new Error('Update failed');
+      vi.spyOn(tripEventService, 'updateTripEvent').mockRejectedValue(error);
+
+      // Act
+      await tripEventController.updateTripEvent(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(400);
+      expect(responseJson).toHaveBeenCalledWith({ message: error.message });
+    });
+  });
+
+  describe('getTripEventById', () => {
+    it('should get a trip event by id successfully', async () => {
+      // Arrange
+      const eventId = 1;
+      mockRequest = {
+        params: { event_id: eventId.toString() },
+      };
+
+      const mockEvent: TripEvent = {
+        trip_id: 1,
+        event_id: 1,
+        event_name: '테스트 이벤트2',
+        location: '부산',
+        start_date: new Date('2024-03-20T09:00:00Z'),
+        end_date: new Date('2024-03-20T18:00:00Z'),
+        cost: [
+          {
+            category: '교통',
+            value: 50000,
+          },
+          {
+            category: '식비',
+            value: 30000,
+          },
+        ],
+      };
+
+      const mockTripEventDto: TripEventDto = {
+        trip_id: 1,
+        event_id: 1,
+        event_name: '테스트 이벤트2',
+        location: '부산',
+        start_date: '2024-03-20T09:00:00Z',
+        end_date: '2024-03-20T18:00:00Z',
+        cost: [
+          {
+            category: '교통',
+            value: 50000,
+          },
+          {
+            category: '식비',
+            value: 30000,
+          },
+        ],
+      };
+
+      vi.spyOn(tripEventService, 'getTripEventById').mockResolvedValue(
+        mockEvent,
+      );
+      vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
+
+      // Act
+      await tripEventController.getTripEventById(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(200);
+      expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
+    });
+
+    it('should handle event not found', async () => {
+      // Arrange
+      mockRequest = {
+        params: { event_id: '999' },
+      };
+
+      const error = new Error('Event not found');
+      vi.spyOn(tripEventService, 'getTripEventById').mockRejectedValue(error);
+
+      // Act
+      await tripEventController.getTripEventById(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(404);
+      expect(responseJson).toHaveBeenCalledWith({ message: error.message });
+    });
+  });
+
+  describe('deleteTripEventById', () => {
+    it('should delete a trip event successfully', async () => {
+      // Arrange
+      mockRequest = {
+        params: { event_id: '1' },
+      };
+
+      vi.spyOn(tripEventService, 'deleteTripEventById').mockResolvedValue(true);
+
+      // Act
+      await tripEventController.deleteTripEventById(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(204);
+      expect(responseSend).toHaveBeenCalled();
+    });
+
+    it('should handle delete event not found', async () => {
+      // Arrange
+      mockRequest = {
+        params: { event_id: '999' },
+      };
+
+      const error = new Error('Event not found');
+      vi.spyOn(tripEventService, 'deleteTripEventById').mockRejectedValue(
+        error,
+      );
+
+      // Act
+      await tripEventController.deleteTripEventById(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(404);
+      expect(responseJson).toHaveBeenCalledWith({ message: error.message });
+    });
+  });
+
+  describe('getTripEventsByTripId', () => {
+    it('should get all trip events by trip id successfully', async () => {
+      // Arrange
+      mockRequest = {
+        params: { trip_id: '1' },
+      };
+
+      const mockEvents: TripEvent[] = [
+        {
+          trip_id: 1,
+          event_id: 1,
+          event_name: '테스트 이벤트2',
+          location: '부산',
+          start_date: new Date('2024-03-20T09:00:00Z'),
+          end_date: new Date('2024-03-20T18:00:00Z'),
+          cost: [
+            {
+              category: '교통',
+              value: 50000,
+            },
+            {
+              category: '식비',
+              value: 30000,
+            },
+          ],
+        },
+        {
+          trip_id: 1,
+          event_id: 2,
+          event_name: '테스트 이벤트2',
+          location: '서울',
+          start_date: new Date('2024-03-20T09:00:00Z'),
+          end_date: new Date('2024-03-20T18:00:00Z'),
+          cost: [
+            {
+              category: '교통',
+              value: 50000,
+            },
+            {
+              category: '식비',
+              value: 30000,
+            },
+          ],
+        },
+        {
+          trip_id: 1,
+          event_id: 3,
+          event_name: '테스트 이벤트2',
+          location: '전주',
+          start_date: new Date('2024-03-20T09:00:00Z'),
+          end_date: new Date('2024-03-20T18:00:00Z'),
+          cost: [
+            {
+              category: '교통',
+              value: 50000,
+            },
+            {
+              category: '식비',
+              value: 30000,
+            },
+          ],
+        },
+      ];
+
+      const mockEventDtos = mockEvents.map((event) => ({
+        ...event,
+        start_date: event.start_date.toISOString(),
+        end_date: event.end_date.toISOString(),
+      }));
+
+      vi.spyOn(tripEventService, 'getTripEventsByTripId').mockResolvedValue(
+        mockEvents,
+      );
+
+      vi.spyOn(TripEventConverter, 'toDto').mockImplementation((event) => ({
+        ...event,
+        start_date: event.start_date.toISOString(),
+        end_date: event.end_date.toISOString(),
+      }));
+
+      // Act
+      await tripEventController.getTripEventsByTripId(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(200);
+      expect(responseJson).toHaveBeenCalledWith(mockEventDtos);
+    });
+
+    // ... 나머지 테스트 케이스들
+
+    it('should handle trip not found', async () => {
+      // Arrange
+      mockRequest = {
+        params: { trip_id: '999' },
+      };
+
+      const error = new Error('Trip not found');
+      vi.spyOn(tripEventService, 'getTripEventsByTripId').mockRejectedValue(
+        error,
+      );
+
+      // Act
+      await tripEventController.getTripEventsByTripId(
+        mockRequest as Request,
+        mockResponse as Response,
+      );
+
+      // Assert
+      expect(responseStatus).toHaveBeenCalledWith(404);
+      expect(responseJson).toHaveBeenCalledWith({ message: error.message });
+    });
+  });
+});
