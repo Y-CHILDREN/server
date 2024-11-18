@@ -5,7 +5,7 @@ export interface TripEventDto {
   event_id: number;
   event_name: string;
   location: string;
-  start_date: string | Date;
-  end_date: string | Date;
+  start_date: string;
+  end_date: string;
   cost: Cost[];
 }
