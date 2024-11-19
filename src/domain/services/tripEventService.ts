@@ -22,7 +22,6 @@ class TripEventService {
 
     const tripEvent =
       await this.tripEventRepository.createTripEvent(tripEventData);
-
     return tripEvent;
   };
   // 스케쥴 업데이트
@@ -40,7 +39,6 @@ class TripEventService {
 
     const updatedTripEvent =
       await this.tripEventRepository.updateTripEvent(tripEventData);
-
     return updatedTripEvent;
   };
 
@@ -49,7 +47,9 @@ class TripEventService {
     if (!event_id) {
       throw new Error('event_id 값을 입력해주세요');
     }
+
     const tripEvent = await this.tripEventRepository.getTripEventById(event_id);
+
     if (!tripEvent) {
       throw new Error('잘못된 event_id 값입니다.');
     }
