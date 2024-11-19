@@ -48,7 +48,7 @@ describe('TripEventController', () => {
       end_date: '2024-03-20T18:00:00Z',
       cost: [
         {
-          category: '교통',
+          category: '입장료',
           value: 60000,
         },
         {
@@ -59,7 +59,6 @@ describe('TripEventController', () => {
     };
 
     it('should create a trip event successfully', async () => {
-      // Arrange
       mockRequest = {
         body: mockTripEventDto,
       };
@@ -75,20 +74,17 @@ describe('TripEventController', () => {
       vi.spyOn(TripEventConverter, 'fromDto').mockReturnValue(mockCreatedEvent);
       vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
 
-      // Act
       await tripEventController.createTripEvent(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(201);
       expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
       expect(tripEventService.createTripEvent).toHaveBeenCalled();
     });
 
     it('should handle errors during trip event creation', async () => {
-      // Arrange
       mockRequest = {
         body: mockTripEventDto,
       };
@@ -96,13 +92,11 @@ describe('TripEventController', () => {
       const error = new Error('Creation failed');
       vi.spyOn(tripEventService, 'createTripEvent').mockRejectedValue(error);
 
-      // Act
       await tripEventController.createTripEvent(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({ message: error.message });
     });
@@ -118,7 +112,7 @@ describe('TripEventController', () => {
       end_date: '2024-03-20T18:00:00Z',
       cost: [
         {
-          category: '교통',
+          category: '입장료',
           value: 50000,
         },
         {
@@ -144,19 +138,16 @@ describe('TripEventController', () => {
       vi.spyOn(TripEventConverter, 'fromDto').mockReturnValue(mockUpdatedEvent);
       vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
 
-      // Act
       await tripEventController.updateTripEvent(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
     });
 
     it('should handle errors during trip event update', async () => {
-      // Arrange
       mockRequest = {
         body: mockTripEventDto,
       };
@@ -164,13 +155,11 @@ describe('TripEventController', () => {
       const error = new Error('Update failed');
       vi.spyOn(tripEventService, 'updateTripEvent').mockRejectedValue(error);
 
-      // Act
       await tripEventController.updateTripEvent(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(400);
       expect(responseJson).toHaveBeenCalledWith({ message: error.message });
     });
@@ -178,7 +167,6 @@ describe('TripEventController', () => {
 
   describe('getTripEventById', () => {
     it('should get a trip event by id successfully', async () => {
-      // Arrange
       const eventId = 1;
       mockRequest = {
         params: { event_id: eventId.toString() },
@@ -193,7 +181,7 @@ describe('TripEventController', () => {
         end_date: new Date('2024-03-20T18:00:00Z'),
         cost: [
           {
-            category: '교통',
+            category: '입장료',
             value: 50000,
           },
           {
@@ -212,7 +200,7 @@ describe('TripEventController', () => {
         end_date: '2024-03-20T18:00:00Z',
         cost: [
           {
-            category: '교통',
+            category: '입장료',
             value: 50000,
           },
           {
@@ -227,19 +215,16 @@ describe('TripEventController', () => {
       );
       vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
 
-      // Act
       await tripEventController.getTripEventById(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
     });
 
     it('should handle event not found', async () => {
-      // Arrange
       mockRequest = {
         params: { event_id: '999' },
       };
@@ -247,13 +232,11 @@ describe('TripEventController', () => {
       const error = new Error('Event not found');
       vi.spyOn(tripEventService, 'getTripEventById').mockRejectedValue(error);
 
-      // Act
       await tripEventController.getTripEventById(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(404);
       expect(responseJson).toHaveBeenCalledWith({ message: error.message });
     });
@@ -261,26 +244,22 @@ describe('TripEventController', () => {
 
   describe('deleteTripEventById', () => {
     it('should delete a trip event successfully', async () => {
-      // Arrange
       mockRequest = {
         params: { event_id: '1' },
       };
 
       vi.spyOn(tripEventService, 'deleteTripEventById').mockResolvedValue(true);
 
-      // Act
       await tripEventController.deleteTripEventById(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(204);
       expect(responseSend).toHaveBeenCalled();
     });
 
     it('should handle delete event not found', async () => {
-      // Arrange
       mockRequest = {
         params: { event_id: '999' },
       };
@@ -290,13 +269,11 @@ describe('TripEventController', () => {
         error,
       );
 
-      // Act
       await tripEventController.deleteTripEventById(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(404);
       expect(responseJson).toHaveBeenCalledWith({ message: error.message });
     });
@@ -304,7 +281,6 @@ describe('TripEventController', () => {
 
   describe('getTripEventsByTripId', () => {
     it('should get all trip events by trip id successfully', async () => {
-      // Arrange
       mockRequest = {
         params: { trip_id: '1' },
       };
@@ -313,13 +289,13 @@ describe('TripEventController', () => {
         {
           trip_id: 1,
           event_id: 1,
-          event_name: '테스트 이벤트2',
+          event_name: '테스트 이벤트1',
           location: '부산',
-          start_date: new Date('2024-03-20T09:00:00Z'),
-          end_date: new Date('2024-03-20T18:00:00Z'),
+          start_date: new Date('2024-01-01T09:00:00Z'),
+          end_date: new Date('2024-01-01T18:00:00Z'),
           cost: [
             {
-              category: '교통',
+              category: '입장료',
               value: 50000,
             },
             {
@@ -337,7 +313,7 @@ describe('TripEventController', () => {
           end_date: new Date('2024-03-20T18:00:00Z'),
           cost: [
             {
-              category: '교통',
+              category: '입장료',
               value: 50000,
             },
             {
@@ -349,13 +325,13 @@ describe('TripEventController', () => {
         {
           trip_id: 1,
           event_id: 3,
-          event_name: '테스트 이벤트2',
+          event_name: '테스트 이벤트3',
           location: '전주',
           start_date: new Date('2024-03-20T09:00:00Z'),
           end_date: new Date('2024-03-20T18:00:00Z'),
           cost: [
             {
-              category: '교통',
+              category: '입장료',
               value: 50000,
             },
             {
@@ -382,21 +358,16 @@ describe('TripEventController', () => {
         end_date: event.end_date.toISOString(),
       }));
 
-      // Act
       await tripEventController.getTripEventsByTripId(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(200);
       expect(responseJson).toHaveBeenCalledWith(mockEventDtos);
     });
 
-    // ... 나머지 테스트 케이스들
-
     it('should handle trip not found', async () => {
-      // Arrange
       mockRequest = {
         params: { trip_id: '999' },
       };
@@ -406,13 +377,11 @@ describe('TripEventController', () => {
         error,
       );
 
-      // Act
       await tripEventController.getTripEventsByTripId(
         mockRequest as Request,
         mockResponse as Response,
       );
 
-      // Assert
       expect(responseStatus).toHaveBeenCalledWith(404);
       expect(responseJson).toHaveBeenCalledWith({ message: error.message });
     });
