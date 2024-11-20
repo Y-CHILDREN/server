@@ -1,17 +1,38 @@
 import { User } from '../models/user';
+import { UserDto } from '../../data/dtos/user/userDto';
 import { UserRepository } from '../repositories/userRepository';
+
+const userDto = (user: User): UserDto => {
+  return {
+    id: user.id,
+    provider: user.provider,
+    email: user.email,
+    user_image: user.user_image,
+    nickname: user.nickname,
+    user_memo: user.user_memo,
+    trip_history: user.trip_history,
+  };
+};
 
 export const UserService = (userRepository: UserRepository) => {
   const createUser = async (userData: Omit<User, 'id'>) => {
     return await userRepository.createUser(userData);
   };
 
-  const findUserById = async (id: string) => {
-    return await userRepository.findUserById(id);
+  const findUserById = async (id: string): Promise<UserDto | null> => {
+    const user = await userRepository.findUserById(id);
+    if (user) {
+      return userDto(user);
+    }
+    return null;
   };
 
-  const findUserByEmail = async (email: string) => {
-    return await userRepository.findUserByEmail(email);
+  const findUserByEmail = async (email: string): Promise<UserDto | null> => {
+    const user = await userRepository.findUserByEmail(email);
+    if (user) {
+      return userDto(user);
+    }
+    return null;
   };
 
   const findUsersByEmail = async (email: string) => {
