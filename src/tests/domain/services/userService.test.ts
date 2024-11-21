@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { UserService } from '../../../domain/services/userService';
 import { UserRepository } from '../../../domain/repositories/userRepository';
 import { User } from '../../../domain/models/user';
-import { UserDto } from '../../../data/dtos/user/';
+import { UserDto } from '../../../data/dtos/user/userDto';
 
 describe('Test UserService', () => {
   let userRepositoryMock: Partial<UserRepository>;
