@@ -1,6 +1,5 @@
 import express from 'express';
 import session from 'express-session';
-import { Request } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import passport from 'passport';
