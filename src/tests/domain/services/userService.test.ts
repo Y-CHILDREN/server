@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { UserService } from '../../../domain/services/userService';
 import { UserRepository } from '../../../domain/repositories/userRepository';
 import { User } from '../../../domain/models/user';
+import { UserDto } from '../../../data/dtos/user/';
 
 describe('Test UserService', () => {
   let userRepositoryMock: Partial<UserRepository>;
@@ -51,15 +52,13 @@ describe('Test UserService', () => {
 
   describe('Test UserService.findUserId', () => {
     test('가입되어 있는 유저의 id를 찾을 수 있다.', async () => {
-      const mockUser: User = {
+      const mockUser: UserDto = {
         id: '777',
         email: 'test@gmail.com',
         provider: 'google',
         user_image: 'test.webp',
         nickname: 'tester',
         user_memo: 'hello world!',
-        access_token: 'access_token_value',
-        refresh_token: 'refresh_token_value',
         trip_history: [],
       };
       (userRepositoryMock.findUserById as any).mockResolvedValue(mockUser);
@@ -73,16 +72,15 @@ describe('Test UserService', () => {
     });
   });
   describe('Test UserService.findUserEmail', () => {
-    test('가입되어 있는 유저의 emial을 찾을 수 있다.', async () => {
-      const mockUser: User = {
+    test('가입되어 있는 유저의 email을 찾을 수 있다.', async () => {
+      const mockUser: UserDto = {
         id: '777',
         email: 'test@gmail.com',
         provider: 'google',
         user_image: 'test.webp',
         nickname: 'tester',
         user_memo: 'hello world!',
-        access_token: 'access_token_value',
-        refresh_token: 'refresh_token_value',
+
         trip_history: [],
       };
       (userRepositoryMock.findUserByEmail as any).mockResolvedValue(mockUser);
