@@ -40,8 +40,10 @@ export const userDataLocalRepository = (): UserRepository => {
   // 유저 생성함수
   const createUser = async (userData: Omit<User, 'id'>): Promise<User> => {
     const users = await readUsersData();
+    const lastId =
+      users.length > 0 ? Math.max(...users.map((user) => Number(user.id))) : 0;
     const newUser: User = {
-      id: String(users.length + 1),
+      id: String(lastId + 1),
       ...userData,
     };
     users.push(newUser);
