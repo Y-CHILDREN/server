@@ -77,7 +77,7 @@ describe('TripEventRoutes', () => {
     });
   });
 
-  describe('PUT /', () => {
+  describe('PATCH /:event_id', () => {
     it('should route to updateTripEvent controller method', async () => {
       const mockUpdateData = {
         event_id: 1,
@@ -150,7 +150,7 @@ describe('TripEventRoutes', () => {
     });
   });
 
-  describe('GET /trip/:trip_id', () => {
+  describe('GET /all/:trip_id', () => {
     it('should route to getTripEventsByTripId controller method', async () => {
       const mockEvents = [
         {
