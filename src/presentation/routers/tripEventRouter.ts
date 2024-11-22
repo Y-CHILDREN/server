@@ -15,7 +15,7 @@ const eventRouter = Router();
 eventRouter.post('/', tripEventController.createTripEvent);
 
 // 이벤트 업데이트
-eventRouter.patch('/', tripEventController.updateTripEvent);
+eventRouter.patch('/:event_id', tripEventController.updateTripEvent);
 
 // event_id로 event 단일 조회
 eventRouter.get('/:event_id', tripEventController.getTripEventById);

@@ -6,6 +6,7 @@ import { TripEventService } from '../../../domain/services/tripEventService.js';
 import { TripEventDto } from '../../../data/dtos/event/tripEventDto.js';
 import { TripEventConverter } from '../../../data/converters/tripEventConverter.js';
 import { TripEvent } from '../../../domain/entities/tripEvent.js';
+import { TripEventResponseDto } from '../../../data/dtos/event/tripEventResponseDto.js';
 
 describe('TripEventController', () => {
   let tripEventService: TripEventService;
@@ -54,8 +55,8 @@ describe('TripEventController', () => {
       event_id: 1,
       event_name: '테스트 이벤트1',
       location: '서울',
-      start_date: '2024-03-20T09:00:00Z',
-      end_date: '2024-03-20T18:00:00Z',
+      start_date: new Date('2024-03-20T09:00:00Z'),
+      end_date: new Date('2024-03-20T18:00:00Z'),
       cost: [
         {
           category: '입장료',
@@ -74,16 +75,21 @@ describe('TripEventController', () => {
         body: mockTripEventDto,
       };
 
-      const mockCreatedEvent = {
-        ...mockTripEventDto,
-        start_date: new Date(mockTripEventDto.start_date),
-        end_date: new Date(mockTripEventDto.end_date),
+      const mockCreatedEvent = { ...mockTripEventDto };
+      const mockResponseDto = {
+        ...mockCreatedEvent,
+        start_date: mockCreatedEvent.start_date.toISOString(),
+        end_date: mockCreatedEvent.end_date.toISOString(),
       };
       vi.spyOn(tripEventService, 'createTripEvent').mockResolvedValue(
         mockCreatedEvent,
       );
-      vi.spyOn(TripEventConverter, 'fromDto').mockReturnValue(mockCreatedEvent);
-      vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
+      vi.spyOn(TripEventConverter, 'fromRequestDto').mockReturnValue(
+        mockCreatedEvent,
+      );
+      vi.spyOn(TripEventConverter, 'toResponseDto').mockReturnValue(
+        mockResponseDto,
+      );
 
       await tripEventController.createTripEvent(
         mockRequest as Request,
@@ -91,7 +97,12 @@ describe('TripEventController', () => {
       );
 
       expect(responseStatus).toHaveBeenCalledWith(201);
-      expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
+      expect(responseJson).toHaveBeenCalledWith({
+        ...mockTripEventDto,
+        start_date: mockTripEventDto.start_date.toISOString(),
+        end_date: mockTripEventDto.end_date.toISOString(),
+      });
+
       expect(tripEventService.createTripEvent).toHaveBeenCalled();
     });
 
@@ -120,8 +131,8 @@ describe('TripEventController', () => {
       event_id: 1,
       event_name: '테스트 이벤트2',
       location: '부산',
-      start_date: '2024-03-20T09:00:00Z',
-      end_date: '2024-03-20T18:00:00Z',
+      start_date: new Date('2024-03-20T09:00:00Z'),
+      end_date: new Date('2024-03-20T18:00:00Z'),
       cost: [
         {
           category: '입장료',
@@ -138,18 +149,24 @@ describe('TripEventController', () => {
       mockRequest = {
         ...mockRequest,
         body: mockTripEventDto,
+        params: { event_id: '1' },
       };
 
-      const mockUpdatedEvent = {
-        ...mockTripEventDto,
-        start_date: new Date(mockTripEventDto.start_date),
-        end_date: new Date(mockTripEventDto.end_date),
+      const mockUpdatedEvent = { ...mockTripEventDto };
+      const mockResponseDto = {
+        ...mockUpdatedEvent,
+        start_date: mockUpdatedEvent.start_date.toISOString(),
+        end_date: mockUpdatedEvent.end_date.toISOString(),
       };
       vi.spyOn(tripEventService, 'updateTripEvent').mockResolvedValue(
         mockUpdatedEvent,
       );
-      vi.spyOn(TripEventConverter, 'fromDto').mockReturnValue(mockUpdatedEvent);
-      vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
+      vi.spyOn(TripEventConverter, 'fromRequestDto').mockReturnValue(
+        mockUpdatedEvent,
+      );
+      vi.spyOn(TripEventConverter, 'toResponseDto').mockReturnValue(
+        mockResponseDto,
+      );
 
       await tripEventController.updateTripEvent(
         mockRequest as Request,
@@ -157,13 +174,18 @@ describe('TripEventController', () => {
       );
 
       expect(responseStatus).toHaveBeenCalledWith(200);
-      expect(responseJson).toHaveBeenCalledWith(mockTripEventDto);
+      expect(responseJson).toHaveBeenCalledWith({
+        ...mockTripEventDto,
+        start_date: mockTripEventDto.start_date.toISOString(),
+        end_date: mockTripEventDto.end_date.toISOString(),
+      });
     });
 
     it('should handle errors during trip event update', async () => {
       mockRequest = {
         ...mockRequest,
         body: mockTripEventDto,
+        params: { event_id: '1' },
       };
 
       const error = new Error('Update failed');
@@ -205,7 +227,7 @@ describe('TripEventController', () => {
         ],
       };
 
-      const mockTripEventDto: TripEventDto = {
+      const mockTripEventDto: TripEventResponseDto = {
         ...mockEvent,
         start_date: mockEvent.start_date.toISOString(),
         end_date: mockEvent.end_date.toISOString(),
@@ -214,7 +236,9 @@ describe('TripEventController', () => {
       vi.spyOn(tripEventService, 'getTripEventById').mockResolvedValue(
         mockEvent,
       );
-      vi.spyOn(TripEventConverter, 'toDto').mockReturnValue(mockTripEventDto);
+      vi.spyOn(TripEventConverter, 'toResponseDto').mockReturnValue(
+        mockTripEventDto,
+      );
 
       await tripEventController.getTripEventById(
         mockRequest as Request,
@@ -338,11 +362,13 @@ describe('TripEventController', () => {
       vi.spyOn(tripEventService, 'getTripEventsByTripId').mockResolvedValue(
         mockEvents,
       );
-      vi.spyOn(TripEventConverter, 'toDto').mockImplementation((event) => ({
-        ...event,
-        start_date: event.start_date.toISOString(),
-        end_date: event.end_date.toISOString(),
-      }));
+      vi.spyOn(TripEventConverter, 'toResponseDto').mockImplementation(
+        (event) => ({
+          ...event,
+          start_date: event.start_date.toISOString(),
+          end_date: event.end_date.toISOString(),
+        }),
+      );
 
       await tripEventController.getTripEventsByTripId(
         mockRequest as Request,

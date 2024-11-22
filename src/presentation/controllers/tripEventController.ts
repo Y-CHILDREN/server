@@ -16,10 +16,10 @@ export class TripEventController {
       ) as TripEventService;
 
       const tripEventDto: TripEventDto = req.body; // DTO 사용
-      const tripEvent = TripEventConverter.fromDto(tripEventDto); // DTO를 엔티티로 변환
+      const tripEvent = TripEventConverter.fromRequestDto(tripEventDto); // DTO를 엔티티로 변환
       const createdTripEvent =
         await tripEventService.createTripEvent(tripEvent);
-      res.status(201).json(TripEventConverter.toDto(createdTripEvent)); // 엔티티를 DTO로 변환하여 응답
+      res.status(201).json(TripEventConverter.toResponseDto(createdTripEvent)); // 엔티티를 DTO로 변환하여 응답
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -31,11 +31,16 @@ export class TripEventController {
       const tripEventService = req.app.get(
         'tripEventService',
       ) as TripEventService;
-      const tripEventDto: TripEventDto = req.body; // DTO 사용
-      const tripEvent = TripEventConverter.fromDto(tripEventDto); // DTO를 엔티티로 변환
+      const event_id = parseInt(req.params.event_id);
+      const tripEventDto: TripEventDto = {
+        ...req.body,
+        event_id,
+      };
+      console.log(event_id);
+      const tripEvent = TripEventConverter.fromRequestDto(tripEventDto); // DTO를 엔티티로 변환
       const updatedTripEvent =
         await tripEventService.updateTripEvent(tripEvent);
-      res.status(200).json(TripEventConverter.toDto(updatedTripEvent)); // 엔티티를 DTO로 변환하여 응답
+      res.status(200).json(TripEventConverter.toResponseDto(updatedTripEvent)); // 엔티티를 DTO로 변환하여 응답
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -49,7 +54,7 @@ export class TripEventController {
       ) as TripEventService;
       const event_id = parseInt(req.params.event_id);
       const tripEvent = await tripEventService.getTripEventById(event_id);
-      res.status(200).json(TripEventConverter.toDto(tripEvent));
+      res.status(200).json(TripEventConverter.toResponseDto(tripEvent));
     } catch (error: any) {
       res.status(404).json({ message: error.message });
     }
@@ -77,7 +82,7 @@ export class TripEventController {
       ) as TripEventService;
       const trip_id = parseInt(req.params.trip_id);
       const tripEvents = await tripEventService.getTripEventsByTripId(trip_id);
-      res.status(200).json(tripEvents?.map(TripEventConverter.toDto));
+      res.status(200).json(tripEvents?.map(TripEventConverter.toResponseDto));
     } catch (error: any) {
       res.status(404).json({ message: error.message });
     }
