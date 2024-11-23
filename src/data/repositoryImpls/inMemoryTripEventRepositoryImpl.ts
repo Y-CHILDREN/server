@@ -7,10 +7,12 @@ export class InMemoryTripEventRepositoryImpl implements TripEventRepository {
   async createTripEvent(
     tripEventData: Omit<TripEvent, 'event_id'>,
   ): Promise<TripEvent> {
+    // spread 연산자 순서때문에 undefined값이 덮어 씌워지고 있었다.
     const newEvent: TripEvent = {
-      event_id: this.tripEvents.length + 1, // 단순한 ID 생성 로직
       ...tripEventData,
+      event_id: this.tripEvents.length + 1,
     };
+
     this.tripEvents.push(newEvent);
     return newEvent;
   }
