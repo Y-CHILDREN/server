@@ -46,6 +46,9 @@
     "user_memo": "",
     "access_token": "ya29.a0AeDClZBqDln7YRHzMvJO8UdQZAnVIeviQLxZx6G9NZ9fB5GCPxlKABgtXzpYOMdhhs9hSGYy9nrS21pmiz7cijbe5sJIVP66YpzHsQGdq631kWScQAA8Gd10FXD_BgshgT7bxjdJhHRgEMzeMyHzsVO232xoK6UitqABaK1MaCgYKAdESARESFQHGX2Mic6NkfOIzKjrRk-9T75j2CQ0175",
     "refresh_token": "1//0erI1iXPImKf8CgYIARAAGA4SNwF-L9Ir2_hV7VoAac3NzPb-ZJeZQjRAcbDD_vQcmBHT9GLI5Z8InLGgCMo0T74Pe0w1Qtla7is",
-    "trip_history": []
+    "trip_history": [
+      1,
+      2
+    ]
   }
 ]

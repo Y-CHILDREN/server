@@ -30,7 +30,7 @@ export class TripEventConverter {
       end_date: tripEvent.end_date.toISOString(),
       cost: tripEvent.cost.map((costItem) => ({
         category: costItem.category,
-        value: costItem.value,
+        value: Number(costItem.value),
       })),
     };
   }
