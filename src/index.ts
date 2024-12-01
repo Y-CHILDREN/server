@@ -22,10 +22,19 @@ const redirectUrlBase = process.env.REDIRECT_URL_BASE;
 
 app.use(
   cors({
-    origin: [
-      'http://y-children.s3-website.ap-northeast-2.amazonaws.com',
-      'http://localhost:5173',
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://y-children.s3-website.ap-northeast-2.amazonaws.com',
+        'http://localhost:5173',
+        'http://codingcanvas.store',
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        // 동적으로 출처 확인.
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   }),
 );
