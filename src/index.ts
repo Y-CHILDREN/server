@@ -24,9 +24,9 @@ app.use(
   cors({
     origin: (origin, callback) => {
       const allowedOrigins = [
-        'http://y-children.s3-website.ap-northeast-2.amazonaws.com',
+        'https://y-children.s3-website.ap-northeast-2.amazonaws.com',
         'http://localhost:5173',
-        'http://codingcanvas.store',
+        'https://codingcanvas.store',
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         // 동적으로 출처 확인.
