@@ -243,17 +243,13 @@ export const logout = (req: Request, res: Response) => {
           message: '로그아웃 처리 중 오류가 발생했습니다.',
         });
       }
-
-      res.clearCookie('connect.sid');
-      res.status(200).json({
-        success: true,
-        message: '로그아웃이 성공적으로 완료되었습니다.',
+      req.logout(() => {
+        res.clearCookie('connect.sid');
+        res.status(200).json({
+          success: true,
+          message: '로그아웃이 성공적으로 완료되었습니다.',
+        });
       });
-    });
-  } else {
-    res.status(200).json({
-      success: true,
-      message: '로그아웃이 성공적으로 완료되었습니다.',
     });
   }
 };
