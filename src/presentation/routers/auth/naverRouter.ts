@@ -22,21 +22,27 @@ naverRouter.get(
   '/callback',
   passport.authenticate('naver', { failureRedirect: '/' }),
   (req, res) => {
-    const user = req.user as User;
-    const redirectUrlBase =
-      process.env.REDIRECT_URL_BASE || 'http://localhost:5173';
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error('세션 복구 오류:', err);
+        return res.redirect('/');
+      }
+      const user = req.user as User;
+      const redirectUrlBase =
+        process.env.REDIRECT_URL_BASE || 'http://localhost:5173';
 
-    if (user) {
-      const redirectUrl = `${redirectUrlBase}/login?token=${user.access_token}&user=${encodeURIComponent(
-        JSON.stringify(user),
-      )}`;
+      if (user) {
+        const redirectUrl = `${redirectUrlBase}/login?token=${user.access_token}&user=${encodeURIComponent(
+          JSON.stringify(user),
+        )}`;
 
-      console.log('마지막 redirect URL:', redirectUrl);
+        console.log('마지막 redirect URL:', redirectUrl);
 
-      res.redirect(redirectUrl);
-    } else {
-      res.redirect('/');
-    }
+        res.redirect(redirectUrl);
+      } else {
+        res.redirect('/');
+      }
+    });
   },
 );
 
