@@ -29,7 +29,7 @@ export class PrismaUserRepositoryImpl implements UserRepository {
     email: string,
     provider: string,
   ): Promise<User | undefined> {
-    const user = await prisma.user.findFirst({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { email, provider } });
     return user ? this.mapPrismaUserToUser(user) : undefined;
   }
 
