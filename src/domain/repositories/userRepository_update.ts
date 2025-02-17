@@ -1,4 +1,4 @@
-import { User } from '../models/user_update';
+import { User } from '../models/user_update'; // _update 파일은 db 붙이기 작성중인 파일
 
 export interface UserRepository {
   createUser: (userData: Omit<User, 'id'>) => Promise<User>;

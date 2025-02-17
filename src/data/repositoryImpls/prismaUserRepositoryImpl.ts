@@ -140,6 +140,7 @@ export class PrismaUserRepositoryImpl implements UserRepository {
   // Prisma.User -> User 변환 함수
   private mapPrismaUserToUser(prismaUser: PrismaUser): User {
     return {
+      id: prismaUser.id,
       provider: prismaUser.provider,
       email: prismaUser.email,
       user_image: prismaUser.user_image ?? undefined, // `null`을 `undefined`로 변환

@@ -1,4 +1,5 @@
 export interface User {
+  id: string;
   provider: string;
   email: string;
   user_image?: string;
