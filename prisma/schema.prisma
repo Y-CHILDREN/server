@@ -56,9 +56,9 @@ model TripScheduleUser {
   tripSchedule_id Int
 
   // User와 연결
-  user         User         @relation(fields: [user_id], references: [id])
+  user         User         @relation(fields: [user_id], references: [id], onDelete: Cascade) // 참조 데이터 삭제시 같이 삭제
   // TripSchedule과 연결
-  tripSchedule TripSchedule @relation(fields: [tripSchedule_id], references: [id])
+  tripSchedule TripSchedule @relation(fields: [tripSchedule_id], references: [id], onDelete: Cascade)
 
   // 복합 PK 설정 (User ID + TripSchedule ID)
   @@id([user_id, tripSchedule_id])
