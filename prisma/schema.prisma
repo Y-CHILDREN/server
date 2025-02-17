@@ -52,6 +52,7 @@ model TripSchedule {
 
 // ✅ 중간 테이블 (User <-> TripSchedule 다대다 관계)
 model TripScheduleUser {
+  id              String @id @default(cuid()) // PK 필드 추가
   user_id         String
   tripSchedule_id Int
 
@@ -61,7 +62,7 @@ model TripScheduleUser {
   tripSchedule TripSchedule @relation(fields: [tripSchedule_id], references: [id], onDelete: Cascade)
 
   // 복합 PK 설정 (User ID + TripSchedule ID)
-  @@id([user_id, tripSchedule_id])
+  @@unique([user_id, tripSchedule_id]) // 복합 키를 unique key로 변경.
 }
 
 // ✅ TripEvent 모델 (TripSchedule과 1:N 관계, Cost와 1:N 관계)
