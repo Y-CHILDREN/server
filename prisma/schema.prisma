@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Prisma Client 설정
+generator client {
+  provider = "prisma-client-js"
+}
+
+// PostgreSQL 데이터베이스 설정
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ✅ User 모델
+model User {
+  id            String  @id @default(cuid()) // 고유한 문자열 ID
+  provider      String
+  email         String  @unique
+  user_image    String?
+  nickname      String
+  user_memo     String?
+  access_token  String
+  refresh_token String
+
+  // TripSchedule과의 관계 (다대다: 중간 테이블 사용)
+  tripSchedules TripScheduleUser[]
+
+  created_at DateTime @default(now())
+}
+
+// ✅ TripSchedule 모델
+model TripSchedule {
+  id          Int      @id @default(autoincrement()) // 자동 증가 ID
+  name        String
+  destination String
+  start_date  DateTime
+  end_date    DateTime
+
+  // User와 다대다 관계 (중간 테이블 사용)
+  members TripScheduleUser[]
+
+  // Trip을 생성한 User (User의 ID 저장)
+  created_by String
+
+  // TripEvent와의 관계 (1:N)
+  events TripEvent[]
+}
+
+// ✅ 중간 테이블 (User <-> TripSchedule 다대다 관계)
+model TripScheduleUser {
+  id              String @id @default(cuid()) // PK 필드 추가
+  user_id         String
+  tripSchedule_id Int
+
+  // User와 연결
+  user         User         @relation(fields: [user_id], references: [id], onDelete: Cascade) // 참조 데이터 삭제시 같이 삭제
+  // TripSchedule과 연결
+  tripSchedule TripSchedule @relation(fields: [tripSchedule_id], references: [id], onDelete: Cascade)
+
+  // 복합 PK 설정 (User ID + TripSchedule ID)
+  @@unique([user_id, tripSchedule_id]) // 복합 키를 unique key로 변경.
+}
+
+// ✅ TripEvent 모델 (TripSchedule과 1:N 관계, Cost와 1:N 관계)
+model TripEvent {
+  id              Int      @id @default(autoincrement()) // 자동 증가 ID
+  tripSchedule_id Int // TripSchedule의 ID와 연결
+  event_name      String
+  location        String
+  start_date      DateTime
+  end_date        DateTime
+
+  // TripSchedule과의 관계 (N:1)
+  tripSchedule TripSchedule @relation(fields: [tripSchedule_id], references: [id])
+
+  // Cost와의 관계 (1:N)
+  costs Cost[]
+}
+
+// ✅ Cost 모델 (TripEvent와 1:N 관계)
+model Cost {
+  id       Int    @id @default(autoincrement()) // 자동 증가 ID
+  category String
+  value    Float
+
+  tripEvent_id Int // TripEvent의 ID와 연결
+
+  // TripEvent와의 관계 (N:1)
+  tripEvent TripEvent @relation(fields: [tripEvent_id], references: [id])
+}

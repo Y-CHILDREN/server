@@ -7,11 +7,13 @@ import path from 'path';
 
 import initPassport from './data/integrations/passport/initPassport';
 import { rootRouter } from './presentation/routers';
-import { di } from './di';
+// import { di } from './di';
+import { di_update } from './di_update';
 
 const app = express();
 
-di(app);
+// di(app);
+di_update(app);
 
 //적용 env 체크
 const env = process.env.NODE_ENV || 'local';
