@@ -17,18 +17,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
           version: 9
+          
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+          
       - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
@@ -36,5 +40,15 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      - run: pnpm i
-      - run: pnpm tsc
+            
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Apply database migrations
+        run: pnpm prisma migrate deploy
+
+      - name: TypeScript Compilation
+        run: pnpm tsc
