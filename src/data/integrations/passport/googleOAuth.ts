@@ -1,5 +1,5 @@
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { UserRepository } from '../../../domain/repositories/userRepository';
+import { UserRepository } from '../../../domain/repositories/userRepository_update';
 
 const configureGooglePassport = (
   passport: any,
@@ -50,7 +50,7 @@ const configureGooglePassport = (
             user_memo: '',
             access_token: access_token,
             refresh_token: refresh_token,
-            trip_history: [],
+            created_at: new Date(),
           });
           return done(null, newUser);
         }

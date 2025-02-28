@@ -3,7 +3,7 @@ import {
   Profile as NaverProfile,
 } from 'passport-naver-v2';
 
-import { UserRepository } from '../../../domain/repositories/userRepository';
+import { UserRepository } from '../../../domain/repositories/userRepository_update';
 
 const configuresNaverPassport = (
   passport: any,
@@ -52,7 +52,7 @@ const configuresNaverPassport = (
               user_memo: '',
               access_token: access_token,
               refresh_token: refresh_token,
-              trip_history: [],
+              created_at: new Date(),
             });
             return done(null, newUser);
           }

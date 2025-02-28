@@ -4,9 +4,11 @@ import { Express } from 'express';
 import configureGooglePassport from './googleOAuth';
 import configuresNaverPassport from './naverOAuth';
 import configuresKakaoPassport from './kakaoOAuth';
-import { userDataLocalRepository } from '../../repositoryImpls/localUserRepositoryImpl';
+// import { userDataLocalRepository } from '../../repositoryImpls/localUserRepositoryImpl';
+import { PrismaUserRepositoryImpl } from '../../repositoryImpls/prismaUserRepositoryImpl';
 
-const userRepository = userDataLocalRepository();
+// const userRepository = userDataLocalRepository();
+const userRepository = new PrismaUserRepositoryImpl();
 
 function initPassport(app: Express) {
   app.use(
