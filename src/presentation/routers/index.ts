@@ -6,7 +6,8 @@ import { eventRouter } from './tripEventRouter';
 
 import authRouter from './authRouter';
 import tripScheduleRouter from './tripScheduleRouter';
-import userRouter from './auth/userRouter';
+import userRouter from './auth/userRouter_update';
+// import userRouter from './auth/userRouter';
 
 const rootRouter = Router();
 
