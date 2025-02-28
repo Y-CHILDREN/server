@@ -46,9 +46,10 @@ jobs:
 
       - name: Create .env.production file
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production
           echo "ENV=production" >> .env.production
           echo "PORT=3000" >> .env.production
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production
+          echo "PRISMA_DISABLE_PREPARED_STATEMENTS=true" >> .env.production
 
       - name: Check environment variables
         run: cat .env.production | grep -v "DATABASE_URL"
