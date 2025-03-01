@@ -44,20 +44,26 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Create .env.production file
+      - name: Set environment variables from GitHub Secrets
         run: |
-          echo "ENV=production" >> .env.production
-          echo "PORT=3000" >> .env.production
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production
-          echo "PRISMA_DISABLE_PREPARED_STATEMENTS=true" >> .env.production
+          echo "ENV=production" >> $GITHUB_ENV
+          echo "PORT=3000" >> $GITHUB_ENV
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "PRISMA_DISABLE_PREPARED_STATEMENTS=true" >> $GITHUB_ENV
 
-      - name: Check environment variables
-        run: cat .env.production | grep -v "DATABASE_URL"
+      - name: Verify environment variables
+        run: |
+          echo "ENV=$ENV"
+          echo "PORT=$PORT"
+          echo "PRISMA_DISABLE_PREPARED_STATEMENTS=$PRISMA_DISABLE_PREPARED_STATEMENTS"
+          echo "DATABASE_URL is secret!!."
 
       - name: Generate Prisma Client
         run: pnpm prisma generate
 
       - name: Apply database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: pnpm prisma migrate deploy
 
       - name: TypeScript Compilation
