@@ -98,7 +98,9 @@ export class PrismaUserRepositoryImpl implements UserRepository {
       where: { user_id },
       select: { tripSchedule_id: true },
     });
-    return userTrips.map((trip) => trip.tripSchedule_id);
+    return userTrips.map(
+      (trip: { tripSchedule_id: number }) => trip.tripSchedule_id,
+    );
   }
 
   // ✅ User를 특정 TripSchedule에 추가 (중간 테이블 활용)

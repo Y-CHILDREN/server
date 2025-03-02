@@ -1,6 +1,6 @@
 import express from 'express';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
-import { UserRepository } from '../../../domain/repositories/userRepository';
+import { UserRepository } from '../../../domain/repositories/userRepository_update';
 
 const app = express();
 
@@ -53,7 +53,7 @@ const configuresKakaoPassport = (
               user_memo: '',
               access_token: access_token,
               refresh_token: refresh_token,
-              trip_history: [],
+              created_at: new Date(),
             });
             return done(null, newUser);
           }

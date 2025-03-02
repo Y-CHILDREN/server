@@ -17,18 +17,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
           version: 9
+          
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+          
       - uses: actions/cache@v4
         name: Setup pnpm cache
         with:
@@ -36,5 +40,31 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      - run: pnpm i
-      - run: pnpm tsc
+            
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Set environment variables from GitHub Secrets
+        run: |
+          echo "ENV=production" >> $GITHUB_ENV
+          echo "PORT=3000" >> $GITHUB_ENV
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "PRISMA_DISABLE_PREPARED_STATEMENTS=true" >> $GITHUB_ENV
+
+      - name: Verify environment variables
+        run: |
+          echo "ENV=$ENV"
+          echo "PORT=$PORT"
+          echo "PRISMA_DISABLE_PREPARED_STATEMENTS=$PRISMA_DISABLE_PREPARED_STATEMENTS"
+          echo "DATABASE_URL is secret!!."
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Apply database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm prisma migrate deploy
+
+      - name: TypeScript Compilation
+        run: pnpm tsc

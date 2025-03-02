@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import { Router } from 'express';
 import passport from 'passport';
-import { User } from '../../../domain/models/user';
+// import { User } from '../../../domain/models/user';
+import { User } from '../../../domain/models/user_update';
 
 const env = process.env.NODE_ENV || 'local';
 
