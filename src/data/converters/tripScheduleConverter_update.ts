@@ -18,7 +18,7 @@ export class TripScheduleConverter {
   }
 
   static toResDto(
-    tripSchedule: TripScheduleWithMembers & { id: string },
+    tripSchedule: TripScheduleWithMembers & { id: number },
   ): TripScheduleResponseDto {
     return {
       id: tripSchedule.id,

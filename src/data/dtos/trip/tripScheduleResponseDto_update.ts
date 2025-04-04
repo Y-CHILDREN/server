@@ -1,6 +1,6 @@
 // Server -> Client
 export interface TripScheduleResponseDto {
-  id: string;
+  id: number;
   title: string;
   destination: string;
   start_date: string;
