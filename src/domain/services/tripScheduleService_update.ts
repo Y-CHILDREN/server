@@ -19,4 +19,16 @@ export class TripScheduleService {
       );
     }
   }
+
+  async getTripSchedulesByUserId(userId: string): Promise<TripSchedule[]> {
+    try {
+      return await this.tripScheduleRepository.findTripsByUserId(userId);
+    } catch (error) {
+      console.error(
+        'TripScheduleService getTripSchedulesByUserId error',
+        error,
+      );
+      throw new Error('Failed to fetch trip schedules for user');
+    }
+  }
 }

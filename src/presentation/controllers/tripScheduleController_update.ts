@@ -43,4 +43,27 @@ export class TripScheduleController {
         .json({ message: 'Failed to create trip schedule' });
     }
   }
+
+  // 유저가 속한 여행 일정 목록 조회
+  async getTripsByUserId(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+
+      const userId = req.params.userId;
+
+      if (!userId) {
+        return res.status(400).json({ message: 'User ID is required' });
+      }
+
+      const trips = await tripScheduleService.getTripSchedulesByUserId(userId);
+      return res.status(200).json(trips);
+    } catch (error) {
+      console.error('TripScheduleController getTripsByUserId error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to get trip schedules for user' });
+    }
+  }
 }

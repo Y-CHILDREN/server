@@ -1,13 +1,17 @@
-import { TripSchedule } from '../entities/tripSchedule_update';
+import {
+  TripSchedule,
+  TripScheduleWithMembers,
+} from '../entities/tripSchedule_update';
 import { User } from '../models/user_update';
 import { TripEvent } from '../entities/tripEvent_update';
 
 export interface TripScheduleRepository {
-  create(tripSchedule: Omit<TripSchedule, 'id'>): Promise<TripSchedule>;
-  // update(tripSchedule: TripSchedule): Promise<void>;
+  create(tripSchedule: TripScheduleWithMembers): Promise<TripSchedule>;
+  update(tripSchedule: TripScheduleWithMembers): Promise<void>;
   // deleteById(id: number): Promise<boolean>; // 특정 id를 가진 여행 일정을 삭제.
 
   // 조회 기능
+  findTripsByUserId(userId: string): Promise<TripSchedule[]>;
   // findTripById(id: number): Promise<TripSchedule | null>; // 특정 id의 여행 일정을 조회.
   // findTripByIds(ids: number[]): Promise<TripSchedule[]>; // 특정 유저가 속한 여행 일정을 조회.
   // findTripsByDateRange(startDate: Date, endDate: Date): Promise<TripSchedule[]>; // 특정 기간 내의 여행 일정을 조회

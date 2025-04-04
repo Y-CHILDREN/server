@@ -77,4 +77,57 @@ export class PrismaTripScheduleRepositoryImpl
       );
     }
   }
+
+  async update(
+    tripSchedule: TripScheduleWithMembers & { id: number },
+  ): Promise<void> {
+    try {
+      await prisma.$transaction(async () => {
+        // 1. 기존 TripSchedule 업데이트
+        await prisma.tripSchedule.update({
+          where: { id: tripSchedule.id },
+          data: {
+            name: tripSchedule.name,
+            destination: tripSchedule.destination,
+            start_date: tripSchedule.start_date,
+            end_date: tripSchedule.end_date,
+          },
+        });
+
+        // 2. 새로운 멤버 리스트로 갱신
+        if (tripSchedule.members) {
+          // 2-1 기존 멤버 삭제
+          await prisma.tripScheduleUser.deleteMany({});
+        }
+      });
+    } catch (error) {}
+  }
+
+  // TripScheduleUser 테이블에서 유저 ID로 유저가 속한 tripSchedule 리스트 조회
+  async findTripsByUserId(userId: string): Promise<TripSchedule[]> {
+    try {
+      const trips = await prisma.tripSchedule.findMany({
+        where: {
+          members: {
+            some: {
+              user_id: userId,
+            },
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          destination: true,
+          start_date: true,
+          end_date: true,
+          created_by: true,
+        },
+      });
+
+      return trips;
+    } catch (error) {
+      console.error('Error fetching trips by user ID:', error);
+      throw new Error('Failed to fetch trips for the user');
+    }
+  }
 }
