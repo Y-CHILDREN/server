@@ -1,12 +1,13 @@
 import express from 'express';
 
-import { PrismaUserRepositoryImpl } from './data/repositoryImpls/prismaUserRepositoryImpl';
 import { UserService } from './domain/services/userService_update';
 import { InMemoryTripScheduleRepositoryImpl } from './data/repositoryImpls/inMemoryTripScheduleRepositoryImpl';
 import { TripScheduleService } from './domain/services/tripScheduleService';
-import { InMemoryTripEventRepositoryImpl } from './data/repositoryImpls/inMemoryTripEventRepositoryImpl';
-import { TripEventService } from './domain/services/tripEventService';
 import { userDataLocalRepository } from './data/repositoryImpls/localUserRepositoryImpl';
+import { TripEventService } from './domain/services/tripEventService';
+
+import { PrismaUserRepositoryImpl } from './data/repositoryImpls/prismaUserRepositoryImpl';
+import { PrismaTripEventRepositoryImpl } from './data/repositoryImpls/prismaTripEventRepositoryImple';
 
 export function di_update(app: ReturnType<typeof express>) {
   // User
@@ -24,7 +25,7 @@ export function di_update(app: ReturnType<typeof express>) {
   app.set('tripScheduleService', tripScheduleService);
 
   // TripEvent
-  const tripEventRepository = new InMemoryTripEventRepositoryImpl();
+  const tripEventRepository = new PrismaTripEventRepositoryImpl();
   const tripEventService = new TripEventService(tripEventRepository);
   app.set('tripEventService', tripEventService);
 }
