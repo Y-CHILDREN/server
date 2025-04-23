@@ -5,8 +5,9 @@ import { calculationRouter } from './calculationRouter';
 import { eventRouter } from './tripEventRouter';
 
 import authRouter from './authRouter';
-import tripScheduleRouter from './tripScheduleRouter';
 import userRouter from './auth/userRouter_update';
+import tripScheduleRouter from './tripScheduleRouter_update';
+// import tripScheduleRouter from './tripScheduleRouter';
 // import userRouter from './auth/userRouter';
 
 const rootRouter = Router();
