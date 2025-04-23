@@ -95,7 +95,6 @@ $ npm run dev
 | 기술                                             | 설명                       | 배지                                                                                                                       |
 | ------------------------------------------------ | -------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | [**Express**](https://expressjs.com/)            | 웹 애플리케이션 프레임워크 | [![Express](https://img.shields.io/badge/-Express-000000?logo=express&logoColor=white&style=flat)](https://expressjs.com/) |
-| [**JWT**](https://jwt.io/)                       | 인증 라이브러리            | [![JWT](https://img.shields.io/badge/-JWT-000000?logo=jsonwebtokens&logoColor=white&style=flat)](https://jwt.io/)          |
 | [**cors**](https://github.com/expressjs/cors)    | CORS 미들웨어              | [![cors](https://img.shields.io/badge/-cors-000000?style=flat)](https://github.com/expressjs/cors)                         |
 | [**dotenv**](https://github.com/motdotla/dotenv) | 환경 변수 관리             | [![dotenv](https://img.shields.io/badge/-dotenv-000000?style=flat)](https://github.com/motdotla/dotenv)                    |
 

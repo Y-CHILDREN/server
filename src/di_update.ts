@@ -1,15 +1,9 @@
 import express from 'express';
 
 import { UserService } from './domain/services/userService_update';
-
 import { PrismaTripScheduleRepositoryImpl } from './data/repositoryImpls/prismaTripScheduleRepositoryImpl';
 import { TripScheduleService } from './domain/services/tripScheduleService_update';
-import { InMemoryTripEventRepositoryImpl } from './data/repositoryImpls/inMemoryTripEventRepositoryImpl';
 import { TripEventService } from './domain/services/tripEventService';
-
-import { userDataLocalRepository } from './data/repositoryImpls/localUserRepositoryImpl';
-import { TripEventService } from './domain/services/tripEventService';
-
 import { PrismaUserRepositoryImpl } from './data/repositoryImpls/prismaUserRepositoryImpl';
 import { PrismaTripEventRepositoryImpl } from './data/repositoryImpls/prismaTripEventRepositoryImple';
 
