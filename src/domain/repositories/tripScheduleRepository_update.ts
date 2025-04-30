@@ -6,7 +6,9 @@ import { User } from '../models/user_update';
 import { TripEvent } from '../entities/tripEvent_update';
 
 export interface TripScheduleRepository {
-  create(tripSchedule: TripScheduleWithMembers): Promise<TripSchedule>;
+  create(
+    tripSchedule: Omit<TripScheduleWithMembers, 'id'>,
+  ): Promise<TripSchedule>;
   update(tripSchedule: TripScheduleWithMembers): Promise<void>;
   // deleteById(id: number): Promise<boolean>; // 특정 id를 가진 여행 일정을 삭제.
 

@@ -7,15 +7,6 @@ export interface TripSchedule {
   created_by: string; // 생성한 유저 ID
 }
 
-export type TripScheduleWithMembers = Omit<TripSchedule, 'id'> & {
+export type TripScheduleWithMembers = TripSchedule & {
   members: string[];
 };
-
-// 날짜 유효성 검사.
-export function validateTripDates(trip: Omit<TripSchedule, 'id'>): boolean {
-  if (trip.start_date > trip.end_date) {
-    console.log('The start date must be earlier than the end date.');
-    return false;
-  }
-  return true;
-}

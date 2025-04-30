@@ -8,7 +8,7 @@ export class TripScheduleService {
   constructor(private tripScheduleRepository: TripScheduleRepository) {}
 
   async createTripSchedule(
-    tripScheduleData: TripScheduleWithMembers,
+    tripScheduleData: Omit<TripScheduleWithMembers, 'id'>,
   ): Promise<TripSchedule> {
     try {
       return await this.tripScheduleRepository.create(tripScheduleData);

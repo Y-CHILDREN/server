@@ -9,7 +9,9 @@ import {
 export class PrismaTripScheduleRepositoryImpl
   implements TripScheduleRepository
 {
-  async create(tripSchedule: TripScheduleWithMembers): Promise<TripSchedule> {
+  async create(
+    tripSchedule: Omit<TripScheduleWithMembers, 'id'>,
+  ): Promise<TripSchedule> {
     try {
       return await prisma.$transaction(async () => {
         // 1. TripSchedule 생성

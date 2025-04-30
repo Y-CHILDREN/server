@@ -6,7 +6,9 @@ import { CreateTripDto } from '../dtos/trip/createTripDto';
 import { TripScheduleResponseDto } from '../dtos/trip/tripScheduleResponseDto_update';
 
 export class TripScheduleConverter {
-  static fromCreateTripDto(source: CreateTripDto): TripScheduleWithMembers {
+  static fromCreateTripDto(
+    source: CreateTripDto,
+  ): Omit<TripScheduleWithMembers, 'id'> {
     return {
       name: source.title,
       destination: source.destination,
@@ -18,7 +20,7 @@ export class TripScheduleConverter {
   }
 
   static toResDto(
-    tripSchedule: TripScheduleWithMembers & { id: number },
+    tripSchedule: TripSchedule & { members: string[] },
   ): TripScheduleResponseDto {
     return {
       id: tripSchedule.id,

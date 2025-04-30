@@ -15,9 +15,9 @@ export class TripScheduleController {
 
       // req.body에서 CreateTripDto 타입의 데이터를 추출
       if (
-        !req.body.name ||
-        !req.body.startDate ||
-        !req.body.endDate ||
+        !req.body.title ||
+        !req.body.start_date ||
+        !req.body.end_date ||
         !req.body.created_by
       ) {
         return res.status(400).json({ message: 'Missing required fields' });
