@@ -132,4 +132,36 @@ export class PrismaTripScheduleRepositoryImpl
       throw new Error('Failed to fetch trips for the user');
     }
   }
+
+  // 여행에 속해 있는 유저 이메일 조회
+  async getMembersEmail(tripId: number): Promise<string[]> {
+    try {
+      // 1. tripScheduleUser 테이블에서 tripId에 해당하는 user_id 조회
+      const userIds = await prisma.tripScheduleUser.findMany({
+        where: { tripSchedule_id: tripId },
+        select: { user_id: true },
+      });
+
+      const ids = userIds.map((user) => user.user_id);
+
+      if (ids.length === 0) return [];
+
+      // 2. user_id를 바탕으로 User 테이블에서 이메일 조회
+      const users = await prisma.user.findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+        select: {
+          email: true,
+        },
+      });
+
+      return users.map((user) => user.email);
+    } catch (error) {
+      console.error('Error in getMembersEmail', error);
+      throw new Error('Failed to get members email');
+    }
+  }
 }

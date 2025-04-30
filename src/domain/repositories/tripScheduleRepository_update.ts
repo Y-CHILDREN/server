@@ -21,7 +21,7 @@ export interface TripScheduleRepository {
   // 멤버 관리 기능
   // addMember(tripId: number, userId: number): Promise<void>; // 특정 여행 일정에 멤버를 추가.
   // removeMember(tripId: number, userId: number): Promise<void>; // 특정 여행 일정에서 멤버를 제거.
-  // getMembers(tripId: number): Promise<User[]>; // 특정 여행 일정의 멤버 목록을 조회.
+  getMembersEmail(tripId: number): Promise<string[]>; // 특정 여행 일정의 멤버 목록을 조회.
 
   // 여행 일정 관련 기능
   // updateTripCost(tripId: number, totalCost: number): Promise<void>; // 여행 일정의 총 비용을 업데이.
