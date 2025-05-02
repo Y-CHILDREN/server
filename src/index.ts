@@ -7,7 +7,6 @@ import path from 'path';
 
 import initPassport from './data/integrations/passport/initPassport.js';
 import { rootRouter } from './presentation/routers';
-// import { di } from './di';
 import { di_update } from './di_update';
 
 const app = express();
@@ -25,11 +24,7 @@ const redirectUrlBase = process.env.REDIRECT_URL_BASE;
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = [
-        'https://y-children.s3-website.ap-northeast-2.amazonaws.com',
-        'http://localhost:5173',
-        'https://codingcanvas.store',
-      ];
+      const allowedOrigins = ['http://localhost:5173', 'https://jtrip.store'];
       if (!origin || allowedOrigins.includes(origin)) {
         // 동적으로 출처 확인.
         callback(null, true);
