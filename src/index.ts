@@ -5,7 +5,7 @@ import cors from 'cors';
 import passport from 'passport';
 import path from 'path';
 
-import initPassport from './data/integrations/passport/initPassport';
+import initPassport from './data/integrations/passport/initPassport.js';
 import { rootRouter } from './presentation/routers';
 // import { di } from './di';
 import { di_update } from './di_update';
