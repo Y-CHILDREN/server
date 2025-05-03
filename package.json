@@ -56,6 +56,5 @@
     "supertest": "^7.0.0",
     "typescript": "^5.6.2",
     "vitest": "^2.1.2"
-  },
-  "type": "module"
+  }
 }
