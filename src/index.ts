@@ -5,13 +5,12 @@ import cors from 'cors';
 import passport from 'passport';
 import path from 'path';
 
-import initPassport from './data/integrations/passport/initPassport.js';
+import initPassport from './data/integrations/passport/initPassport';
 import { rootRouter } from './presentation/routers';
 import { di_update } from './di_update';
 
 const app = express();
 
-// di(app);
 di_update(app);
 
 //적용 env 체크
