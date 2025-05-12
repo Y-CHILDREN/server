@@ -4,6 +4,7 @@ import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
 import { TripScheduleConverter } from '../../data/converters/tripScheduleConverter_update';
 
 import { TripScheduleService } from '../../domain/services/tripScheduleService_update';
+import { TripSchedule } from '../../domain/entities/tripSchedule_update';
 
 export class TripScheduleController {
   // create trip
@@ -57,8 +58,25 @@ export class TripScheduleController {
         return res.status(400).json({ message: 'User ID is required' });
       }
 
-      const trips = await tripScheduleService.getTripSchedulesByUserId(userId);
-      return res.status(200).json(trips);
+      const trips: TripSchedule[] =
+        await tripScheduleService.getTripSchedulesByUserId(userId);
+
+      // 등록된 여행이 없을 때
+      if (trips.length === 0) {
+        res.status(404).json({ message: 'No trips for this user' });
+        return;
+      }
+
+      // TripSchedule + member(email) 포함해서 DTO로 변환
+      const responseDtos = await Promise.all(
+        trips.map(async (trip) => {
+          const tripWithMembers =
+            await tripScheduleService.getTripScheduleWithmembers(trip.id);
+          return TripScheduleConverter.toResDto(tripWithMembers);
+        }),
+      );
+
+      return res.status(200).json(responseDtos);
     } catch (error) {
       console.error('TripScheduleController getTripsByUserId error:', error);
       return res

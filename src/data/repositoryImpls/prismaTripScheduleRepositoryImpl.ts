@@ -133,6 +133,18 @@ export class PrismaTripScheduleRepositoryImpl
     }
   }
 
+  // trip_id로 여행 일정 조회
+  async findTripById(id: number): Promise<TripSchedule> {
+    const trip = await prisma.tripSchedule.findUnique({
+      where: { id },
+    });
+
+    if (!trip) {
+      throw new Error('Trip not found');
+    }
+    return trip;
+  }
+
   // 여행에 속해 있는 유저 이메일 조회
   async getMembersEmail(tripId: number): Promise<string[]> {
     try {

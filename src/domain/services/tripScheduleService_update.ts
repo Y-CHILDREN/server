@@ -20,6 +20,7 @@ export class TripScheduleService {
     }
   }
 
+  // 유저가 속한 여행 일정 조회
   async getTripSchedulesByUserId(userId: string): Promise<TripSchedule[]> {
     try {
       return await this.tripScheduleRepository.findTripsByUserId(userId);
@@ -30,5 +31,20 @@ export class TripScheduleService {
       );
       throw new Error('Failed to fetch trip schedules for user');
     }
+  }
+
+  // 멤버를 포함한 여행 일정 조회
+  async getTripScheduleWithmembers(
+    tripId: number,
+  ): Promise<TripSchedule & { members: string[] }> {
+    const trip = await this.tripScheduleRepository.findTripById(tripId);
+
+    if (!trip) {
+      throw new Error('Trip not found');
+    }
+
+    const members = await this.tripScheduleRepository.getMembersEmail(tripId);
+
+    return { ...trip, members };
   }
 }

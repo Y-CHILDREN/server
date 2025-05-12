@@ -14,7 +14,7 @@ export interface TripScheduleRepository {
 
   // 조회 기능
   findTripsByUserId(userId: string): Promise<TripSchedule[]>;
-  // findTripById(id: number): Promise<TripSchedule | null>; // 특정 id의 여행 일정을 조회.
+  findTripById(id: number): Promise<TripSchedule | null>; // 특정 id의 여행 일정을 조회.
   // findTripByIds(ids: number[]): Promise<TripSchedule[]>; // 특정 유저가 속한 여행 일정을 조회.
   // findTripsByDateRange(startDate: Date, endDate: Date): Promise<TripSchedule[]>; // 특정 기간 내의 여행 일정을 조회
 
