@@ -1,10 +1,14 @@
 import { Request, Response } from 'express';
 
 import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
+import {
+  TripSchedule,
+  TripScheduleWithMembers,
+} from '../../domain/entities/tripSchedule_update';
+import { TripScheduleResponseDto } from '../../data/dtos/trip/tripScheduleResponseDto_update';
 import { TripScheduleConverter } from '../../data/converters/tripScheduleConverter_update';
 
 import { TripScheduleService } from '../../domain/services/tripScheduleService_update';
-import { TripSchedule } from '../../domain/entities/tripSchedule_update';
 
 export class TripScheduleController {
   // create trip
@@ -82,6 +86,29 @@ export class TripScheduleController {
       return res
         .status(500)
         .json({ message: 'Failed to get trip schedules for user' });
+    }
+  }
+
+  // 단일 여행 데이터 조회
+  async getTripById(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+
+      const tripId = Number(req.params.tripId);
+      if (!isNaN(tripId)) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
+      }
+
+      const tripWithMembers =
+        await tripScheduleService.getTripScheduleWithmembers(tripId);
+      const responseDto = TripScheduleConverter.toResDto(tripWithMembers);
+
+      return res.status(200).json(responseDto);
+    } catch (error) {
+      console.error('TripScheduleController getTripById error:', error);
+      return res.status(500).json({ message: 'Failed to get trip schedule' });
     }
   }
 }

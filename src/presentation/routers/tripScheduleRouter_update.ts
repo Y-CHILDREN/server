@@ -10,9 +10,14 @@ router.post('/', async (req, res) => {
   await tripScheduleController.createTrip(req, res);
 });
 
-// get Trips
+// Get Trips
 router.get('/user/:userId', async (req, res) => {
   await tripScheduleController.getTripsByUserId(req, res);
+});
+
+// Get Trip
+router.get('/:tripId', async (req, res) => {
+  await tripScheduleController.getTripById(req, res);
 });
 
 export default router;
