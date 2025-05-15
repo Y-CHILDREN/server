@@ -20,4 +20,12 @@ router.get('/:tripId', async (req, res) => {
   await tripScheduleController.getTripById(req, res);
 });
 
+// Update Trip
+router.patch('/:tripId', async (req, res) => {
+  await tripScheduleController.updateTripSchedule(req, res);
+});
+
+// Delete Trip
+// Add Members
+
 export default router;

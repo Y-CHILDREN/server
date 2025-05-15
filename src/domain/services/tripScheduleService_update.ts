@@ -47,4 +47,9 @@ export class TripScheduleService {
 
     return { ...trip, members };
   }
+
+  // update
+  async updateTripSchedule(trip: TripScheduleWithMembers): Promise<void> {
+    await this.tripScheduleRepository.update(trip);
+  }
 }

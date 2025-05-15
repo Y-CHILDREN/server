@@ -99,10 +99,43 @@ export class PrismaTripScheduleRepositoryImpl
         // 2. 새로운 멤버 리스트로 갱신
         if (tripSchedule.members) {
           // 2-1 기존 멤버 삭제
-          await prisma.tripScheduleUser.deleteMany({});
+          await prisma.tripScheduleUser.deleteMany({
+            where: { tripSchedule_id: tripSchedule.id },
+          });
+
+          // 이메일로 유저 조회
+          const users = await prisma.user.findMany({
+            where: {
+              email: {
+                in: tripSchedule.members,
+              },
+            },
+            select: {
+              id: true,
+              email: true,
+            },
+          });
+
+          // 이메일로 조회된 유저 목록 (User[])
+          const tripScheduleUsers = users.map((user) => ({
+            user_id: user.id,
+            tripSchedule_id: tripSchedule.id,
+          }));
+
+          if (tripScheduleUsers.length > 0) {
+            await prisma.tripScheduleUser.createMany({
+              data: tripScheduleUsers,
+              skipDuplicates: true,
+            });
+          }
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error('PrismaTripScheduleRepositoryImpl update error:', error);
+      throw new Error(
+        `Failed to update trip schedule update ${(error as Error).message}`,
+      );
+    }
   }
 
   // TripScheduleUser 테이블에서 유저 ID로 유저가 속한 tripSchedule 리스트 조회

@@ -97,7 +97,7 @@ export class TripScheduleController {
       ) as TripScheduleService;
 
       const tripId = Number(req.params.tripId);
-      if (!isNaN(tripId)) {
+      if (isNaN(tripId)) {
         return res.status(400).json({ message: 'Invalid trip ID' });
       }
 
@@ -109,6 +109,57 @@ export class TripScheduleController {
     } catch (error) {
       console.error('TripScheduleController getTripById error:', error);
       return res.status(500).json({ message: 'Failed to get trip schedule' });
+    }
+  }
+
+  // update trip
+  async updateTripSchedule(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+
+      const tripId = Number(req.params.tripId);
+      if (isNaN(tripId)) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
+      }
+
+      console.log('tripId', tripId);
+      console.log('업데이트 요청 받은 데이터', req.body);
+
+      // 클라이언트로부터 받은 데이터 유효성 검사
+      const { title, destination, start_date, end_date, members } = req.body;
+
+      if (!title || !destination || !start_date || !end_date || !members) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      // 1. DTO -> 도메인 모델로 변환
+      const updateTripBody = TripScheduleConverter.fromUpdateTripDto(req.body);
+
+      // 2. id와 created_by 추가
+      const updateTripData: Omit<TripSchedule, 'id'> & {
+        id: number;
+        members: string[];
+      } = {
+        ...updateTripBody,
+        id: tripId,
+        created_by: req.body.created_by,
+      };
+
+      console.log('변환된 업데이트데이터', updateTripData);
+
+      // 3. 서비스 호출
+      await tripScheduleService.updateTripSchedule(updateTripData);
+
+      return res
+        .status(200)
+        .json({ message: 'Trip schedule updated successfully' });
+    } catch (error) {
+      console.error('TripScheduleController update error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to update trip schedule' });
     }
   }
 }
