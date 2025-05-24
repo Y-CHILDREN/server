@@ -18,7 +18,7 @@ function initPassport(app: Express) {
       saveUninitialized: true,
       rolling: true,
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24, // 1일
+        maxAge: 1000 * 60 * 30, // 30분
         secure: process.env.NODE_ENV === 'production',
       },
     }),

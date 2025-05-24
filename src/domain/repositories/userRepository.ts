@@ -1,5 +1,4 @@
-import { User } from '../models/user';
-
+import { User } from '../models/user_update';
 export interface UserRepository {
   createUser: (userData: Omit<User, 'id'>) => Promise<User>;
   findUserById: (id: string) => Promise<User | undefined>;
