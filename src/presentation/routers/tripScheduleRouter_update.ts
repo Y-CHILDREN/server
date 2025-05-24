@@ -26,6 +26,13 @@ router.patch('/:tripId', async (req, res) => {
 });
 
 // Delete Trip
-// Add Members
+router.delete('/:tripId', async (req, res) => {
+  await tripScheduleController.deleteTrip(req, res);
+});
+
+// Delete Trips
+router.delete('/', async (req, res) => {
+  await tripScheduleController.deleteTrips(req, res);
+});
 
 export default router;

@@ -209,4 +209,34 @@ export class PrismaTripScheduleRepositoryImpl
       throw new Error('Failed to get members email');
     }
   }
+
+  // 단일 여행 일정 삭제
+  async deleteTripById(id: number): Promise<boolean> {
+    try {
+      await prisma.$transaction([
+        prisma.tripScheduleUser.deleteMany({ where: { tripSchedule_id: id } }),
+        prisma.tripSchedule.delete({ where: { id } }),
+      ]);
+      return true;
+    } catch (error) {
+      console.error('Error deleting trip by ID:', error);
+      return false;
+    }
+  }
+
+  // 복수 여행 일정 삭제
+  async deleteTripsByIds(ids: number[]): Promise<boolean> {
+    try {
+      await prisma.$transaction([
+        prisma.tripScheduleUser.deleteMany({
+          where: { tripSchedule_id: { in: ids } },
+        }),
+        prisma.tripSchedule.deleteMany({ where: { id: { in: ids } } }),
+      ]);
+      return true;
+    } catch (error) {
+      console.error('Error deleting trips by IDs:', error);
+      return false;
+    }
+  }
 }

@@ -10,7 +10,6 @@ export interface TripScheduleRepository {
     tripSchedule: Omit<TripScheduleWithMembers, 'id'>,
   ): Promise<TripSchedule>;
   update(tripSchedule: TripScheduleWithMembers): Promise<void>;
-  // deleteById(id: number): Promise<boolean>; // 특정 id를 가진 여행 일정을 삭제.
 
   // 조회 기능
   findTripsByUserId(userId: string): Promise<TripSchedule[]>;
@@ -26,4 +25,7 @@ export interface TripScheduleRepository {
   // 여행 일정 관련 기능
   // updateTripCost(tripId: number, totalCost: number): Promise<void>; // 여행 일정의 총 비용을 업데이.
   // getTripEvents(tripId: number): Promise<TripEvent[]>; // 특정 여행 일정의 이벤트 목록을 조회.
+
+  deleteTripById(id: number): Promise<boolean>; // 특정 id를 가진 여행 일정을 삭제.
+  deleteTripsByIds(ids: number[]): Promise<boolean>; // 여러개의 여행 일정을 삭제.
 }

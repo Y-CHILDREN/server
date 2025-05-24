@@ -162,4 +162,52 @@ export class TripScheduleController {
         .json({ message: 'Failed to update trip schedule' });
     }
   }
+
+  // delete trip
+  async deleteTrip(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+      const tripId = Number(req.params.tripId);
+
+      if (isNaN(tripId)) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
+      }
+
+      await tripScheduleService.deleteTripById(tripId);
+      return res.status(200).json({ message: 'Trip deleted successfully' });
+    } catch (error) {
+      console.error('TripScheduleController delete error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to delete trip schedule' });
+    }
+  }
+
+  // delete trips
+  async deleteTrips(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+      const tripIds: number[] = req.body.ids;
+
+      if (
+        !Array.isArray(tripIds) ||
+        tripIds.length === 0 ||
+        tripIds.some((id) => isNaN(Number(tripIds)))
+      ) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
+      }
+
+      await tripScheduleService.deleteTripsByIds(tripIds);
+      return res.status(200).json({ message: 'Trip deleted successfully' });
+    } catch (error) {
+      console.error('TripScheduleController delete error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to delete trip schedule' });
+    }
+  }
 }

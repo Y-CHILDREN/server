@@ -52,4 +52,31 @@ export class TripScheduleService {
   async updateTripSchedule(trip: TripScheduleWithMembers): Promise<void> {
     await this.tripScheduleRepository.update(trip);
   }
+
+  // delete - 단일
+  async deleteTripById(id: number): Promise<void> {
+    try {
+      const success = await this.tripScheduleRepository.deleteTripById(id);
+
+      if (!success) {
+        throw new Error('Trip deleted failed');
+      }
+    } catch (error) {
+      console.error('TripScheduleService delete error:', error);
+      throw new Error(`Failed to delete trip whit ID: ${id}`);
+    }
+  }
+
+  // delete - 복수 (프론트 체크박스 미구현)
+  async deleteTripsByIds(ids: number[]): Promise<void> {
+    try {
+      const success = await this.tripScheduleRepository.deleteTripsByIds(ids);
+      if (!success) {
+        throw new Error('Trip deleted failed');
+      }
+    } catch (error) {
+      console.error('TripScheduleService deleteTripsByIds error:', error);
+      throw new Error(`Failed to delete trips with IDs: ${ids.join(', ')}`);
+    }
+  }
 }
