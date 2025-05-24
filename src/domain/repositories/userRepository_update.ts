@@ -5,10 +5,12 @@ export interface UserRepository {
   findUserById: (id: string) => Promise<User | undefined>;
   findUserByEmail: (email: string) => Promise<User | undefined>;
   findUsersByEmail: (email: string) => Promise<User[] | undefined>;
+  findUsersByEmails: (email: string[]) => Promise<User[]>;
   findUserByEmailAndProvider: (
     email: string,
     provider: string,
   ) => Promise<User | undefined>;
+  findUsersByEmailContains: (query: string) => Promise<User[]>;
   updateTokens: (
     email: string,
     access_token: string,

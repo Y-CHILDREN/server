@@ -75,6 +75,27 @@ export const findUsersByEmail = async (
   }
 };
 
+export const findUsersByEmails = async (req: Request, res: Response) => {
+  const userService = req.app.get('userService') as ReturnType<
+    typeof UserService
+  >;
+
+  const { emails } = req.body;
+
+  if (!Array.isArray(emails) || emails.length === 0) {
+    res.status(400).json({ message: 'emails must be an array.' });
+    return;
+  }
+
+  try {
+    const users = await userService.findUsersByEmails(emails);
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Error fetching users by emails:', error);
+    res.status(500).json({ message: '유저 정보 조회 중 오류 발생' });
+  }
+};
+
 export const findUserByEmailAndProvider = async (
   req: Request,
   res: Response,
@@ -96,6 +117,27 @@ export const findUserByEmailAndProvider = async (
     res.status(500).json({
       message: '이메일과 provider로 유저를 찾는 중 오류가 발생했습니다.',
     });
+  }
+};
+
+export const getUserSearchHandler = async (req: Request, res: Response) => {
+  const userService = req.app.get('userService') as ReturnType<
+    typeof UserService
+  >;
+
+  const query = req.query.query as string;
+
+  if (!query || query.trim() === '') {
+    res.status(400).json({ message: 'Query is required' });
+    return;
+  }
+
+  try {
+    const users = await userService.searchUsersByEmail(query);
+    res.json(users);
+  } catch (error) {
+    console.error('Error searching users:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 

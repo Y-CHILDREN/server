@@ -39,11 +39,19 @@ export const UserService = (userRepository: UserRepository) => {
     return await userRepository.findUsersByEmail(email);
   };
 
+  const findUsersByEmails = async (emails: string[]): Promise<User[]> => {
+    return userRepository.findUsersByEmails(emails);
+  };
+
   const findUserByEmailAndProvider = async (
     email: string,
     provider: string,
   ) => {
     return await userRepository.findUserByEmailAndProvider(email, provider);
+  };
+
+  const searchUsersByEmail = async (query: string): Promise<User[]> => {
+    return await userRepository.findUsersByEmailContains(query);
   };
 
   const updateTokens = async (
@@ -98,7 +106,9 @@ export const UserService = (userRepository: UserRepository) => {
     findUserById,
     findUserByEmail,
     findUsersByEmail,
+    findUsersByEmails,
     findUserByEmailAndProvider,
+    searchUsersByEmail,
     updateUserImage,
     updateUserNickname,
     updateUserMemo,
