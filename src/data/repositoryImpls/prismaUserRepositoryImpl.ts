@@ -1,8 +1,8 @@
 import prisma from '../../../prisma/client';
 import { User as PrismaUser } from '@prisma/client';
 
-import { User } from '../../domain/models/user_update';
-import { UserRepository } from '../../domain/repositories/userRepository_update';
+import { User } from '../../domain/models/user';
+import { UserRepository } from '../../domain/repositories/userRepository';
 
 export class PrismaUserRepositoryImpl implements UserRepository {
   async createUser(userData: Omit<User, 'id'>): Promise<User> {

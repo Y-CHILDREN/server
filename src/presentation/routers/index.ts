@@ -5,8 +5,8 @@ import { calculationRouter } from './calculationRouter';
 import { eventRouter } from './tripEventRouter';
 
 import authRouter from './authRouter';
-import userRouter from './auth/userRouter_update';
-import tripScheduleRouter from './tripScheduleRouter_update';
+import userRouter from './auth/userRouter';
+import tripScheduleRouter from './tripScheduleRouter';
 // import tripScheduleRouter from './tripScheduleRouter';
 // import userRouter from './auth/userRouter';
 

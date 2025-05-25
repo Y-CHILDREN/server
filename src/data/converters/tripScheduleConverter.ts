@@ -1,9 +1,14 @@
-import { TripSchedule } from '../../domain/entities/tripSchedule';
+import {
+  TripSchedule,
+  TripScheduleWithMembers,
+} from '../../domain/entities/tripSchedule';
 import { CreateTripDto } from '../dtos/trip/createTripDto';
 import { TripScheduleResponseDto } from '../dtos/trip/tripScheduleResponseDto';
 
 export class TripScheduleConverter {
-  static fromCreateTripDto(source: CreateTripDto): Omit<TripSchedule, 'id'> {
+  static fromCreateTripDto(
+    source: CreateTripDto,
+  ): Omit<TripScheduleWithMembers, 'id'> {
     return {
       name: source.title,
       destination: source.destination,
@@ -14,7 +19,9 @@ export class TripScheduleConverter {
     };
   }
 
-  static toResDto(tripSchedule: TripSchedule): TripScheduleResponseDto {
+  static toResDto(
+    tripSchedule: TripSchedule & { members: string[] },
+  ): TripScheduleResponseDto {
     return {
       id: tripSchedule.id,
       title: tripSchedule.name, // `name`-> `title`
@@ -28,7 +35,7 @@ export class TripScheduleConverter {
 
   static fromUpdateTripDto(
     source: any,
-  ): Omit<TripSchedule, 'id' | 'created_by'> {
+  ): Omit<TripSchedule, 'id' | 'created_by'> & { members: string[] } {
     return {
       name: source.title, // title을 name으로 매핑
       destination: source.destination,

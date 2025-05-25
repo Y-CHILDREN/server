@@ -3,7 +3,7 @@ import {
   Profile as NaverProfile,
 } from 'passport-naver-v2';
 
-import { UserRepository } from '../../../domain/repositories/userRepository_update';
+import { UserRepository } from '../../../domain/repositories/userRepository';
 
 const configuresNaverPassport = (
   passport: any,

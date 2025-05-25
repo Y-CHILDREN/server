@@ -1,10 +1,10 @@
 import prisma from '../../../prisma/client'; // 싱글톤 패턴 적용
 
-import { TripScheduleRepository } from '../../domain/repositories/tripScheduleRepository_update';
+import { TripScheduleRepository } from '../../domain/repositories/tripScheduleRepository';
 import {
   TripSchedule,
   TripScheduleWithMembers,
-} from '../../domain/entities/tripSchedule_update';
+} from '../../domain/entities/tripSchedule';
 
 export class PrismaTripScheduleRepositoryImpl
   implements TripScheduleRepository

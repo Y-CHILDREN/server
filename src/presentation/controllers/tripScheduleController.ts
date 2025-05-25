@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import { TripScheduleService } from '../../domain/services/tripScheduleService';
+
 import { CreateTripDto } from '../../data/dtos/trip/createTripDto';
+import { TripSchedule } from '../../domain/entities/tripSchedule';
 import { TripScheduleConverter } from '../../data/converters/tripScheduleConverter';
 
-export class TripScheduleController {
-  // constructor(private readonly tripScheduleService: TripScheduleService) {}
+import { TripScheduleService } from '../../domain/services/tripScheduleService';
 
+export class TripScheduleController {
   // create trip
   async createTrip(req: Request, res: Response) {
     try {
@@ -14,121 +15,96 @@ export class TripScheduleController {
       ) as TripScheduleService;
 
       // req.body에서 CreateTripDto 타입의 데이터를 추출
+      if (
+        !req.body.title ||
+        !req.body.start_date ||
+        !req.body.end_date ||
+        !req.body.created_by
+      ) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
       const createTripDto: CreateTripDto = {
         ...req.body,
-        members: req.body.members.includes(req.body.created_by)
-          ? req.body.members // 생성자 이메일이 이미 포함된 경우 그대로 사용
-          : [req.body.created_by, ...req.body.members], // 포함되지 않은 경우 추가
+        members: [...new Set([req.body.created_by, ...req.body.members])], // 중복 제거
       };
 
-      // TripSchedule 타입으로 변환.
+      // TripSchedule 타입으로 변환
       const tripData = TripScheduleConverter.fromCreateTripDto(createTripDto);
 
       // service 호출하여 여행 일정 생성.
       const createdTrip =
         await tripScheduleService.createTripSchedule(tripData);
 
-      // createdTrip 결과를 response DTO convert
-      // const responseDto = TripScheduleConverter.toResDto(createdTrip);
-      res.status(201).json(createdTrip);
+      return res.status(201).json(createdTrip);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error: Failed to create trip' });
+      console.error('TripScheduleController create error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to create trip schedule' });
     }
   }
 
-  // search member by email
-  async addMemberByEmail(req: Request, res: Response) {
+  // 유저가 속한 여행 일정 목록 조회
+  async getTripsByUserId(req: Request, res: Response) {
     try {
       const tripScheduleService = req.app.get(
         'tripScheduleService',
       ) as TripScheduleService;
 
-      const { tripId, email } = req.body;
+      const userId = req.params.userId;
 
-      await tripScheduleService.addTripMemberByEmail(tripId, email);
+      if (!userId) {
+        return res.status(400).json({ message: 'User ID is required' });
+      }
 
-      res.status(200).json({
-        message: 'Member added successfully',
-      });
+      const trips: TripSchedule[] =
+        await tripScheduleService.getTripSchedulesByUserId(userId);
+
+      // 등록된 여행이 없을 때
+      if (trips.length === 0) {
+        res.status(404).json({ message: 'No trips for this user' });
+        return;
+      }
+
+      // TripSchedule + member(email) 포함해서 DTO로 변환
+      const responseDtos = await Promise.all(
+        trips.map(async (trip) => {
+          const tripWithMembers =
+            await tripScheduleService.getTripScheduleWithmembers(trip.id);
+          return TripScheduleConverter.toResDto(tripWithMembers);
+        }),
+      );
+
+      return res.status(200).json(responseDtos);
     } catch (error) {
-      res.status(500).json({ message: 'Server error' });
+      console.error('TripScheduleController getTripsByUserId error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to get trip schedules for user' });
     }
   }
 
-  // delete trip
-  async deleteTripById(req: Request, res: Response) {
-    try {
-      const tripScheduleService = req.app.get(
-        'tripScheduleService',
-      ) as TripScheduleService;
-
-      const { id } = req.params;
-      const tripId = parseInt(id);
-
-      await tripScheduleService.deleteTripById(tripId);
-
-      res.status(200).json({ message: 'Trip deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting trip', error);
-      res.status(500).json({ message: 'Server error: Failed to delete trip' });
-    }
-  }
-
-  // get trip
+  // 단일 여행 데이터 조회
   async getTripById(req: Request, res: Response) {
     try {
       const tripScheduleService = req.app.get(
         'tripScheduleService',
       ) as TripScheduleService;
 
-      const { id } = req.params;
-      const trip = await tripScheduleService.getTripById(Number(id));
-
-      if (!trip) {
-        res.status(404).json({
-          message: 'Trip not found',
-        });
-        return;
+      const tripId = Number(req.params.tripId);
+      if (isNaN(tripId)) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
       }
 
-      console.log('trip :', trip);
-      // Convert trip data -> response DTO
-      const responseDto = TripScheduleConverter.toResDto(trip);
-      res.status(200).json(responseDto);
+      const tripWithMembers =
+        await tripScheduleService.getTripScheduleWithmembers(tripId);
+      const responseDto = TripScheduleConverter.toResDto(tripWithMembers);
+
+      return res.status(200).json(responseDto);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: 'Server error',
-      });
-    }
-  }
-
-  // get all trip by user
-  async getUserTrips(req: Request, res: Response): Promise<void> {
-    try {
-      const tripScheduleService = req.app.get(
-        'tripScheduleService',
-      ) as TripScheduleService;
-
-      const { userId } = req.params; // req에서 userId를 받아옴
-      const trips = await tripScheduleService.getUserTrips(userId);
-
-      if (trips.length === 0) {
-        res.status(404).json({ message: 'No trips for this user' });
-        return;
-      }
-
-      // Convert trip data -> response DTO
-      const responseDtos = trips.map((trip) =>
-        TripScheduleConverter.toResDto(trip),
-      );
-      res.status(200).json(responseDtos);
-    } catch (error) {
-      console.error('get', error);
-      res
-        .status(500)
-        .json({ message: 'Server error: Failed to get user trips' });
+      console.error('TripScheduleController getTripById error:', error);
+      return res.status(500).json({ message: 'Failed to get trip schedule' });
     }
   }
 
@@ -139,25 +115,95 @@ export class TripScheduleController {
         'tripScheduleService',
       ) as TripScheduleService;
 
-      const { id } = req.params;
-      const tripId = parseInt(id, 10);
+      const tripId = Number(req.params.tripId);
+      if (isNaN(tripId)) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
+      }
 
-      // TripScheduleConverter를 통해 updateData 변환
-      const updateData = TripScheduleConverter.fromUpdateTripDto(req.body);
+      console.log('tripId', tripId);
+      console.log('업데이트 요청 받은 데이터', req.body);
 
-      const newMembers: string[] = req.body.members || [];
+      // 클라이언트로부터 받은 데이터 유효성 검사
+      const { title, destination, start_date, end_date, members } = req.body;
 
-      // 업데이트
-      const updatedTrip = await tripScheduleService.updateTripSchedule(
-        tripId,
-        updateData,
-        newMembers,
-      );
+      if (!title || !destination || !start_date || !end_date || !members) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
 
-      res.status(200).json(updatedTrip);
+      // 1. DTO -> 도메인 모델로 변환
+      const updateTripBody = TripScheduleConverter.fromUpdateTripDto(req.body);
+
+      // 2. id와 created_by 추가
+      const updateTripData: Omit<TripSchedule, 'id'> & {
+        id: number;
+        members: string[];
+      } = {
+        ...updateTripBody,
+        id: tripId,
+        created_by: req.body.created_by,
+      };
+
+      console.log('변환된 업데이트데이터', updateTripData);
+
+      // 3. 서비스 호출
+      await tripScheduleService.updateTripSchedule(updateTripData);
+
+      return res
+        .status(200)
+        .json({ message: 'Trip schedule updated successfully' });
     } catch (error) {
-      console.error('Failed to update trip', error);
-      res.status(500).json({ message: 'Server error: Failed to update trip' });
+      console.error('TripScheduleController update error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to update trip schedule' });
+    }
+  }
+
+  // delete trip
+  async deleteTrip(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+      const tripId = Number(req.params.tripId);
+
+      if (isNaN(tripId)) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
+      }
+
+      await tripScheduleService.deleteTripById(tripId);
+      return res.status(200).json({ message: 'Trip deleted successfully' });
+    } catch (error) {
+      console.error('TripScheduleController delete error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to delete trip schedule' });
+    }
+  }
+
+  // delete trips
+  async deleteTrips(req: Request, res: Response) {
+    try {
+      const tripScheduleService = req.app.get(
+        'tripScheduleService',
+      ) as TripScheduleService;
+      const tripIds: number[] = req.body.ids;
+
+      if (
+        !Array.isArray(tripIds) ||
+        tripIds.length === 0 ||
+        tripIds.some((id) => isNaN(Number(id)))
+      ) {
+        return res.status(400).json({ message: 'Invalid trip ID' });
+      }
+
+      await tripScheduleService.deleteTripsByIds(tripIds);
+      return res.status(200).json({ message: 'Trip deleted successfully' });
+    } catch (error) {
+      console.error('TripScheduleController delete error:', error);
+      return res
+        .status(500)
+        .json({ message: 'Failed to delete trip schedule' });
     }
   }
 }

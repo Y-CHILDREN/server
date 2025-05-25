@@ -6,29 +6,33 @@ const router = express.Router();
 const tripScheduleController = new TripScheduleController();
 
 // Create Trip
-router.post('/', (req, res) => tripScheduleController.createTrip(req, res));
+router.post('/', async (req, res) => {
+  await tripScheduleController.createTrip(req, res);
+});
 
-// Add member to trip
-router.post('/members', (req, res) =>
-  tripScheduleController.addMemberByEmail(req, res),
-);
+// Get Trips
+router.get('/user/:userId', async (req, res) => {
+  await tripScheduleController.getTripsByUserId(req, res);
+});
 
-// delete trip
-router.delete('/:id', (req, res) =>
-  tripScheduleController.deleteTripById(req, res),
-);
+// Get Trip
+router.get('/:tripId', async (req, res) => {
+  await tripScheduleController.getTripById(req, res);
+});
 
-// Get trip by id
-router.get('/:id', (req, res) => tripScheduleController.getTripById(req, res));
+// Update Trip
+router.patch('/:tripId', async (req, res) => {
+  await tripScheduleController.updateTripSchedule(req, res);
+});
 
-// Get trips by userId
-router.get('/user/:userId', (req, res) =>
-  tripScheduleController.getUserTrips(req, res),
-);
+// Delete Trip
+router.delete('/:tripId', async (req, res) => {
+  await tripScheduleController.deleteTrip(req, res);
+});
 
-// Update trip
-router.put('/:id', (req, res) =>
-  tripScheduleController.updateTripSchedule(req, res),
-);
+// Delete Trips
+router.delete('/', async (req, res) => {
+  await tripScheduleController.deleteTrips(req, res);
+});
 
 export default router;

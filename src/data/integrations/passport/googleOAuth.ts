@@ -1,5 +1,5 @@
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { UserRepository } from '../../../domain/repositories/userRepository_update';
+import { UserRepository } from '../../../domain/repositories/userRepository';
 
 const configureGooglePassport = (
   passport: any,

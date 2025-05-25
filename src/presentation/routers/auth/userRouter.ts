@@ -2,34 +2,27 @@ import { Router } from 'express';
 import {
   deleteUser,
   findUserByEmail,
-  findUsersByEmail,
+  getUserSearchHandler,
   getUserById,
   logout,
-  updateUserImage,
-  updateUserMemo,
-  updateUserNickname,
+  findUsersByEmails,
 } from '../../controllers/userController';
 
 const userRouter = Router();
 
-userRouter.get('/:id', getUserById);
-
 userRouter.get('/email/:email', findUserByEmail);
 
 // 조건 검색 라우트
-userRouter.get('/emails/:email', findUsersByEmail);
+// userRouter.get('/emails/:email', findUsersByEmail);
 
-userRouter.patch('/:id/nickname', (req, res) => {
-  updateUserNickname(req, res);
-});
+// 이메일 배열로 유저 정보 조회
+userRouter.post('/emails', findUsersByEmails);
 
-userRouter.patch('/:id/memo', (req, res) => {
-  updateUserMemo(req, res);
-});
+// 조건 검색 라우트 (업데이트)
+userRouter.get('/search', getUserSearchHandler);
 
-userRouter.patch('/:id/image', (req, res) => {
-  updateUserImage(req, res);
-});
+// 동적 경로는 아래에 위치
+userRouter.get('/:id', getUserById);
 
 userRouter.post('/logout', logout);
 
