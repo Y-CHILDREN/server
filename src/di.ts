@@ -1,32 +1,25 @@
 import express from 'express';
-import { CalculationService } from './domain/services/calculationService';
-import { InMemoryCalculationRepositoryImpl } from './data/repositoryImpls/inMemoryCalculationRepositoryImpl';
-import { userDataLocalRepository } from './data/repositoryImpls/localUserRepositoryImpl';
+
 import { UserService } from './domain/services/userService';
+import { PrismaTripScheduleRepositoryImpl } from './data/repositoryImpls/prismaTripScheduleRepositoryImpl';
 import { TripScheduleService } from './domain/services/tripScheduleService';
-import { InMemoryTripScheduleRepositoryImpl } from './data/repositoryImpls/inMemoryTripScheduleRepositoryImpl';
 import { TripEventService } from './domain/services/tripEventService';
-import { InMemoryTripEventRepositoryImpl } from './data/repositoryImpls/inMemoryTripEventRepositoryImpl';
+import { PrismaUserRepositoryImpl } from './data/repositoryImpls/prismaUserRepositoryImpl';
+import { PrismaTripEventRepositoryImpl } from './data/repositoryImpls/prismaTripEventRepositoryImple';
 
 export function di(app: ReturnType<typeof express>) {
-  const calculationRepository = new InMemoryCalculationRepositoryImpl();
-  const calculationService = new CalculationService(calculationRepository);
-  app.set('calculationService', calculationService);
-
   // User
-  const userRepository = userDataLocalRepository();
-  const userService = UserService(userRepository);
+  const userRepository = new PrismaUserRepositoryImpl(); // class 형식으로 작성.
+  const userService = UserService(userRepository); // 화살표 함수 형식으로 작성.
   app.set('userService', userService);
 
-  // tripSchedule
-  const tripScheduleRepository = new InMemoryTripScheduleRepositoryImpl();
-  const tripScheduleService = new TripScheduleService(
-    tripScheduleRepository,
-    userRepository,
-  );
+  // TripSchedule
+  const tripScheduleRepository = new PrismaTripScheduleRepositoryImpl();
+  const tripScheduleService = new TripScheduleService(tripScheduleRepository);
   app.set('tripScheduleService', tripScheduleService);
-  // tripEvent
-  const tripEventRepository = new InMemoryTripEventRepositoryImpl();
+
+  // TripEvent
+  const tripEventRepository = new PrismaTripEventRepositoryImpl();
   const tripEventService = new TripEventService(tripEventRepository);
   app.set('tripEventService', tripEventService);
 }

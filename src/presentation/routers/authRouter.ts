@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { UserService } from '../../domain/services/userService';
 
 import googleRouter from './auth/googleRouter';
 import naverRouter from './auth/naverRouter';

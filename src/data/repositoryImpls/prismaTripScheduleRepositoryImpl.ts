@@ -1,15 +1,17 @@
 import prisma from '../../../prisma/client'; // 싱글톤 패턴 적용
 
-import { TripScheduleRepository } from '../../domain/repositories/tripScheduleRepository_update';
+import { TripScheduleRepository } from '../../domain/repositories/tripScheduleRepository';
 import {
   TripSchedule,
   TripScheduleWithMembers,
-} from '../../domain/entities/tripSchedule_update';
+} from '../../domain/entities/tripSchedule';
 
 export class PrismaTripScheduleRepositoryImpl
   implements TripScheduleRepository
 {
-  async create(tripSchedule: TripScheduleWithMembers): Promise<TripSchedule> {
+  async create(
+    tripSchedule: Omit<TripScheduleWithMembers, 'id'>,
+  ): Promise<TripSchedule> {
     try {
       return await prisma.$transaction(async () => {
         // 1. TripSchedule 생성
@@ -97,10 +99,43 @@ export class PrismaTripScheduleRepositoryImpl
         // 2. 새로운 멤버 리스트로 갱신
         if (tripSchedule.members) {
           // 2-1 기존 멤버 삭제
-          await prisma.tripScheduleUser.deleteMany({});
+          await prisma.tripScheduleUser.deleteMany({
+            where: { tripSchedule_id: tripSchedule.id },
+          });
+
+          // 이메일로 유저 조회
+          const users = await prisma.user.findMany({
+            where: {
+              email: {
+                in: tripSchedule.members,
+              },
+            },
+            select: {
+              id: true,
+              email: true,
+            },
+          });
+
+          // 이메일로 조회된 유저 목록 (User[])
+          const tripScheduleUsers = users.map((user) => ({
+            user_id: user.id,
+            tripSchedule_id: tripSchedule.id,
+          }));
+
+          if (tripScheduleUsers.length > 0) {
+            await prisma.tripScheduleUser.createMany({
+              data: tripScheduleUsers,
+              skipDuplicates: true,
+            });
+          }
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error('PrismaTripScheduleRepositoryImpl update error:', error);
+      throw new Error(
+        `Failed to update trip schedule update ${(error as Error).message}`,
+      );
+    }
   }
 
   // TripScheduleUser 테이블에서 유저 ID로 유저가 속한 tripSchedule 리스트 조회
@@ -128,6 +163,80 @@ export class PrismaTripScheduleRepositoryImpl
     } catch (error) {
       console.error('Error fetching trips by user ID:', error);
       throw new Error('Failed to fetch trips for the user');
+    }
+  }
+
+  // trip_id로 여행 일정 조회
+  async findTripById(id: number): Promise<TripSchedule> {
+    const trip = await prisma.tripSchedule.findUnique({
+      where: { id },
+    });
+
+    if (!trip) {
+      throw new Error('Trip not found');
+    }
+    return trip;
+  }
+
+  // 여행에 속해 있는 유저 이메일 조회
+  async getMembersEmail(tripId: number): Promise<string[]> {
+    try {
+      // 1. tripScheduleUser 테이블에서 tripId에 해당하는 user_id 조회
+      const userIds = await prisma.tripScheduleUser.findMany({
+        where: { tripSchedule_id: tripId },
+        select: { user_id: true },
+      });
+
+      const ids = userIds.map((user) => user.user_id);
+
+      if (ids.length === 0) return [];
+
+      // 2. user_id를 바탕으로 User 테이블에서 이메일 조회
+      const users = await prisma.user.findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+        select: {
+          email: true,
+        },
+      });
+
+      return users.map((user) => user.email);
+    } catch (error) {
+      console.error('Error in getMembersEmail', error);
+      throw new Error('Failed to get members email');
+    }
+  }
+
+  // 단일 여행 일정 삭제
+  async deleteTripById(id: number): Promise<boolean> {
+    try {
+      await prisma.$transaction([
+        prisma.tripScheduleUser.deleteMany({ where: { tripSchedule_id: id } }),
+        prisma.tripSchedule.delete({ where: { id } }),
+      ]);
+      return true;
+    } catch (error) {
+      console.error('Error deleting trip by ID:', error);
+      return false;
+    }
+  }
+
+  // 복수 여행 일정 삭제
+  async deleteTripsByIds(ids: number[]): Promise<boolean> {
+    try {
+      await prisma.$transaction([
+        prisma.tripScheduleUser.deleteMany({
+          where: { tripSchedule_id: { in: ids } },
+        }),
+        prisma.tripSchedule.deleteMany({ where: { id: { in: ids } } }),
+      ]);
+      return true;
+    } catch (error) {
+      console.error('Error deleting trips by IDs:', error);
+      return false;
     }
   }
 }

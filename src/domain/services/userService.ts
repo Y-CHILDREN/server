@@ -10,7 +10,7 @@ const userDto = (user: User): UserDto => {
     user_image: user.user_image,
     nickname: user.nickname,
     user_memo: user.user_memo,
-    trip_history: user.trip_history,
+    created_at: user.created_at,
   };
 };
 
@@ -39,11 +39,19 @@ export const UserService = (userRepository: UserRepository) => {
     return await userRepository.findUsersByEmail(email);
   };
 
+  const findUsersByEmails = async (emails: string[]): Promise<User[]> => {
+    return userRepository.findUsersByEmails(emails);
+  };
+
   const findUserByEmailAndProvider = async (
     email: string,
     provider: string,
   ) => {
     return await userRepository.findUserByEmailAndProvider(email, provider);
+  };
+
+  const searchUsersByEmail = async (query: string): Promise<User[]> => {
+    return await userRepository.findUsersByEmailContains(query);
   };
 
   const updateTokens = async (
@@ -72,17 +80,43 @@ export const UserService = (userRepository: UserRepository) => {
     return await userRepository.deleteUser(id);
   };
 
+  // User가 참여한 TripSchedule 조회
+  const getUserTripSchedules = async (user_id: string): Promise<number[]> => {
+    return await userRepository.getUserTripSchedules(user_id);
+  };
+
+  // User를 특정 TripSchedule에 추가
+  const addUserToTripSchedule = async (
+    user_id: string,
+    tripSchedule_id: number,
+  ): Promise<void> => {
+    await userRepository.addUserToTripSchedule(user_id, tripSchedule_id);
+  };
+
+  // User를 TripSchedule에서 제거
+  const removeUserFromTripSchedule = async (
+    user_id: string,
+    tripSchedule_id: number,
+  ): Promise<void> => {
+    await userRepository.removeUserFromTripSchedule(user_id, tripSchedule_id);
+  };
+
   return {
     createUser,
     findUserById,
     findUserByEmail,
     findUsersByEmail,
+    findUsersByEmails,
     findUserByEmailAndProvider,
+    searchUsersByEmail,
     updateUserImage,
     updateUserNickname,
     updateUserMemo,
     updateTokens,
     getAllUsers,
     deleteUser,
+    getUserTripSchedules,
+    addUserToTripSchedule,
+    removeUserFromTripSchedule,
   };
 };

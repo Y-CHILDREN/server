@@ -1,8 +1,8 @@
 import prisma from '../../../prisma/client';
 import { User as PrismaUser } from '@prisma/client';
 
-import { User } from '../../domain/models/user_update';
-import { UserRepository } from '../../domain/repositories/userRepository_update';
+import { User } from '../../domain/models/user';
+import { UserRepository } from '../../domain/repositories/userRepository';
 
 export class PrismaUserRepositoryImpl implements UserRepository {
   async createUser(userData: Omit<User, 'id'>): Promise<User> {
@@ -25,12 +25,37 @@ export class PrismaUserRepositoryImpl implements UserRepository {
     return users.length > 0 ? users.map(this.mapPrismaUserToUser) : undefined;
   }
 
+  // 이메일 배열로 여러 유저 조회
+  async findUsersByEmails(emails: string[]): Promise<User[]> {
+    const users = await prisma.user.findMany({
+      where: {
+        email: { in: emails },
+      },
+    });
+    return users.map(this.mapPrismaUserToUser);
+  }
+
   async findUserByEmailAndProvider(
     email: string,
     provider: string,
   ): Promise<User | undefined> {
     const user = await prisma.user.findFirst({ where: { email, provider } });
     return user ? this.mapPrismaUserToUser(user) : undefined;
+  }
+
+  // 이메일에 검색 텍스트가 포함된 유저 목록 조회
+  async findUsersByEmailContains(query: string): Promise<User[]> {
+    const users = await prisma.user.findMany({
+      where: {
+        email: {
+          contains: query,
+          mode: 'insensitive', // 대소문자 구분 없이 검색
+        },
+      },
+      take: 10, // 최대 10명 반환
+    });
+
+    return users.map(this.mapPrismaUserToUser);
   }
 
   async updateTokens(
