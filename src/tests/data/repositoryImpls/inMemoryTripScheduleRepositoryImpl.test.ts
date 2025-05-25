@@ -3,7 +3,7 @@ import { InMemoryTripScheduleRepositoryImpl } from '../../../data/repositoryImpl
 import { TripSchedule } from '../../../domain/entities/tripSchedule';
 
 describe('ImMemoryTripScheduleRepositoryImpl', () => {
-  const repository = new InMemoryTripScheduleRepositoryImpl();
+  // const repository = new InMemoryTripScheduleRepositoryImpl();
 
   test('should create a new trip', async () => {
     // // Given
