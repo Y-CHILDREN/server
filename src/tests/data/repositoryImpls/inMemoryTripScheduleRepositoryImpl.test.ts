@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { InMemoryTripScheduleRepositoryImpl } from '../../../data/repositoryImpls/inMemoryTripScheduleRepositoryImpl';
-import { TripSchedule } from '../../../domain/entities/tripSchedule';
+// import { InMemoryTripScheduleRepositoryImpl } from '../../../data/repositoryImpls/inMemoryTripScheduleRepositoryImpl';
+// import { TripSchedule } from '../../../domain/entities/tripSchedule';
 
 describe('ImMemoryTripScheduleRepositoryImpl', () => {
   // const repository = new InMemoryTripScheduleRepositoryImpl();
